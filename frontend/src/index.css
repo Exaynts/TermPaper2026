@@ -1,0 +1,24 @@
+/* Глобальные сбросы и базовые стили */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Контейнер приложения – без ограничения ширины */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Переменные, которые используют ваши компоненты */
+:root {
+  --header-height: 120px;
+}

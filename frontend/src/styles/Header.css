@@ -1,0 +1,271 @@
+:root {
+  --header-height: 80px;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 9;
+  display: flex;
+  justify-content: flex-start;;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--header-height);
+  border-bottom: 2px solid #000;
+  padding: 0 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 1.5vw, 24px);
+  background-color: #f55;
+  transition: all 0.2s ease;
+}
+
+.header .icon {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border: none;
+}
+
+/* nav styles */
+.nav {
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.nav-list {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.nav-list li {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  max-height: 60px;
+  flex: 0 0 auto;
+  max-width: 200px;
+}
+
+.nav a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 24px;
+  border-radius: 10px;
+  padding: clamp(5px, 1.5vw, 15px) clamp(8px, 2vw, 20px);
+  color: #000;
+  text-align: center;
+  text-decoration: none;
+  word-break: break-word;
+  background-color: #f88;
+  transition: all 0.2s ease;
+  white-space: normal;
+}
+
+.nav a:hover {
+  color: black;
+  background-color: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+/* Dropdown styles */
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  min-width: 140px;
+  border-radius: 10px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
+  background-color: #f88;
+  transform: translateX(-50%);
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px 12px;
+  color: #000;
+  font-size: 28px;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-wrap: wrap;
+}
+
+.dropdown-content a:hover {
+  background-color: #f55;
+}
+
+.dropdown:hover .dropdown-content {
+  display: flex;
+}
+
+.nav .logout-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 24px;
+  border-radius: 10px;
+  padding: clamp(5px, 1.5vw, 15px) clamp(8px, 2vw, 20px);
+  color: #000;
+
+  font-weight: inherit;
+  font-size: inherit;
+  text-align: center;
+  background-color: #f88;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+
+}
+
+.logout-btn:hover {
+  color: black;
+  background-color: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+/* Reduce gap for low screen width adaptivity*/
+@media (max-width: 1200px) {
+  .nav-list {
+    gap: clamp(4px, 2.5vw, 30px);
+  }
+
+  .nav a {
+    padding: clamp(4px, 1.2vw, 12px) clamp(6px, 1.5vw, 16px);
+    font-size: clamp(16px, 2.2vw, 28px);
+  }
+}
+
+@media (max-width: 992px) {
+  .nav-list {
+    gap: clamp(3px, 2vw, 20px);
+  }
+
+  .nav a {
+    padding: clamp(3px, 1vw, 10px) clamp(5px, 1.2vw, 14px);
+    font-size: clamp(16px, 2vw, 24px);
+  }
+
+  .header {
+    padding: 0 15px;
+  }
+
+  .header .icon {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-list {
+    gap: clamp(2px, 1.5vw, 15px);
+  }
+
+  .nav a {
+    padding: clamp(2px, 0.8vw, 8px) clamp(4px, 1vw, 12px);
+    font-size: clamp(16px, 1.8vw, 20px);
+  }
+
+  .header {
+    padding: 0 12px;
+  }
+
+  .header .icon {
+    width: 70px;
+    height: 70px;
+  }
+
+  .dropdown-content {
+    min-width: 120px;
+  }
+
+  .dropdown-content a {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .nav-list {
+    gap: clamp(1px, 1vw, 10px);
+  }
+
+  .nav a {
+    min-height: 40px;
+    padding: clamp(1px, 0.6vw, 6px) clamp(3px, 0.8vw, 10px);
+    font-size: clamp(14px, 1.6vw, 18px);
+  }
+
+  .header {
+    padding: 0 10px;
+  }
+
+  .header .icon {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-list {
+    gap: clamp(0px, 0.8vw, 5px);
+  }
+
+  .nav a {
+    min-height: 32px;
+    border-radius: 4px;
+    padding: clamp(0px, 0.5vw, 5px) clamp(2px, 0.6vw, 8px);
+    font-size: clamp(12px, 1.4vw, 16px);
+  }
+
+  .header {
+    padding: 0 5px;
+  }
+
+  .header .icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Extra small screens - further reduce padding */
+@media (max-width: 400px) {
+  .nav-list {
+    gap: 2px;
+  }
+
+  .nav a {
+    padding: 2px 4px;
+    font-size: 12px;
+    min-height: 30px;
+  }
+
+  .header {
+    padding: 0 3px;
+  }
+}
+
+@media (max-width: 360px) {
+  .nav a {
+    padding: 1px 2px;
+    font-size: 11px;
+    min-height: 28px;
+  }
+}

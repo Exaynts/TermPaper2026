@@ -1,0 +1,5 @@
+1) Активируем виртуальное окружение:
+venv/Scripts/Activate
+
+2.1) В директории /backend в терминале записать команду python manage.py runverser
+2.2) В директории /frondend в терминале записать команду npm run dev -- --open

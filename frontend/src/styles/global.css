@@ -1,0 +1,186 @@
+/* Стили общие для всех страниц) */
+
+:root {
+  --brandColor: rgb(255, 85, 85); /* #f55 */
+  --brandColor02: rgba(255, 85, 85, 0.2);
+  --brandColor05: rgba(255, 85, 85, 0.5);
+  --brandColor08: rgba(255, 85, 85, 0.8);
+  --brandColorLight: rgb(255, 85, 85); /* #fee */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #f55;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: white;
+}
+
+h1, h2, h3, h4, p, span {
+  color: rgb(0, 0, 0);
+}
+
+/* Обёртка для всех страниц (в PageWrapper) */
+.main {
+  position: relative;
+  flex-direction: column;
+  flex: 1;
+  min-height: calc(100vh - var(--header-height) - 200px);
+  margin-top: var(--header-height);
+  padding: 20px 0 0;
+}
+
+/* Фоновое изображение для всех страниц */
+.main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.3;
+  background-image: url("/images/math_bg.PNG");
+  background-repeat: repeat;
+  background-position: top;
+  background-size: contain;
+}
+
+/* Стили для кнопок форм (общие) */
+.sign-in-button, .sign-up-button {
+  width: 100%;
+  height: 60px;
+  margin-top: 10px;
+  border: 2px solid #000;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  font-size: 24px;
+  background-color: #f55;
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+
+.sign-in-button:hover, .sign-up-button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #f88;
+  transform: translateY(-2px);
+}
+
+.sign-in-button:disabled, .sign-up-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Общие стили для ошибок форм */
+.error-message {
+  background-color: #fee;
+  border: 1px solid var(--brandColor);
+  color: var(--brandColor);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-field input,
+.error-field select {
+  border-color: var(--brandColor);
+}
+
+.field-error {
+  color: var(--brandColor);
+  font-size: 12px;
+  display: block;
+  margin-top: 5px;
+}
+
+.password-hint {
+  color: #666;
+  font-size: 12px;
+  display: block;
+  margin-top: 5px;
+}
+
+/* Общие стили для карточек форм */
+.data-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  border: 2px solid #000;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  background-color: #f9f9f9;
+}
+
+.data-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 10px;
+  border-radius: 25px 25px 0 0;
+  background: linear-gradient(90deg, var(--brandColor), #ff8c8c, var(--brandColor));
+}
+
+/* Общие стили для полей ввода */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #000;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.text-input {
+  width: 100%;
+  height: 50px;
+  border: 2px solid #000;
+  border-radius: 20px;
+  padding: 0 20px;
+  font-size: 24px;
+  background-color: white;
+  transition: all 0.5s ease;
+}
+
+.text-input:focus {
+  border-color: var(--brandColor);
+  box-shadow: 0 0 8px var(--brandColor05);
+  outline: none;
+}
+
+/* Общие стили для ссылок */
+.faq-link {
+  margin: 15px 0;
+  text-align: center;
+}
+
+.faq-link p {
+  color: #000;
+  font-size: 16px;
+}
+
+.faq-text {
+  color: #f55;
+  text-decoration: none;
+  transition: color 0.5s ease;
+}
+
+.faq-text:hover {
+  color: var(--brand-color);
+  text-decoration: underline;
+}

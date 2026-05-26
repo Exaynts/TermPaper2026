@@ -1,0 +1,110 @@
+/* general styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  padding-top: 0;
+  color: #f55;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: white;
+}
+
+.main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-top: var(--header-height);
+}
+
+.main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0.2;
+  background-image: url("../images/math_bg.PNG");
+  background-repeat: repeat;
+  background-position: top left;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  font-size: 24px;
+}
+h1 {
+  font-size: 96px;
+  color: #f55;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* loader styles */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  justify-content: start;
+  align-items: center;
+  border-radius: 100%;
+  position: fixed;
+  transform: translateY(calc(100% / 5));
+}
+
+#loader-3dots span {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin: 35px 5px;
+  border-radius: 100%;
+  opacity: 0;
+  background-color: #f55;
+}
+
+#loader-3dots span:nth-child(1) {
+  animation: opacitychange 1s ease-in-out infinite;
+}
+
+#loader-3dots span:nth-child(2) {
+  animation: opacitychange 1s ease-in-out 0.33s infinite;
+}
+
+#loader-3dots span:nth-child(3) {
+  animation: opacitychange 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes opacitychange {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}

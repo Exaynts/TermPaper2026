@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #f55;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: white;
+}
+.main {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  margin-top: var(--header-height);
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  color: hsl(0, 0%, 0%); /* Белый только для заголовков */
+  font-size: 24px;
+}
+h1 {
+  font-size: 64px;
+}

@@ -1,0 +1,520 @@
+@font-face {
+  font-family: "Flamingo";
+  src: url("fonts/Flamingo-vnAYA.otf") format("opentype");
+}
+
+:global(.main) h1:hover,
+:global(.main) h2:hover,
+:global(.main) p:hover,
+:global(.main) a:hover:not(.carouselBtn):not(.getStarted a) {
+  transition: transform 1s ease;
+  transform: scale(1.02);
+}
+
+.h1 {
+    font-size: 72px;
+}
+.h2 {
+    font-size: 48px;
+}
+
+/* introAndCarousel styles */
+.introAndCarousel {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  max-width: 90%;
+  margin: 50px auto 20px;
+  padding-bottom: 40px;
+}
+
+.introBlock {
+  flex: 1;
+  margin-right: 20px;
+  border-radius: 25px;
+  color: #000;
+  font-weight: 500;
+  font-size: 40px;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding-left: 20px;
+  height: auto;
+}
+
+.getStarted {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 700px;
+  max-width: 100%;
+  height: 250px;
+  margin: 80px 20px 20px 0;
+  border: 4px solid #000;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  color: #000;
+  font-family: "Tahoma";
+  font-weight: 700;
+  text-align: center;
+  text-decoration: underline;
+  background-color: #f55;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.introText {
+  padding-left: 0;
+  margin: 0;
+}
+
+.getStarted p {
+  font-size: 96px;
+}
+
+a {
+  color: black;
+}
+.getStarted:hover {
+  background-color: #f88;
+  transform: scale(1.05);
+}
+
+/* carousel styles */
+.carouselContainer {
+  position: relative;
+  flex-shrink: 0;
+  width: 600px;
+  max-width: 100%;
+  height: auto;
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  border: 4px solid #000;
+  border-radius: 25px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.carousel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: 10px;
+  border-radius: 25px 25px 0 0;
+  background: linear-gradient(90deg, #f55, #ff8c8c, #f55);
+}
+
+.carouselSlides {
+  display: flex;
+  width: 300%;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carouselSlide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 33.333%;
+  height: 100%;
+}
+
+.carouselImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: white;
+}
+.carouselImage.cover {
+  object-fit: cover;
+}
+
+.carouselImage.contain {
+  object-fit: contain;
+}
+
+.carouselBtn {
+  position: absolute;
+  bottom: 20px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border: 4px solid #000;
+  border-radius: 50%;
+  color: #000;
+  font-weight: bold;
+  font-size: 24px;
+  background-color: rgba(245, 85, 85, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.carouselBtn:hover {
+  background-color: #f55;
+  transform: scale(1.1);
+}
+
+.carouselBtn.prev {
+  left: 10px;
+}
+
+.carouselBtn.next {
+  right: 10px;
+}
+
+/* Carousel dots */
+.carouselIndicators {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  gap: 10px;
+  transform: translateX(-50%);
+}
+
+.carouselIndicator {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+
+.carouselIndicator.active {
+  background-color: #f55;
+  transform: scale(1.2);
+}
+
+.promotionPhrase {
+  margin-top: 20px;
+  padding: 0 10px;
+  font-size: 28px;
+  text-align: center;
+  background: var(--brandColor02);
+  border-radius: 15px;
+  margin-bottom: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+
+}
+
+/* Info block styles */
+.infoBlock {
+    max-width: 90%;
+    margin: 20px auto 30px;
+    padding: 20px 30px;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 30px;
+    border: 2px solid var(--brandColor);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 28px;
+    font-weight: 500;
+    color: #000;
+    line-height: 1.4;
+}
+
+.infoBlock p {
+    margin: 0;
+    font-family: inherit;
+}
+
+/* courses frame Styles */
+.iframeCourses {
+  display: flex;
+  justify-self: center;
+  width: 80%;
+  height: 600px;
+  border: 4px solid #000;
+  border-radius: 25px;
+}
+
+/* Advantages and Reviews styles */
+.advantages,
+.reviews {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  max-width: 90%;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.advantages {
+  margin: 25px auto 40px;
+}
+
+.reviews {
+  margin: 25px auto 40px;
+}
+
+.advantages h2,
+.reviews h2 {
+  position: relative;
+  margin-bottom: 20px;
+  color: #000;
+  font-size: 48px;
+}
+
+.advantagesCard,
+.reviewsCard {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  border: 4px solid #000;
+  border-radius: 25px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.95);
+  transition: all 0.3s ease;
+}
+
+.advantagesCard::before,
+.reviewsCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 8px;
+  border-radius: 25px 25px 0 0;
+  background: linear-gradient(90deg, #f55, #ff8c8c, #f55);
+}
+
+.advantagesCard {
+  padding: 40px 50px;
+}
+
+.reviewsCard {
+  padding: 50px;
+}
+
+.advantagesCard:hover,
+.reviewsCard:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  transform: translateY(-5px);
+}
+
+/* Advantages list styles */
+.advantagesList {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  list-style: none;
+}
+
+.advantagesList li {
+  position: relative;
+  padding-left: 30px;
+  line-height: 1.5;
+}
+
+.advantagesList li::before {
+  content: "•";
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #000;
+  font-weight: 900;
+  font-size: 36px;
+  line-height: 0.75;
+}
+
+.advantagesList span {
+  margin: 0;
+  padding: 5px 0;
+  color: #000;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.5;
+  transition: all 1s ease;
+}
+
+.advantagesList li:hover {
+  color: #000;
+  transform: scale(1.05) translateX(5px);
+  transition: transform 0.3s ease;
+}
+
+.advantagesList li:hover::before {
+  color: var(--brandColor);
+  transform: scale(1.05);
+}
+
+.advantagesList a:hover {
+  color: var(--brandColor);
+}
+
+/* Reviews list styles */
+.reviewsList {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reviewItem {
+  position: relative;
+  border: 2px solid #000;
+  border-radius: 20px;
+  padding: 25px 30px;
+  background-color: rgba(249, 249, 249, 0.8);
+  transition: all 0.3s ease;
+}
+
+.reviewItem:hover {
+  border-color: #f55;
+  box-shadow: 0 8px 16px rgba(245, 85, 85, 0.1);
+  transform: scale(1.02);
+}
+
+.reviewText {
+  position: relative;
+  margin-bottom: 15px;
+  padding-left: 25px;
+  color: #000000;
+  font-size: 20px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.reviewText::before {
+  content: '"';
+  color: #f55;
+  font-family: serif;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.reviewText::after {
+  content: '"';
+  color: #f55;
+  font-family: serif;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.reviewAuthor {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  color: #000;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: right;
+}
+
+.reviewRating {
+  color: #ffd700;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .advantages,
+  .reviews {
+    margin: 40px auto 30px;
+    padding: 0 15px;
+  }
+
+  .advantages h1,
+  .reviews h2 {
+    margin-bottom: 25px;
+    font-size: 36px;
+  }
+
+  .advantagesCard,
+  .reviewsCard {
+    border-width: 2px;
+    padding: 30px 25px;
+  }
+
+  .advantagesList {
+    gap: 20px;
+  }
+
+  .advantagesList li {
+    padding-left: 30px;
+  }
+
+  .advantagesList span {
+    font-size: 18px;
+  }
+
+  .advantagesList li::before {
+    font-size: 30px;
+  }
+
+  .reviewsList {
+    gap: 25px;
+  }
+
+  .reviewItem {
+    padding: 20px;
+  }
+
+  .reviewText {
+    padding-left: 20px;
+    font-size: 18px;
+  }
+
+  .reviewText::before {
+    font-size: 28px;
+  }
+
+  .reviewAuthor {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .advantages h1,
+  .reviews h2 {
+    font-size: 28px;
+  }
+
+  .advantagesCard,
+  .reviewsCard {
+    padding: 25px 20px;
+  }
+
+  .advantagesList span {
+    font-size: 16px;
+  }
+
+  .advantagesList li::before {
+    font-size: 26px;
+  }
+
+  .reviewText {
+    padding-left: 18px;
+    font-size: 16px;
+  }
+
+  .reviewText::before {
+    font-size: 24px;
+  }
+}
