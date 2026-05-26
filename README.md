@@ -90,8 +90,8 @@ npm run dev
 - Админка Django: http://localhost:8000/admin
 - API (browsable): http://localhost:8000/api/courses/
 ```
-👥 API-эндпоинты (основные)
-Метод	Эндпоинт	Описание
+### 👥 API-эндпоинты (основные)
+  #Эндпоинты представлены в виде: Метод  Эндпоинт  Описание#
 - POST	/api/auth/register/	Регистрация  
 - POST	/api/auth/login/	Получение JWT (access/refresh)  
 - POST	/api/auth/token/refresh/	Обновление access-токена  
