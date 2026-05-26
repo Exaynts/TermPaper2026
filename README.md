@@ -90,8 +90,11 @@ npm run dev
 - Админка Django: http://localhost:8000/admin
 - API (browsable): http://localhost:8000/api/courses/
 ```
-### 👥 API-эндпоинты (основные)
-  ## Эндпоинты представлены в виде: Метод  Эндпоинт  Описание
+
+---
+
+## 👥 API-эндпоинты (основные)
+  ### Эндпоинты представлены в виде: Метод  Эндпоинт  Описание
 - POST	/api/auth/register/	Регистрация  
 - POST	/api/auth/login/	Получение JWT (access/refresh)  
 - POST	/api/auth/token/refresh/	Обновление access-токена  
@@ -104,6 +107,8 @@ npm run dev
 - POST	/api/courses/{id}/restore_from_bin/	Восстановить из корзины  
 - POST	/api/progress/mark/	Отметить урок пройденным  
 
+---
+
 ### 🧪 Тестирование
 - Бэкенд (pytest)
 ```bash
@@ -114,6 +119,9 @@ bash
 cd frontend  
 npm test
 ```
+
+---
+
 ### 👨‍💻 Автор
 Студент группы ПИЖ-б-о-24-1  
 Козлов Евгений Александрович  
