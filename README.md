@@ -64,9 +64,10 @@ cd MathJam
 bash
 cd backend
 python -m venv venv
-# Активация окружения:
-# Windows: venv\Scripts\activate
-# macOS/Linux: source venv/bin/activate
+
+Активация окружения:
+Windows: venv\Scripts\activate
+macOS/Linux: source venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # заполните SECRET_KEY и другие переменные
 python manage.py migrate
