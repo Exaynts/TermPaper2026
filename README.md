@@ -92,18 +92,18 @@ API (browsable): http://localhost:8000/api/courses/
 ```
 👥 API-эндпоинты (основные)
 Метод	Эндпоинт	Описание
-POST	/api/auth/register/	Регистрация
-POST	/api/auth/login/	Получение JWT (access/refresh)
-POST	/api/auth/token/refresh/	Обновление access-токена
-GET/PATCH	/api/auth/profile/	Профиль пользователя
-GET	/api/courses/	Список курсов
-GET	/api/courses/{id}/	Детали курса (с уроками)
-POST	/api/courses/{id}/purchase/	Покупка курса
-POST	/api/courses/{id}/save/	Сохранить в избранное
-POST	/api/courses/{id}/move_to_bin/	Переместить в корзину
-POST	/api/courses/{id}/restore_from_bin/	Восстановить из корзины
-POST	/api/progress/mark/	Отметить урок пройденным
-Полная документация API доступна по адресу /api/docs/ (при подключении drf-yasg или Swagger).
+POST	/api/auth/register/	Регистрация  
+POST	/api/auth/login/	Получение JWT (access/refresh)  
+POST	/api/auth/token/refresh/	Обновление access-токена  
+GET/PATCH	/api/auth/profile/	Профиль пользователя  
+GET	/api/courses/	Список курсов  
+GET	/api/courses/{id}/	Детали курса (с уроками)  
+POST	/api/courses/{id}/purchase/	Покупка курса  
+POST	/api/courses/{id}/save/	Сохранить в избранное  
+POST	/api/courses/{id}/move_to_bin/	Переместить в корзину  
+POST	/api/courses/{id}/restore_from_bin/	Восстановить из корзины  
+POST	/api/progress/mark/	Отметить урок пройденным  
+Полная документация API доступна по адресу /api/docs/ (при подключении drf-yasg или Swagger).  
 
 ### 🧪 Тестирование
 Бэкенд (pytest)
@@ -134,7 +134,3 @@ WebSocket-уведомления (Django Channels)
 
 Адаптивная вёрстка под мобильные устройства
 
-
----
-
-Вы можете скопировать этот текст в файл `README.md` в корне вашего проекта (или в `backend/`, если решите оставить монорепозиторий). При необходимости измените ссылки, имя пользователя GitHub и другие детали.
