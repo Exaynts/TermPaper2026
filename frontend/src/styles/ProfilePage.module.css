@@ -494,11 +494,72 @@
   text-align: center;
 }
 
-/* Loading and error states */
+/* Стили загрузок и состояний ошибок */
 .loading, .error {
   text-align: center;
   padding: 50px;
   font-size: 24px;
+}
+
+/* Стили модальное окна удаления профиля */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modalContent {
+    background-color: white;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    border: 2px solid #000;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+.modalContent p {
+    font-size: 20px;
+    margin-bottom: 30px;
+    color: #000;
+}
+.modalButtons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.modalCancel, .modalDelete {
+    padding: 10px 25px;
+    font-size: 18px;
+    border-radius: 30px;
+    border: 2px solid #000;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.modalCancel {
+    background-color: #ddd;
+    color: #000;
+}
+.modalCancel:hover {
+    background-color: #bbb;
+}
+.modalDelete {
+    background-color: #f55;
+    color: white;
+    opacity: 0.5;
+}
+.modalDelete.active {
+    opacity: 1;
+    background-color: #f55;
+}
+.modalDelete.active:hover {
+    transform: scale(1.05);
 }
 
 /* Адаптивность */

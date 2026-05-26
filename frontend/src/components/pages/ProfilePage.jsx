@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import styles from '../../styles/ProfilePage.module.css';
 
 const ProfilePage = () => {
-    const { user, loading, updateProfile, updateAvatar } = useAuth();
+    const { user, loading, updateProfile, updateAvatar, deleteAccount, logout } = useAuth();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -58,6 +58,47 @@ const ProfilePage = () => {
         if (window.confirm('Are you sure? This action cannot be undone.')) {
             // Вызов API удаления аккаунта (пока заглушка)
             alert('Account deletion not implemented yet');
+        }
+    };
+
+    // Удаление профиля
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteCountdown, setDeleteCountdown] = useState(5);
+    const [deleteAllowed, setDeleteAllowed] = useState(false);
+    let countdownInterval = null;
+
+    const handleDeleteClick = () => {
+        setShowDeleteModal(true);
+        setDeleteCountdown(5);
+        setDeleteAllowed(false);
+        countdownInterval = setInterval(() => {
+            setDeleteCountdown(prev => {
+                if (prev <= 1) {
+                    clearInterval(countdownInterval);
+                    setDeleteAllowed(true);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    };
+
+    const closeModal = () => {
+        if (countdownInterval) clearInterval(countdownInterval);
+        setShowDeleteModal(false);
+        setDeleteAllowed(false);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteAllowed) return;
+        closeModal();
+        const result = await deleteAccount();
+        if (result.success) {
+            alert('Account deleted successfully');
+            logout();
+            navigate('/');
+        } else {
+            alert(result.error);
         }
     };
 
@@ -141,6 +182,7 @@ const ProfilePage = () => {
         return <div className={styles.error}>Please log in</div>;
     }
 
+    /* Непосредственно html-подобный код*/
     return (
         <main className={styles.main}>
             {/* Sidebar */}
@@ -199,7 +241,7 @@ const ProfilePage = () => {
                                     <div className={styles.dropdownItem} onClick={handleChangePassword}>
                                         Change password
                                     </div>
-                                    <div className={styles.dropdownItem} onClick={handleDeleteAccount}>
+                                    <div className={styles.dropdownItem} onClick={handleDeleteClick}>
                                         Delete account
                                     </div>
                                 </div>
@@ -461,6 +503,25 @@ const ProfilePage = () => {
                     </div>
                 </div>
             </div>
+            {/* Модальное окно удаления аккаунта */}
+           {showDeleteModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <p>Are you sure you want to delete your profile?<br />
+                        All information about you, including purchased courses, will be permanently deleted!</p>
+                        <div className={styles.modalButtons}>
+                            <button className={styles.modalCancel} onClick={closeModal}>Cancel</button>
+                            <button
+                                className={`${styles.modalDelete} ${deleteAllowed ? styles.active : ''}`}
+                                onClick={confirmDelete}
+                                disabled={!deleteAllowed}
+                            >
+                                {deleteAllowed ? 'Delete' : `Wait ${deleteCountdown}...`}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+           )}
         </main>
     );
 };

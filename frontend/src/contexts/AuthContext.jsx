@@ -139,6 +139,16 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const deleteAccount = async () => {
+        try {
+            const response = await api.delete('/auth/delete-account/');
+            return { success: true, message: response.data.message };
+        } catch (error) {
+            const message = error.response?.data?.error || 'Failed to delete account';
+            return { success: false, error: message };
+        }
+    };
+
     const value = {
         user,
         loading,
@@ -148,7 +158,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         updateProfile,
         updateAvatar,
-        changePassword,   // ← добавить сюда
+        changePassword,
+        deleteAccount,
     };
 
     // Возвращаем контекст с полученными данными
