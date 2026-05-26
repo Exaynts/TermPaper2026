@@ -125,6 +125,20 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const changePassword = async (oldPassword, newPassword, confirmPassword) => {
+        try {
+            const response = await api.post('/auth/change-password/', {
+                old_password: oldPassword,
+                new_password: newPassword,
+                confirm_password: confirmPassword,
+            });
+            return { success: true, message: response.data.message };
+        } catch (error) {
+            const message = error.response?.data?.error || 'Failed to change password';
+            return { success: false, error: message };
+        }
+    };
+
     const value = {
         user,
         loading,
@@ -134,6 +148,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         updateProfile,
         updateAvatar,
+        changePassword,   // ← добавить сюда
     };
 
     // Возвращаем контекст с полученными данными

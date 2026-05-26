@@ -178,6 +178,64 @@
   transform: scale(1.05);
 }
 
+.nicknameWrapper {
+    position: relative;
+    cursor: pointer;
+}
+.nickname {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 36px;
+    font-weight: 700;
+    color: black;
+    transition: all 0.3s ease;
+}
+.nickname:hover {
+    transform: scale(1.02);
+}
+.arrowDown {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 8px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid black;
+}
+.arrowUp {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 8px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 8px solid black;
+}
+.dropdownMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 2px solid #000;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10;
+    min-width: 180px;
+    overflow: hidden;
+}
+.dropdownItem {
+    padding: 12px 16px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.dropdownItem:hover {
+    background-color: #f88;
+}
+
 .userInfo {
     display: flex;
     align-items: center;
@@ -444,7 +502,7 @@
 }
 
 /* Адаптивность */
-@media (max-width: 768px) {
+@media (max-width: 910px) {
   .main {
     flex-direction: column;
   }
@@ -512,7 +570,7 @@
 }
 
 /* Узкие экраны, где аватар и ник могут переполняться – уменьшаем ещё */
-@media (max-width: 480px) {
+@media (max-width: 910px) {
     .userInfo {
         gap: 10px;
     }

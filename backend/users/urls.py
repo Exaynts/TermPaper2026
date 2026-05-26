@@ -1,11 +1,13 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+from .views import ChangePasswordView
 from . import views
 
 urlpatterns = [
     # Регистрация и профиль
     path('register/', views.RegisterView.as_view(), name='register'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
+    path('change-password/', ChangePasswordView.as_view(), name='change-password'),
 
     # JWT аутентификация (кастомный login по email)
     path('login/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),

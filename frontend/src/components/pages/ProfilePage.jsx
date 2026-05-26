@@ -48,6 +48,19 @@ const ProfilePage = () => {
         }
     };
 
+    // Смена пароля
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const toggleDropdown = () => setDropdownOpen(prev => !prev);
+
+    const handleChangePassword = () => navigate('/change-password');
+    const handleDeleteAccount = () => {
+        if (window.confirm('Are you sure? This action cannot be undone.')) {
+            // Вызов API удаления аккаунта (пока заглушка)
+            alert('Account deletion not implemented yet');
+        }
+    };
+
     // Загрузка данных пользователя в форму
     useEffect(() => {
         if (user) {
@@ -176,8 +189,21 @@ const ProfilePage = () => {
                                 </div>
                             )}
                         </div>
-                        <div className={styles.nickname}>
-                            {user.nickname || user.first_name || user.email}
+                        <div className={styles.nicknameWrapper}>
+                            <div className={styles.nickname} onClick={toggleDropdown}>
+                                {user.nickname || user.first_name || user.email}
+                                <span className={dropdownOpen ? styles.arrowUp : styles.arrowDown}></span>
+                            </div>
+                            {dropdownOpen && (
+                                <div className={styles.dropdownMenu}>
+                                    <div className={styles.dropdownItem} onClick={handleChangePassword}>
+                                        Change password
+                                    </div>
+                                    <div className={styles.dropdownItem} onClick={handleDeleteAccount}>
+                                        Delete account
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <input

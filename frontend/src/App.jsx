@@ -21,6 +21,7 @@ import CourseListPage from './components/pages/CourseListPage';
 import CourseDetailPage from './components/pages/CourseDetailPage';
 import MyCoursesPage from './components/pages/MyCoursesPage';
 import SavedCoursesPage from './components/pages/SavedCoursesPage';
+import ChangePasswordPage from './components/pages/ChangePasswordPage';
 
 // Компонент-обёртка для страниц с Header и Footer
 const PageWrapper = ({ children }) => {
@@ -88,6 +89,11 @@ function AppRoutes() {
             <Route path="/saved-courses" element={
                 <ProtectedRoute>
                     <PageWrapper><SavedCoursesPage /></PageWrapper>
+                </ProtectedRoute>
+            } />
+            <Route path="/change-password" element={
+                <ProtectedRoute>
+                    <PageWrapper><ChangePasswordPage /></PageWrapper>
                 </ProtectedRoute>
             } />
 
