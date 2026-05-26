@@ -115,7 +115,7 @@ npm run dev
 cd backend  
 pytest
 ```
-```bash
+
 - Фронтенд (Jest + React Testing Library)  
 ```bash  
 cd frontend  
