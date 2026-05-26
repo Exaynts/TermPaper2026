@@ -91,7 +91,7 @@ npm run dev
 - API (browsable): http://localhost:8000/api/courses/
 ```
 ### 👥 API-эндпоинты (основные)
-  #Эндпоинты представлены в виде: Метод  Эндпоинт  Описание#
+  ## Эндпоинты представлены в виде: Метод  Эндпоинт  Описание
 - POST	/api/auth/register/	Регистрация  
 - POST	/api/auth/login/	Получение JWT (access/refresh)  
 - POST	/api/auth/token/refresh/	Обновление access-токена  
