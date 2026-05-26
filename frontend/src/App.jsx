@@ -14,14 +14,15 @@ import Footer from './components/common/Footer';
 
 // Страницы
 import HomePage from './components/pages/HomePage';
-import LoginPage from './components/pages/LoginPage';
-import RegisterPage from './components/pages/RegisterPage';
-import ProfilePage from './components/pages/ProfilePage';
-import CourseListPage from './components/pages/CourseListPage';
-import CourseDetailPage from './components/pages/CourseDetailPage';
-import MyCoursesPage from './components/pages/MyCoursesPage';
-import SavedCoursesPage from './components/pages/SavedCoursesPage';
+import AboutUsPage from './components/pages/AboutUsPage';
 import ChangePasswordPage from './components/pages/ChangePasswordPage';
+import CourseDetailPage from './components/pages/CourseDetailPage';
+import CourseListPage from './components/pages/CourseListPage';
+import LoginPage from './components/pages/LoginPage';
+import MyCoursesPage from './components/pages/MyCoursesPage';
+import ProfilePage from './components/pages/ProfilePage';
+import RegisterPage from './components/pages/RegisterPage';
+import SavedCoursesPage from './components/pages/SavedCoursesPage';
 
 // Компонент-обёртка для страниц с Header и Footer
 const PageWrapper = ({ children }) => {
@@ -76,6 +77,7 @@ function AppRoutes() {
             <Route path="/login" element={<PageWrapper><LoginPage /></PageWrapper>} />
             <Route path="/register" element={<PageWrapper><RegisterPage /></PageWrapper>} />
 
+            <Route path="/aboutUs" element={<PageWrapper><AboutUsPage /></PageWrapper>} />
             <Route path="/profile" element={
                 <ProtectedRoute>
                     <PageWrapper><ProfilePage /></PageWrapper>

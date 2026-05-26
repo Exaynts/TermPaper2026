@@ -1,0 +1,138 @@
+h1 {
+    width: 100%;
+    margin-bottom: 50px;
+    color: #f55;
+    font-size: clamp(40px, 6vw, 75px);
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    border-bottom: 3px solid #f88;
+    padding-bottom: 15px;
+    color: #000;
+    font-size: clamp(30px, 4vw, 50px);
+    text-align: center;
+}
+
+h3 {
+    color: #f55;
+    font-weight: 600;
+    font-size: 28px;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+p {
+    font-size: 20px;
+    color: #000;
+}
+
+/* Card styles */
+.card {
+    position: relative;
+    width: 100%;
+    margin-bottom: 60px;
+    border: 2px solid #000;
+    border-radius: 25px;
+    padding: 40px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 10px;
+    border-radius: 25px 25px 0 0;
+    background: linear-gradient(90deg, #f55, #ff8c8c, #f55);
+}
+
+.cardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.cardItem {
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    padding: 25px;
+    background-color: #f9f9f9;
+    transition: all 0.5s ease;
+}
+
+.cardItem:hover {
+    border-color: #f55;
+    box-shadow: 0 8px 20px rgba(255, 85, 85, 0.15);
+    transform: translateY(-5px);
+}
+
+.missionStatement {
+    color: #000;
+    font-weight: 600;
+    font-size: 28px;
+    text-align: center;
+}
+
+.aboutContainer {
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        margin-bottom: 30px;
+        font-size: clamp(32px, 8vw, 50px);
+    }
+    h2 {
+        font-size: clamp(26px, 5vw, 40px);
+    }
+    h3 {
+        font-size: 24px;
+    }
+    p {
+        font-size: 18px;
+    }
+    .missionStatement {
+        font-size: 24px;
+    }
+    .card {
+        margin-bottom: 40px;
+        padding: 25px;
+    }
+    .cardGrid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .cardItem {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 28px;
+    }
+    h2 {
+        font-size: 24px;
+    }
+    h3 {
+        font-size: 20px;
+    }
+    p {
+        font-size: 16px;
+    }
+    .missionStatement {
+        font-size: 20px;
+    }
+    .card {
+        padding: 20px;
+    }
+}
