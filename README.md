@@ -59,3 +59,29 @@
 ```bash
 git clone https://github.com/your-username/MathJam.git
 cd MathJam
+
+### 2. Настройка бэкенда
+```bash
+cd backend
+python -m venv venv
+# Активация окружения:
+# Windows: venv\Scripts\activate
+# macOS/Linux: source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # заполните SECRET_KEY и другие переменные
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+
+### 3. Настройка фронтенда
+```bash
+cd ../frontend
+npm install
+cp .env.example .env   # при необходимости измените VITE_API_URL
+npm run dev
+
+### 4. Открыть в браузере
+```bash
+Фронтенд: http://localhost:5173
+Админка Django: http://localhost:8000/admin
+API (browsable): http://localhost:8000/api/courses/
