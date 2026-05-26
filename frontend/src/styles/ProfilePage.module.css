@@ -1,34 +1,538 @@
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 20px;
+/* Главный контейнер (.main) */
+.main {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  position: relative;
+  min-height: calc(100vh - var(--header-height));
 }
 
-.title {
-  font-size: 48px;
-  margin-bottom: 30px;
+/* Боковая панель */
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 250px;
+  min-height: 100%;
+  border-right: 2px solid #000;
+  padding: 20px;
+  background-color: #f55;
+  flex-shrink: 0;
+}
+
+.asideButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  border-radius: 10px;
+  padding: 10px 15px;
+  color: #000;
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none;
+  background-color: #f88;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.asideButton:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+/* Основной контент */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 20px;
+}
+
+/* Верхнее меню: поиск растягивается, аватар и никнейм справа */
+.upperMenu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.search {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  }
+
+.search form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  min-width: 0;
+}
+
+.inputField {
+  width: 100%;
+  height: 40px;
+  border: 2px solid #000;
+  border-radius: 25px;
+  padding: 0 40px 0 15px;
+  font-size: 16px;
+  background-color: white;
+  min-width: 0;
+  transition: all 0.2s ease;
+}
+
+.inputField:focus {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+
+.searchButton {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.searchButton:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.searchIcon {
+  width: 20px;
+  height: 20px;
+  fill: #000;
+}
+
+.avatar {
+  cursor: pointer;
+}
+
+.avatarImage {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #ccc;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.avatarImage:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Аватар-заглушка */
+.avatarPlaceholder {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #000;
+    border-radius: 50%;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.avatarPlaceholder:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.avatarPlus {
+    width: 30px;
+    height: 30px;
+    fill: white;
+}
+
+.nickname {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 36px;
+    font-weight: 700;
+    color: black;
+    transition: all 0.3s ease;
+    flex-shrink: 1;
+    flex: 1;
+}
+
+.nickname:hover {
+  transform: scale(1.05);
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+/* Data sections */
+.data {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+}
+
+.myAccount h3,
+.aboutMe h3,
+.myCourses h3 {
+  margin-bottom: 15px;
+  font-size: 28px;
   text-align: center;
 }
 
-.profileInfo {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  padding: 30px;
+.accountGrid,
+.aboutGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 600px;
+  max-width: 100%;
+  border: 2px solid #000;
+  border-radius: 25px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.field {
-  margin-bottom: 20px;
+.accountGrid:hover,
+.aboutGrid:hover {
+  transform: scale(1.01);
 }
 
-.label {
+.gridItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gridItem label {
   font-weight: bold;
-  font-size: 20px;
-  display: block;
-  margin-bottom: 5px;
+  font-size: 16px;
+  color: #000;
 }
 
-.value {
+.gridItem input,
+.gridItem select {
+  width: 100%;
+  padding: 10px;
+  padding-right: 35px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.gridItem input:focus,
+.gridItem select:focus {
+  border-color: #f55;
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 85, 85, 0.3);
+}
+
+/* Кнопка-карандаш */
+.pencilButton {
+  position: absolute;
+  top: 32px;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pencilButton:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.pencilButton::after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23808080' d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.pencilButton:hover::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23f55' d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/%3E%3C/svg%3E");
+}
+
+/* Убираем стандартную галку в форме буквы v*/
+.gridItem select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Для безопасности, удаляем стрелку в IE */
+.gridItem select::-ms-expand {
+    display: none;
+}
+
+/* Кнопка сохранения */
+.saveButton {
+  position: absolute;
+  top: 32px;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.saveButton:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* My Courses section */
+.myCourses {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.courseList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.courseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 2px solid #000;
+  border-radius: 15px;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.courseItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.courseName {
   font-size: 18px;
-  color: #333;
+  font-weight: 500;
+  color: #000;
+  flex: 1;
+  text-align: left;
+}
+
+.progressText {
+  margin: 0 20px;
+  color: #666;
+}
+
+.continueButton {
+  padding: 8px 20px;
+  border: 2px solid #000;
+  border-radius: 20px;
+  background-color: #f55;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.continueButton:hover {
+  background-color: #f88;
+  transform: scale(1.05);
+}
+
+.buyButtonContainer {
+  margin-top: 20px;
+}
+
+.buyCoursesButton {
+  padding: 12px 30px;
+  border: 2px solid #000;
+  border-radius: 25px;
+  background-color: #f55;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buyCoursesButton:hover {
+  background-color: #f88;
+  transform: scale(1.05);
+}
+
+.emptyMessage {
+  color: #666;
+  font-size: 18px;
+  margin: 20px 0;
+}
+
+/* Сообщения */
+.successMessage {
+  background-color: #d4edda;
+  border: 1px solid #28a745;
+  color: #155724;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.errorMessage {
+  background-color: #f8d7da;
+  border: 1px solid #dc3545;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Loading and error states */
+.loading, .error {
+  text-align: center;
+  padding: 50px;
+  font-size: 24px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .main {
+    flex-direction: column;
+  }
+
+  .aside {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    border-right: none;
+    border-bottom: 2px solid #000;
+  }
+
+  .mainContent {
+    padding: 15px;
+  }
+
+  .upperMenu {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .search {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .accountGrid,
+  .aboutGrid {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .courseItem {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .courseName {
+    text-align: center;
+  }
+
+  .progressText {
+    margin: 5px 0;
+  }
+}
+
+/* Если элементы не помещаются рядом, переносим поиск на новую строку */
+@media (max-width: 650px) {
+    .upperMenu {
+        flex-wrap: wrap;
+    }
+    .search {
+        width: 100%;
+        flex: auto;
+        order: 1; /* поиск под аватаром/ником */
+        margin-top: 10px;
+    }
+    .userInfo {
+        order: 0;
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* Узкие экраны, где аватар и ник могут переполняться – уменьшаем ещё */
+@media (max-width: 480px) {
+    .userInfo {
+        gap: 10px;
+    }
+    .nickname {
+        font-size: 20px;
+        max-width: 130px;
+    }
+    .avatarImage,
+    .avatarPlaceholder {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 380px) {
+    .nickname {
+        font-size: 18px;
+        max-width: 110px;
+    }
+    .userInfo {
+        gap: 8px;
+    }
 }

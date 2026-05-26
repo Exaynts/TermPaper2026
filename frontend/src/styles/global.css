@@ -34,7 +34,6 @@ h1, h2, h3, h4, p, span {
   flex: 1;
   min-height: calc(100vh - var(--header-height) - 200px);
   margin-top: var(--header-height);
-  padding: 20px 0 0;
 }
 
 /* Фоновое изображение для всех страниц */

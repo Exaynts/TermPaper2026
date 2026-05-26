@@ -107,6 +107,24 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const updateAvatar = async (file) => {
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        try {
+            const response = await api.patch('/auth/profile/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            setUser(response.data);
+            return { success: true, user: response.data };
+        } catch (error) {
+            console.error('Avatar upload failed:', error);
+            return { success: false, error: error.response?.data };
+        }
+    };
+
     const value = {
         user,
         loading,
@@ -115,9 +133,10 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         updateProfile,
+        updateAvatar,
     };
 
-    // ИСПРАВЛЕНО: убрана рекурсия
+    // Возвращаем контекст с полученными данными
     return (
         <AuthContext.Provider value={value}>
             {children}

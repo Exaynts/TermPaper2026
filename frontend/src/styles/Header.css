@@ -30,6 +30,7 @@
   height: 60px;
   object-fit: contain;
   border: none;
+  outline: none;
 }
 
 /* nav styles */
@@ -166,43 +167,9 @@
   .header {
     padding: 0 15px;
   }
-
-  .header .icon {
-    width: 80px;
-    height: 80px;
-  }
 }
 
 @media (max-width: 768px) {
-  .nav-list {
-    gap: clamp(2px, 1.5vw, 15px);
-  }
-
-  .nav a {
-    padding: clamp(2px, 0.8vw, 8px) clamp(4px, 1vw, 12px);
-    font-size: clamp(16px, 1.8vw, 20px);
-  }
-
-  .header {
-    padding: 0 12px;
-  }
-
-  .header .icon {
-    width: 70px;
-    height: 70px;
-  }
-
-  .dropdown-content {
-    min-width: 120px;
-  }
-
-  .dropdown-content a {
-    padding: 8px 10px;
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 576px) {
   .nav-list {
     gap: clamp(1px, 1vw, 10px);
   }
@@ -216,56 +183,38 @@
   .header {
     padding: 0 10px;
   }
+}
 
-  .header .icon {
-    width: 60px;
-    height: 60px;
+@media (max-width: 576px) {
+    .nav-list {
+        gap: 6px;
+    }
+
+  .nav a {
+    padding: 1px 2px;
+    font-size: 11px;
+    min-height: 28px;
   }
 }
 
+/* Дополнительная адаптация для очень узких экранов (менее 480px) */
 @media (max-width: 480px) {
-  .nav-list {
-    gap: clamp(0px, 0.8vw, 5px);
-  }
+    .nav-list {
+        gap: 2px;
+    }
 
   .nav a {
-    min-height: 32px;
-    border-radius: 4px;
-    padding: clamp(0px, 0.5vw, 5px) clamp(2px, 0.6vw, 8px);
-    font-size: clamp(12px, 1.4vw, 16px);
-  }
-
-  .header {
-    padding: 0 5px;
-  }
-
-  .header .icon {
-    width: 40px;
-    height: 40px;
+    padding: 1px;
+    font-size: 10px;
+    min-height: 28px;
   }
 }
 
 /* Extra small screens - further reduce padding */
 @media (max-width: 400px) {
-  .nav-list {
-    gap: 2px;
-  }
-
   .nav a {
-    padding: 2px 4px;
-    font-size: 12px;
-    min-height: 30px;
-  }
-
-  .header {
-    padding: 0 3px;
-  }
-}
-
-@media (max-width: 360px) {
-  .nav a {
-    padding: 1px 2px;
-    font-size: 11px;
+    padding: 1px;
+    font-size: 9px;
     min-height: 28px;
   }
 }
