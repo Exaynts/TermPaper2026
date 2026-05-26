@@ -90,3 +90,51 @@ npm run dev
 Админка Django: http://localhost:8000/admin
 API (browsable): http://localhost:8000/api/courses/
 ```
+👥 API-эндпоинты (основные)
+Метод	Эндпоинт	Описание
+POST	/api/auth/register/	Регистрация
+POST	/api/auth/login/	Получение JWT (access/refresh)
+POST	/api/auth/token/refresh/	Обновление access-токена
+GET/PATCH	/api/auth/profile/	Профиль пользователя
+GET	/api/courses/	Список курсов
+GET	/api/courses/{id}/	Детали курса (с уроками)
+POST	/api/courses/{id}/purchase/	Покупка курса
+POST	/api/courses/{id}/save/	Сохранить в избранное
+POST	/api/courses/{id}/move_to_bin/	Переместить в корзину
+POST	/api/courses/{id}/restore_from_bin/	Восстановить из корзины
+POST	/api/progress/mark/	Отметить урок пройденным
+Полная документация API доступна по адресу /api/docs/ (при подключении drf-yasg или Swagger).
+
+### 🧪 Тестирование
+Бэкенд (pytest)
+bash
+cd backend
+pytest
+Фронтенд (Jest + React Testing Library)
+bash
+cd frontend
+npm test
+### 👨‍💻 Автор
+Студент группы ПИЖ-б-о-24-1
+Козлов Евгений Александрович
+Направление подготовки: 09.03.04 «Программная инженерия»
+Профиль: «Разработка и сопровождение программного обеспечения»
+
+### 📄 Лицензия
+Проект создан в учебных целях. Не для коммерческого использования.
+
+### 🔄 Планы по развитию
+Интеграция платёжной системы
+
+WebSocket-уведомления (Django Channels)
+
+Система комментариев к урокам
+
+Сертификаты об окончании курса
+
+Адаптивная вёрстка под мобильные устройства
+
+
+---
+
+Вы можете скопировать этот текст в файл `README.md` в корне вашего проекта (или в `backend/`, если решите оставить монорепозиторий). При необходимости измените ссылки, имя пользователя GitHub и другие детали.
