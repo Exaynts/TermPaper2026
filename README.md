@@ -113,9 +113,11 @@ npm run dev
 - Бэкенд (pytest)
 ```bash
 cd backend  
-pytest  
-Фронтенд (Jest + React Testing Library)  
-bash  
+pytest
+```
+```bash
+- Фронтенд (Jest + React Testing Library)  
+```bash  
 cd frontend  
 npm test
 ```
