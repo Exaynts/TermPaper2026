@@ -39,7 +39,7 @@ const CourseCard = ({ course }) => {
                 </div>
                 <div className={styles.cardBody}>
                     <p className={styles.description}>
-                        {course.description || 'Нет описания'}
+                        {course.description || 'No description'}
                     </p>
                     {course.image && (
                         <div className={styles.imageWrapper}>
@@ -51,10 +51,10 @@ const CourseCard = ({ course }) => {
                     <div className={styles.footerLeft}>
                         <span className={styles.rating}>★ {formattedRating}</span>
                         {course.author_name && (
-                            <span className={styles.author}>Автор: {course.author_name}</span>
+                            <span className={styles.author}>Author: {course.author_name}</span>
                         )}
                     </div>
-                    <button className={styles.buyButton}>Купить</button>
+                    <button className={styles.buyButton}>Buy</button>
                 </div>
             </Link>
         </div>

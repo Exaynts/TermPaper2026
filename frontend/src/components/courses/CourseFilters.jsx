@@ -17,7 +17,7 @@ const CourseFilters = ({
                 const categoriesData = response.data.results || response.data;
                 setCategories(Array.isArray(categoriesData) ? categoriesData : []);
             } catch (error) {
-                console.error('Ошибка загрузки категорий:', error);
+                console.error('Error loading categories:', error);
                 setCategories([]);
             }
         };
@@ -59,10 +59,10 @@ const CourseFilters = ({
 
     return (
         <aside className={styles.filtersSidebar}>
-            <h2 className={styles.title}>Фильтры</h2>
+            <h2 className={styles.title}>Filters</h2>
 
             <div className={styles.filterGroup}>
-                <h3 className={styles.groupTitle}>Категория</h3>
+                <h3 className={styles.groupTitle}>Category</h3>
                 <div className={styles.checkboxGroup}>
                     {categories.map(cat => (
                         <label key={cat.category_id} className={styles.checkboxLabel}>
@@ -74,18 +74,18 @@ const CourseFilters = ({
                             {cat.title}
                         </label>
                     ))}
-                    {categories.length === 0 && <span className={styles.hint}>Нет категорий</span>}
+                    {categories.length === 0 && <span className={styles.hint}>No categories</span>}
                 </div>
             </div>
 
             <hr className={styles.divider} />
 
             <div className={styles.filterGroup}>
-                <h3 className={styles.groupTitle}>Цена (₽)</h3>
+                <h3 className={styles.groupTitle}>Price (₽)</h3>
                 <div className={styles.rangeGroup}>
                     <input
                         type="text"
-                        placeholder="от"
+                        placeholder="from"
                         value={priceMin}
                         onChange={handlePriceMin}
                         className={styles.rangeInput}
@@ -94,7 +94,7 @@ const CourseFilters = ({
                     <span className={styles.rangeSeparator}>—</span>
                     <input
                         type="text"
-                        placeholder="до"
+                        placeholder="to"
                         value={priceMax}
                         onChange={handlePriceMax}
                         className={styles.rangeInput}
@@ -112,18 +112,18 @@ const CourseFilters = ({
                         checked={hasDiscount}
                         onChange={(e) => onHasDiscountChange(e.target.checked)}
                     />
-                    Только со скидкой
+                    Only with discount
                 </label>
             </div>
 
             <hr className={styles.divider} />
 
             <div className={styles.filterGroup}>
-                <h3 className={styles.groupTitle}>Рейтинг (★)</h3>
+                <h3 className={styles.groupTitle}>Rating (★)</h3>
                 <div className={styles.rangeGroup}>
                     <input
                         type="text"
-                        placeholder="от"
+                        placeholder="from"
                         value={ratingMin}
                         onChange={handleRatingMin}
                         className={styles.rangeInput}
@@ -132,7 +132,7 @@ const CourseFilters = ({
                     <span className={styles.rangeSeparator}>—</span>
                     <input
                         type="text"
-                        placeholder="до"
+                        placeholder="to"
                         value={ratingMax}
                         onChange={handleRatingMax}
                         className={styles.rangeInput}
@@ -144,7 +144,7 @@ const CourseFilters = ({
             <hr className={styles.divider} />
 
             <div className={styles.filterGroup}>
-                <h3 className={styles.groupTitle}>Сортировка</h3>
+                <h3 className={styles.groupTitle}>Sort by</h3>
                 <div className={styles.radioGroup}>
                     <label className={styles.radioLabel}>
                         <input
@@ -154,7 +154,7 @@ const CourseFilters = ({
                             checked={sortBy === 'price_asc'}
                             onChange={(e) => onSortChange(e.target.value)}
                         />
-                        Самые дешёвые
+                        Cheapest
                     </label>
                     <label className={styles.radioLabel}>
                         <input
@@ -164,7 +164,7 @@ const CourseFilters = ({
                             checked={sortBy === 'price_desc'}
                             onChange={(e) => onSortChange(e.target.value)}
                         />
-                        Самые дорогие
+                        Most expensive
                     </label>
                     <label className={styles.radioLabel}>
                         <input
@@ -174,7 +174,7 @@ const CourseFilters = ({
                             checked={sortBy === 'rating'}
                             onChange={(e) => onSortChange(e.target.value)}
                         />
-                        По рейтингу
+                        By rating
                     </label>
                     <label className={styles.radioLabel}>
                         <input
@@ -184,14 +184,14 @@ const CourseFilters = ({
                             checked={sortBy === 'newest'}
                             onChange={(e) => onSortChange(e.target.value)}
                         />
-                        По новизне
+                        Newest
                     </label>
                 </div>
             </div>
 
             <div className={styles.buttonsGroup}>
-                <button onClick={onResetFilters} className={styles.resetBtn}>Сбросить</button>
-                <button onClick={onApplyFilters} className={styles.applyBtn}>Применить</button>
+                <button onClick={onResetFilters} className={styles.resetBtn}>Reset</button>
+                <button onClick={onApplyFilters} className={styles.applyBtn}>Apply</button>
             </div>
         </aside>
     );

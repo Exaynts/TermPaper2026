@@ -10,6 +10,10 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['category_id', 'title', 'slug']
 
+class LessonDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lesson
+        fields = ['lesson_id', 'order', 'name', 'text', 'description', 'image', 'video', 'task_file']
 
 class CourseListSerializer(serializers.ModelSerializer):
     category_title = serializers.CharField(source='category.title', read_only=True)
@@ -36,13 +40,14 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     author = serializers.StringRelatedField(source='created_by', read_only=True)
     discounted_price = serializers.SerializerMethodField()
+    lessons = LessonDetailSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
         fields = [
             'course_id', 'name', 'price', 'discount', 'discounted_price',
             'rating', 'status', 'description', 'image', 'created_at',
-            'category', 'author'
+            'category', 'author', 'lessons'                       # ← добавить 'lessons'
         ]
 
     def get_discounted_price(self, obj):
@@ -64,12 +69,6 @@ class LessonListSerializer(serializers.ModelSerializer):
 
     def get_has_task(self, obj):
         return bool(obj.task_file)
-
-
-class LessonDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Lesson
-        fields = ['lesson_id', 'order', 'name', 'text', 'description', 'image', 'video', 'task_file']
 
 
 class CourseCreateUpdateSerializer(serializers.ModelSerializer):
