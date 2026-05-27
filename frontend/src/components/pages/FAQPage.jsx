@@ -81,7 +81,28 @@ const FAQPage = () => {
                     answer: 'Yes! We regularly host free open lesson webinars on the most relevant topics. You can sign up for them on the main page of the site. Also, for some courses, the first paid lesson is available as a trial with the possibility of a refund if you don\'t like it.'
                 }
             ]
+        },
+        {
+            category: 'issues',
+            id: 'site-issues',
+            title: 'Site Issues',
+            icon: '⚠️',
+            items: [
+                {
+                    question: 'Why can\'t I access the website?',
+                    answer: 'Check your internet connection, then try refreshing the page. If the problem persists, please contact support.'
+                },
+                {
+                    question: 'Is there planned maintenance?',
+                    answer: 'We perform maintenance occasionally, announced on our Telegram channel.'
+                },
+                {
+                    question: 'What should I do if the course video doesn\'t load?',
+                    answer: 'Clear your browser cache, try a different browser, or contact support with a screenshot.'
+                }
+            ]
         }
+
     ];
 
     // Инициализация состояний открытых секций и вопросов
@@ -199,6 +220,12 @@ const FAQPage = () => {
                     onClick={() => handleCategoryClick('results')}
                 >
                     Guarantees and Results
+                </button>
+                <button
+                    className={`${styles.categoryBtn} ${activeCategory === 'issues' ? styles.active : ''}`}
+                    onClick={() => handleCategoryClick('issues')}
+                >
+                    Site Issues
                 </button>
             </div>
 

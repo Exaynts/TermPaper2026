@@ -10,9 +10,9 @@ const Footer = () => {
                 <div className="footer-section">
                     <h2>Help</h2>
                     <ul>
+                        <li><Link to="/faq">Is the site down?</Link></li>
                         <li><Link to="/faq">FAQ</Link></li>
                         <li><Link to="/terms">Terms and Conditions</Link></li>
-                        <li><a href="mailto:info@mathjam.com">Support Email</a></li>
                     </ul>
                 </div>
 
