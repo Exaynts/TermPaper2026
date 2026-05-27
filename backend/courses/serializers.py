@@ -21,12 +21,12 @@ class CourseListSerializer(serializers.ModelSerializer):
         model = Course
         fields = [
             'course_id', 'name', 'price', 'discount', 'discounted_price',
-            'rating', 'status', 'image', 'category_title', 'category_slug',
+            'rating', 'status', 'image', 'description', 'category_title', 'category_slug',
             'author_name', 'created_at'
         ]
 
-
     def get_discounted_price(self, obj):
+        """Вычислить цену со скидкой"""
         if obj.discount and obj.discount > 0:
             return float(obj.price) * (1 - obj.discount / 100)
         return float(obj.price)

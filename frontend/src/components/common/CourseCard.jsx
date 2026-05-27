@@ -6,21 +6,35 @@ const CourseCard = ({ course }) => {
     const discountedPrice = course.discounted_price || course.price;
     const hasDiscount = course.discount && course.discount > 0;
 
+    // форматировать цену (2 знака после запятой, убрать лишние нули)
+    const formatPrice = (price) => {
+        const num = Number(price);
+        return num % 1 === 0 ? num.toFixed(0) : num.toFixed(2);
+    };
+
+    const formattedPrice = formatPrice(course.price);
+    const formattedDiscountedPrice = formatPrice(discountedPrice);
+    const formattedRating = Number(course.rating || 0).toFixed(1);
+
     return (
         <div className={styles.courseCard}>
             <Link to={`/courses/${course.course_id}`} className={styles.cardLink}>
                 <div className={styles.cardHeader}>
                     <h3 className={styles.courseName}>{course.name}</h3>
                     <div className={styles.priceInfo}>
-                        {hasDiscount && (
-                            <span className={styles.discountBadge}>-{course.discount}%</span>
+                        {hasDiscount ? (
+                            <>
+                                <span className={styles.discountBadge}>-{course.discount}%</span>
+                                <div className={styles.price}>
+                                    <span className={styles.oldPrice}>{formattedPrice}₽</span>
+                                    <span className={styles.currentPrice}>{formattedDiscountedPrice}₽</span>
+                                </div>
+                            </>
+                        ) : (
+                            <div className={styles.price}>
+                                <span className={styles.currentPrice}>{formattedPrice}₽</span>
+                            </div>
                         )}
-                        <div className={styles.price}>
-                            {hasDiscount && (
-                                <span className={styles.oldPrice}>{course.price}₽</span>
-                            )}
-                            <span className={styles.currentPrice}>{discountedPrice}₽</span>
-                        </div>
                     </div>
                 </div>
                 <div className={styles.cardBody}>
@@ -34,7 +48,12 @@ const CourseCard = ({ course }) => {
                     )}
                 </div>
                 <div className={styles.cardFooter}>
-                    <span className={styles.rating}>★ {course.rating || 0}</span>
+                    <div className={styles.footerLeft}>
+                        <span className={styles.rating}>★ {formattedRating}</span>
+                        {course.author_name && (
+                            <span className={styles.author}>Автор: {course.author_name}</span>
+                        )}
+                    </div>
                     <button className={styles.buyButton}>Купить</button>
                 </div>
             </Link>
