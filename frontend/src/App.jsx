@@ -21,6 +21,7 @@ import AboutUsPage from './components/pages/AboutUsPage';
 import ChangePasswordPage from './components/pages/ChangePasswordPage';
 import CourseDetailPage from './components/pages/CourseDetailPage';
 import CourseListPage from './components/pages/CourseListPage';
+import FAQPage from './components/pages/FAQPage';
 import LoginPage from './components/pages/LoginPage';
 import MyCoursesPage from './components/pages/MyCoursesPage';
 import ProfilePage from './components/pages/ProfilePage';
@@ -75,12 +76,13 @@ function AppRoutes() {
     return (
         <Routes>
             <Route path="/" element={<PageWrapper><HomePage /></PageWrapper>} />
+            <Route path="/aboutUs" element={<PageWrapper><AboutUsPage /></PageWrapper>} />
             <Route path="/courses" element={<PageWrapper><CourseListPage /></PageWrapper>} />
             <Route path="/courses/:id" element={<PageWrapper><CourseDetailPage /></PageWrapper>} />
+            <Route path="/faq" element={<PageWrapper><FAQPage /></PageWrapper>} />
             <Route path="/login" element={<PageWrapper><LoginPage /></PageWrapper>} />
             <Route path="/register" element={<PageWrapper><RegisterPage /></PageWrapper>} />
 
-            <Route path="/aboutUs" element={<PageWrapper><AboutUsPage /></PageWrapper>} />
             <Route path="/profile" element={
                 <ProtectedRoute>
                     <PageWrapper><ProfilePage /></PageWrapper>
