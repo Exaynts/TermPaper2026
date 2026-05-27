@@ -27,6 +27,7 @@ import MyCoursesPage from './components/pages/MyCoursesPage';
 import ProfilePage from './components/pages/ProfilePage';
 import RegisterPage from './components/pages/RegisterPage';
 import SavedCoursesPage from './components/pages/SavedCoursesPage';
+import TermsAndConditionsPage from './components/pages/TermsAndConditionsPage';
 
 // Компонент-обёртка для страниц с Header и Footer
 const PageWrapper = ({ children }) => {
@@ -82,6 +83,7 @@ function AppRoutes() {
             <Route path="/faq" element={<PageWrapper><FAQPage /></PageWrapper>} />
             <Route path="/login" element={<PageWrapper><LoginPage /></PageWrapper>} />
             <Route path="/register" element={<PageWrapper><RegisterPage /></PageWrapper>} />
+            <Route path="/terms" element={<PageWrapper><TermsAndConditionsPage /></PageWrapper>} />
 
             <Route path="/profile" element={
                 <ProtectedRoute>
