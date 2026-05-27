@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import styles from '../../styles/ChangePasswordPage.module.css';
+import styles from '../../styles/pages/ChangePasswordPage.module.css';
 
 const ChangePasswordPage = () => {
     const [oldPassword, setOldPassword] = useState('');

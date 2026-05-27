@@ -1,0 +1,36 @@
+.pageContainer {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+.content {
+    flex: 1;
+}
+.searchBar {
+    margin-bottom: 20px;
+}
+.searchInput {
+    width: 300px;
+    padding: 8px 12px;
+    border: 2px solid #000;
+    border-radius: 25px;
+}
+.searchBtn {
+    margin-left: 10px;
+    background: #f55;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+}
+.courseList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.loading, .error {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2rem;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../styles/MyCoursesPage.module.css';
+import styles from '../../styles/pages/MyCoursesPage.module.css';
 
 const MyCoursesPage = () => {
     // Здесь будет загрузка реальных данных

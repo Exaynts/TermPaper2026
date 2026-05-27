@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import styles from '../../styles/CourseDetailPage.module.css';
+import styles from '../../styles/pages/CourseDetailPage.module.css';
 
 const CourseDetailPage = () => {
     const { id } = useParams();

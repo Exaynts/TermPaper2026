@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
-// Глобальные стили (только глобальные и компоненты шапки/подвала)
+// Глобальные стили
 import './index.css';
 import './styles/global.css';
 import './styles/Header.css';
@@ -11,6 +11,9 @@ import './styles/Footer.css';
 // Компоненты
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
+import CourseCard from './components/common/CourseCard';
+
+import CourseFilters from './components/courses/CourseFilters';
 
 // Страницы
 import HomePage from './components/pages/HomePage';

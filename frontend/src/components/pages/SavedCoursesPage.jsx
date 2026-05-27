@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../styles/SavedCoursesPage.module.css';
+import styles from '../../styles/pages/SavedCoursesPage.module.css';
 
 const SavedCoursesPage = () => {
     const savedCourses = []; // временно пусто
