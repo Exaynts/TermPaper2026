@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../services/api';
 import CourseCard from '../../components/common/CourseCard';
 import CourseFilters from '../../components/courses/CourseFilters';
@@ -9,47 +9,112 @@ const CourseListPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filters, setFilters] = useState({});
-    const [sort, setSort] = useState('');
 
-    // Обработчики фильтров
-    const handleFilterChange = (newFilters) => {
-        setFilters(newFilters);
-    };
+    // Состояния фильтров – значения, которые видит пользователь в форме
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [priceMin, setPriceMin] = useState('');
+    const [priceMax, setPriceMax] = useState('');
+    const [hasDiscount, setHasDiscount] = useState(false);
+    const [ratingMin, setRatingMin] = useState('');
+    const [ratingMax, setRatingMax] = useState('');
+    const [sortBy, setSortBy] = useState('');
 
-    const handleSortChange = (newSort) => {
-        setSort(newSort);
-    };
+    // Обработчики изменений фильтров (обновляют только состояние)
+    const handleCategoryChange = useCallback((categoryId) => {
+        setSelectedCategories(prev =>
+            prev.includes(categoryId) ? prev.filter(id => id !== categoryId) : [...prev, categoryId]
+        );
+    }, []);
 
-    // Запрашивать курсы при изменении searchTerm, filters или sort
-    useEffect(() => {
-        fetchCourses();
-    }, [searchTerm, filters, sort]);
+    const handlePriceMinChange = useCallback((value) => setPriceMin(value), []);
+    const handlePriceMaxChange = useCallback((value) => setPriceMax(value), []);
+    const handleHasDiscountChange = useCallback((checked) => setHasDiscount(checked), []);
+    const handleRatingMinChange = useCallback((value) => setRatingMin(value), []);
+    const handleRatingMaxChange = useCallback((value) => setRatingMax(value), []);
+    const handleSortChange = useCallback((value) => setSortBy(value), []);
 
-    const fetchCourses = async () => {
+    const resetFilters = useCallback(() => {
+        setSelectedCategories([]);
+        setPriceMin('');
+        setPriceMax('');
+        setHasDiscount(false);
+        setRatingMin('');
+        setRatingMax('');
+        setSortBy('');
+        // После сброса сразу загружаем курсы без фильтров
+        fetchCoursesWithFilters({});
+    }, []);
+
+    // Основная функция загрузки курсов с переданными параметрами фильтрации
+    const fetchCoursesWithFilters = useCallback(async (filterParams) => {
         setLoading(true);
         try {
             let url = '/courses/';
             const params = new URLSearchParams();
+
             if (searchTerm) params.append('search', searchTerm);
-            // Позже здесь будут параметры фильтрации и сортировки
-            // if (filters.price_min) params.append('price_min', filters.price_min);
-            // if (sort) params.append('ordering', sort === 'price_asc' ? 'price' : sort === 'price_desc' ? '-price' : sort === 'rating' ? '-rating' : '-created_at');
+            if (filterParams.price_min) params.append('price_min', filterParams.price_min);
+            if (filterParams.price_max) params.append('price_max', filterParams.price_max);
+            if (filterParams.has_discount) params.append('has_discount', 'true');
+            if (filterParams.rating_min) params.append('rating_min', filterParams.rating_min);
+            if (filterParams.rating_max) params.append('rating_max', filterParams.rating_max);
+            if (filterParams.categories && filterParams.categories.length) {
+                params.append('categories', filterParams.categories.join(','));
+            }
+
+            let ordering = '';
+            if (filterParams.sort === 'price_asc') ordering = 'price';
+            else if (filterParams.sort === 'price_desc') ordering = '-price';
+            else if (filterParams.sort === 'rating') ordering = '-rating';
+            else if (filterParams.sort === 'newest') ordering = '-created_at';
+            if (ordering) params.append('ordering', ordering);
+
             if (params.toString()) url += `?${params.toString()}`;
             const response = await api.get(url);
-            setCourses(response.data.results || response.data);
+            const data = response.data.results || response.data;
+            setCourses(Array.isArray(data) ? data : []);
             setError(null);
         } catch (err) {
             console.error(err);
             setError('Не удалось загрузить курсы');
+            setCourses([]);
         } finally {
             setLoading(false);
         }
-    };
+    }, [searchTerm]);
+
+    // Применение фильтров – собираем текущие значения из состояния и загружаем курсы
+    const applyFilters = useCallback(() => {
+        const filters = {
+            categories: selectedCategories,
+            price_min: priceMin ? Number(priceMin) : null,
+            price_max: priceMax ? Number(priceMax) : null,
+            has_discount: hasDiscount,
+            rating_min: ratingMin ? Number(ratingMin) : null,
+            rating_max: ratingMax ? Number(ratingMax) : null,
+            sort: sortBy,
+        };
+        fetchCoursesWithFilters(filters);
+    }, [selectedCategories, priceMin, priceMax, hasDiscount, ratingMin, ratingMax, sortBy, fetchCoursesWithFilters]);
+
+    // Загрузка курсов при изменении поиска (мгновенно)
+    useEffect(() => {
+        // При изменении поиска сбрасываем фильтры (опционально) или просто загружаем с текущими фильтрами
+        const currentFilters = {
+            categories: selectedCategories,
+            price_min: priceMin ? Number(priceMin) : null,
+            price_max: priceMax ? Number(priceMax) : null,
+            has_discount: hasDiscount,
+            rating_min: ratingMin ? Number(ratingMin) : null,
+            rating_max: ratingMax ? Number(ratingMax) : null,
+            sort: sortBy,
+        };
+        fetchCoursesWithFilters(currentFilters);
+    }, [searchTerm]); // только поиск вызывает автообновление
 
     const handleSearch = (e) => {
         e.preventDefault();
-        fetchCourses();
+        // поиск уже обновляется через useEffect
     };
 
     if (loading) return <div className={styles.loading}>Загрузка...</div>;
@@ -58,8 +123,22 @@ const CourseListPage = () => {
     return (
         <div className={styles.pageContainer}>
             <CourseFilters
-                onFilterChange={handleFilterChange}
+                selectedCategories={selectedCategories}
+                priceMin={priceMin}
+                priceMax={priceMax}
+                hasDiscount={hasDiscount}
+                ratingMin={ratingMin}
+                ratingMax={ratingMax}
+                sortBy={sortBy}
+                onCategoryChange={handleCategoryChange}
+                onPriceMinChange={handlePriceMinChange}
+                onPriceMaxChange={handlePriceMaxChange}
+                onHasDiscountChange={handleHasDiscountChange}
+                onRatingMinChange={handleRatingMinChange}
+                onRatingMaxChange={handleRatingMaxChange}
                 onSortChange={handleSortChange}
+                onResetFilters={resetFilters}
+                onApplyFilters={applyFilters}
             />
             <div className={styles.content}>
                 <div className={styles.searchBar}>

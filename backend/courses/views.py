@@ -1,6 +1,7 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import filters, viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from .models import Category, Course, Lesson, SavedCourse, RecycleBinCourse, PurchasedCourse, LessonProgress
 from .serializers import (
@@ -10,6 +11,7 @@ from .serializers import (
     PurchasedCourseSerializer, LessonProgressSerializer, LessonProgressCreateSerializer
 )
 from .permissions import IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly
+from .filters import CourseFilter
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -29,6 +31,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     - DELETE /api/courses/{id}/ – удаление (только автор или админ)
     """
     permission_classes = [IsAuthorOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = CourseFilter
+    search_fields = ['name', 'description']
+    ordering_fields = ['price', 'rating', 'created_at']
+    ordering = ['-created_at']
 
     def get_queryset(self):
         """Для списка – только опубликованные курсы. Для детального – все (проверка прав позже)"""
@@ -45,10 +52,10 @@ class CourseViewSet(viewsets.ModelViewSet):
         return CourseDetailSerializer
 
     def perform_create(self, serializer):
-        """Автоматически привязываем автора при создании курса"""
+        """Привязывать автора при создании курса автоматически"""
         serializer.save(created_by=self.request.user)
 
-    # ========== Дополнительные actions ==========
+    # Дополнительные actions
 
     @action(detail=True, methods=['post'])
     def save(self, request, pk=None):
