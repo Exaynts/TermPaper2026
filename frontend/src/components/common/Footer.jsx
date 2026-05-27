@@ -26,7 +26,7 @@ const Footer = () => {
                     <ul>
                         <li><Link to="/">MathJam</Link></li>
                         <li><Link to="/courses">Courses</Link></li>
-                        <li><Link to="/about">About us</Link></li>
+                        <li><Link to="/aboutUs">About us</Link></li>
                     </ul>
                 </div>
                 <div className="footer-section">
@@ -40,11 +40,13 @@ const Footer = () => {
             <div className="footer-bottom">
                 <p>&copy; 2026 MathJam. All rights deserved.</p>
             </div>
+            {/*
             <div className="language-switcher">
                 <button className="language-btn" onClick={toggleLanguage}>
                     <p>RU/EN</p>
                 </button>
             </div>
+            */}
         </footer>
     );
 };
