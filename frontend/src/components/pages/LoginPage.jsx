@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import styles from '../../styles/LoginPage.module.css';
 
 const LoginPage = () => {
-    const [email, setEmail] = useState('');
+    const [usernameOrEmail, setUsernameOrEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ const LoginPage = () => {
         e.preventDefault();
         setError('');
         setLoading(true);
-        const result = await login(email, password);
+        const result = await login(usernameOrEmail, password);
         setLoading(false);
         if (result.success) {
             navigate('/');
@@ -41,15 +41,15 @@ const LoginPage = () => {
                 {error && <div className={styles.errorMessage}>{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <div className={styles.formGroup}>
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="usernameOrEmail">Username or Email</label>
                         <input
-                            type="email"
-                            id="email"
-                            name="email"
+                            type="text"
+                            id="usernameOrEmail"
+                            name="usernameOrEmail"
                             className={styles.textInput}
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter your username or email"
+                            value={usernameOrEmail}
+                            onChange={(e) => setUsernameOrEmail(e.target.value)}
                             required
                         />
                     </div>
@@ -67,7 +67,7 @@ const LoginPage = () => {
                             required
                         />
                     </div>
-
+                    {/* // Если пригодится смена пароля или логина
                     <div className={styles.forgotLinks}>
                         <a href="#" className={styles.forgotLink} onClick={showForgotPassword}>
                             forgot password?
@@ -76,7 +76,7 @@ const LoginPage = () => {
                             forgot login?
                         </a>
                     </div>
-
+                    */}
                     <button type="submit" className={styles.signInButton} disabled={loading}>
                         {loading ? 'Signing in...' : 'Sign in'}
                     </button>

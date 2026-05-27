@@ -3,23 +3,20 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
 class EmailBackend(ModelBackend):
-    """Аутентификация по email вместо username"""
+    """Аутентификация по email (только если передан email)"""
 
     def authenticate(self, request, username=None, password=None, **kwargs):
-        # username в данном случае содержит email
         if username is None:
             return None
 
-        try:
-            # Ищем пользователя по email
-            user = User.objects.get(email=username)
-        except User.DoesNotExist:
-            return None
-
-        # Проверяем пароль
-        if user.check_password(password) and self.user_can_authenticate(user):
-            return user
-
+        # Проверить: это email? (содержит @ и .)
+        if '@' in username and '.' in username:
+            try:
+                user = User.objects.get(email=username)
+                if user.check_password(password) and self.user_can_authenticate(user):
+                    return user
+            except User.DoesNotExist:
+                return None
+        # Если это не email, возвратить None и дать обработать логин
         return None

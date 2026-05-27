@@ -4,6 +4,7 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
+
 User = get_user_model()
 
 
@@ -41,27 +42,27 @@ class RegisterSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        """Проверка совпадения паролей"""
+        """Проверить совпадения паролей"""
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Пароли не совпадают"})
         return attrs
 
     def validate_email(self, value):
-        """Проверка уникальности email"""
+        """Проверить уникальности email"""
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("Пользователь с таким email уже существует")
         return value
 
     def validate_nickname(self, value):
-        """Проверка уникальности никнейма"""
+        """Проверить уникальности никнейма"""
         if User.objects.filter(nickname=value).exists():
             raise serializers.ValidationError("Пользователь с таким никнеймом уже существует")
         return value
 
     def create(self, validated_data):
-        """Создание пользователя с хешированием пароля"""
+        """Создать пользователя с хешированием пароля"""
         validated_data.pop('password2')
-        # Устанавливаем username на основе nickname (обязательное поле)
+        # Установить username на основе nickname (обязательное поле)
         validated_data['username'] = validated_data.get('nickname')
         user = User.objects.create_user(**validated_data)
         return user
@@ -92,22 +93,34 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
 
 class CustomTokenObtainPairSerializer(serializers.Serializer):
-    """Сериализатор для входа по email"""
-    email = serializers.EmailField()
+    username_or_email = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
-        email = attrs.get('email')
+        username_or_email = attrs.get('username_or_email')
         password = attrs.get('password')
 
-        print(f"DEBUG: Попытка входа с email={email}, password={password}")
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        user = None
 
-        user = authenticate(request=self.context.get('request'), username=email, password=password)
+        # Поиск по email (если похоже на email)
+        if '@' in username_or_email and '.' in username_or_email:
+            try:
+                user = User.objects.get(email=username_or_email)
+            except User.DoesNotExist:
+                pass
 
-        print(f"DEBUG: Результат authenticate: {user}")
-
+        # Если не найден по email, ищем по username
         if not user:
-            raise serializers.ValidationError('Неверный email или пароль')
+            try:
+                user = User.objects.get(username=username_or_email)
+            except User.DoesNotExist:
+                pass
+
+        # Проверить пароль
+        if not user or not user.check_password(password):
+            raise serializers.ValidationError('Invalid username/email or password')
 
         refresh = RefreshToken.for_user(user)
         return {

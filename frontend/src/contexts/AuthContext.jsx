@@ -51,20 +51,19 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     // Функция входа
-    const login = async (email, password) => {
+    const login = async (usernameOrEmail, password) => {
         try {
-            const response = await api.post('/auth/login/', { email, password });
+            const response = await api.post('/auth/login/', { username_or_email: usernameOrEmail, password });
             const { access, refresh } = response.data;
             localStorage.setItem('access_token', access);
             localStorage.setItem('refresh_token', refresh);
 
-            // Загружаем профиль
             const userResponse = await api.get('/auth/profile/');
             setUser(userResponse.data);
             setIsAuthenticated(true);
             return { success: true };
         } catch (error) {
-            const message = error.response?.data?.non_field_errors?.[0] || 'Неверный email или пароль';
+            const message = error.response?.data?.non_field_errors?.[0] || 'Invalid username/email or password';
             return { success: false, error: message };
         }
     };
