@@ -4,12 +4,16 @@ import CourseCard from '../../components/common/CourseCard';
 import CourseFilters from '../../components/courses/CourseFilters';
 import styles from '../../styles/pages/CourseListPage.module.css';
 
+// Константа количества курсов на страницу (должна совпадать с PAGE_SIZE в config/settings.py)
+const PAGE_SIZE = 5;
+
 const CourseListPage = () => {
     const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [hasMore, setHasMore] = useState(false);
+    const [nextPage, setNextPage] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [activeSearchTerm, setActiveSearchTerm] = useState(''); // только для отображения (не используется в запросах)
 
     // Состояния фильтров
     const [selectedCategories, setSelectedCategories] = useState([]);
@@ -20,58 +24,68 @@ const CourseListPage = () => {
     const [ratingMax, setRatingMax] = useState('');
     const [sortBy, setSortBy] = useState('');
 
-    // Функция загрузки курсов с параметрами (принимает все актуальные значения)
-    const loadCourses = useCallback(async (search, categories, priceMinVal, priceMaxVal, hasDiscountVal, ratingMinVal, ratingMaxVal, sort) => {
+    // Сброс пагинации и списка курсов
+    const resetPagination = () => {
+        setCourses([]);
+        setHasMore(false);
+        setNextPage(null);
+    };
+
+    // Функция загрузки курсов с возможностью добавить новые данные к существующим
+    const loadCourses = useCallback(async (page = 1, append = false) => {
         setLoading(true);
         try {
             let url = '/courses/';
             const params = new URLSearchParams();
 
-            if (search) params.append('search', search);
-            if (priceMinVal) params.append('price_min', priceMinVal);
-            if (priceMaxVal) params.append('price_max', priceMaxVal);
-            if (hasDiscountVal) params.append('has_discount', 'true');
-            if (ratingMinVal) params.append('rating_min', ratingMinVal);
-            if (ratingMaxVal) params.append('rating_max', ratingMaxVal);
-            if (categories && categories.length) {
-                params.append('categories', categories.join(','));
+            if (searchTerm) params.append('search', searchTerm);
+            if (priceMin) params.append('price_min', priceMin);
+            if (priceMax) params.append('price_max', priceMax);
+            if (hasDiscount) params.append('has_discount', 'true');
+            if (ratingMin) params.append('rating_min', ratingMin);
+            if (ratingMax) params.append('rating_max', ratingMax);
+            if (selectedCategories.length) {
+                params.append('categories', selectedCategories.join(','));
             }
 
             let ordering = '';
-            if (sort === 'price_asc') ordering = 'price';
-            else if (sort === 'price_desc') ordering = '-price';
-            else if (sort === 'rating') ordering = '-rating';
-            else if (sort === 'newest') ordering = '-created_at';
+            if (sortBy === 'price_asc') ordering = 'price';
+            else if (sortBy === 'price_desc') ordering = '-price';
+            else if (sortBy === 'rating') ordering = '-rating';
+            else if (sortBy === 'newest') ordering = '-created_at';
             if (ordering) params.append('ordering', ordering);
+
+            params.append('page', page);
+            params.append('page_size', PAGE_SIZE);
 
             if (params.toString()) url += `?${params.toString()}`;
             const response = await api.get(url);
             const data = response.data.results || response.data;
-            setCourses(Array.isArray(data) ? data : []);
+            const next = response.data.next;
+
+            if (append) {
+                setCourses(prev => [...prev, ...data]);
+            } else {
+                setCourses(data);
+            }
+            setHasMore(!!next);
+            setNextPage(next);
             setError(null);
         } catch (err) {
             console.error(err);
             setError('Failed to load courses');
             setCourses([]);
+            setHasMore(false);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [searchTerm, priceMin, priceMax, hasDiscount, ratingMin, ratingMax, selectedCategories, sortBy]);
 
-    // Функция, вызываемая при нажатии на лупу или кнопку "Apply"
+    // Загрузка первой страницы при изменении фильтров или поиска
     const performFiltering = useCallback(() => {
-        loadCourses(
-            searchTerm,        // используем текущее значение поля
-            selectedCategories,
-            priceMin ? Number(priceMin) : null,
-            priceMax ? Number(priceMax) : null,
-            hasDiscount,
-            ratingMin ? Number(ratingMin) : null,
-            ratingMax ? Number(ratingMax) : null,
-            sortBy
-        );
-        setActiveSearchTerm(searchTerm); // обновляем только для возможного отображения
-    }, [searchTerm, selectedCategories, priceMin, priceMax, hasDiscount, ratingMin, ratingMax, sortBy, loadCourses]);
+        resetPagination();
+        loadCourses(1, false);
+    }, [loadCourses]);
 
     // Обработчик отправки формы поиска (лупа)
     const handleSearchSubmit = (e) => {
@@ -94,16 +108,26 @@ const CourseListPage = () => {
         setRatingMax('');
         setSortBy('');
         setSearchTerm('');
-        setActiveSearchTerm('');
-        loadCourses('', [], null, null, false, null, null, '');
+        resetPagination();
+        loadCourses(1, false);
+    };
+
+    // Загрузка следующей страницы (кнопка Load more)
+    const loadMore = () => {
+        if (!nextPage) return;
+        // Извлекаем номер следующей страницы из URL next
+        const urlParams = new URLSearchParams(nextPage.split('?')[1]);
+        const nextPageNum = urlParams.get('page');
+        if (nextPageNum) {
+            loadCourses(parseInt(nextPageNum), true);
+        }
     };
 
     // Первоначальная загрузка при монтировании
     useEffect(() => {
-        loadCourses('', [], null, null, false, null, null, '');
+        loadCourses(1, false);
     }, []);
 
-    if (loading) return <div className={styles.loading}>Loading...</div>;
     if (error) return <div className={styles.error}>{error}</div>;
 
     return (
@@ -140,12 +164,15 @@ const CourseListPage = () => {
                     </form>
                 </div>
                 <div className={styles.courseList}>
-                    {courses.length === 0 ? (
-                        <p>No courses found</p>
-                    ) : (
-                        courses.map(course => (
-                            <CourseCard key={course.course_id} course={course} />
-                        ))
+                    {courses.length === 0 && !loading && <p>No courses found</p>}
+                    {courses.map(course => (
+                        <CourseCard key={course.course_id} course={course} />
+                    ))}
+                    {loading && <div className={styles.loading}>Loading...</div>}
+                    {!loading && hasMore && (
+                        <button onClick={loadMore} className={styles.loadMoreButton}>
+                            Load more
+                        </button>
                     )}
                 </div>
             </div>

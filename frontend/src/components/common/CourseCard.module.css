@@ -127,8 +127,8 @@
 }
 
 .buyButton {
-    background: #f55;
-    border: none;
+    background: var(--brandColor);
+    border: 2px solid #000;
     border-radius: 20px;
     padding: 6px 20px;
     color: white;
