@@ -5,8 +5,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 // Глобальные стили
 import './index.css';
 import './styles/global.css';
-import './styles/Header.css';
-import './styles/Footer.css';
+import './components/common/Header.css';
+import './components/common/Footer.css';
 
 // Компоненты
 import Header from './components/common/Header';

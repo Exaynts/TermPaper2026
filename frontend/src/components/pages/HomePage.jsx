@@ -135,7 +135,7 @@ const HomePage = () => {
                         <li>
                             <span>More information can be found in the section </span>
                             <span>
-                                <Link to="/about">About Us</Link>
+                                <Link to="/aboutUs">About us</Link>
                             </span>
                         </li>
                     </ul>
