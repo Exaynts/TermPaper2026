@@ -9,11 +9,22 @@ const CourseListPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [activeFilters, setActiveFilters] = useState({ category: [], level: [], price: [] });
+    const [filters, setFilters] = useState({});
+    const [sort, setSort] = useState('');
 
+    // Обработчики фильтров
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+    };
+
+    const handleSortChange = (newSort) => {
+        setSort(newSort);
+    };
+
+    // Запрашивать курсы при изменении searchTerm, filters или sort
     useEffect(() => {
         fetchCourses();
-    }, [searchTerm, activeFilters]);
+    }, [searchTerm, filters, sort]);
 
     const fetchCourses = async () => {
         setLoading(true);
@@ -21,7 +32,9 @@ const CourseListPage = () => {
             let url = '/courses/';
             const params = new URLSearchParams();
             if (searchTerm) params.append('search', searchTerm);
-            // Здесь можно добавить параметры фильтрации, если бэкенд поддерживает
+            // Позже здесь будут параметры фильтрации и сортировки
+            // if (filters.price_min) params.append('price_min', filters.price_min);
+            // if (sort) params.append('ordering', sort === 'price_asc' ? 'price' : sort === 'price_desc' ? '-price' : sort === 'rating' ? '-rating' : '-created_at');
             if (params.toString()) url += `?${params.toString()}`;
             const response = await api.get(url);
             setCourses(response.data.results || response.data);
@@ -34,13 +47,9 @@ const CourseListPage = () => {
         }
     };
 
-    const handleFilterChange = (filters) => {
-        setActiveFilters(filters);
-    };
-
     const handleSearch = (e) => {
         e.preventDefault();
-        fetchCourses(); // поиск уже в useEffect через searchTerm
+        fetchCourses();
     };
 
     if (loading) return <div className={styles.loading}>Загрузка...</div>;
@@ -48,7 +57,10 @@ const CourseListPage = () => {
 
     return (
         <div className={styles.pageContainer}>
-            <CourseFilters onFilterChange={handleFilterChange} />
+            <CourseFilters
+                onFilterChange={handleFilterChange}
+                onSortChange={handleSortChange}
+            />
             <div className={styles.content}>
                 <div className={styles.searchBar}>
                     <form onSubmit={handleSearch}>

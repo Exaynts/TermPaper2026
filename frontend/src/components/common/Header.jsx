@@ -20,7 +20,6 @@ const Header = () => {
             <nav className="nav">
                 <ul className="nav-list">
                     <li><Link to="/">MathJam</Link></li>
-                    <li><Link to="/aboutUs">About us</Link></li>
                     <li className="dropdown">
                         <Link to="/courses">Courses</Link>
                         <div className="dropdown-content">

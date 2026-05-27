@@ -1,1 +1,178 @@
-.course {}
+.filtersSidebar {
+    width: 280px;
+    background: #fff;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    color: #f55;
+    border-bottom: 2px solid #f88;
+    display: inline-block;
+    padding-bottom: 6px;
+}
+
+.filterGroup {
+    margin-bottom: 24px;
+}
+
+.groupTitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    color: #333;
+}
+
+.checkboxGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: #444;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.checkboxLabel:hover {
+    color: #f55;
+}
+.checkboxLabel input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.rangeGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.rangeInput {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    transition: border 0.2s;
+}
+.rangeInput:focus {
+    border-color: #f55;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 85, 85, 0.2);
+}
+.rangeSeparator {
+    color: #999;
+    font-weight: 500;
+}
+
+.radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: #444;
+    cursor: pointer;
+}
+.radioLabel input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #f55;
+}
+
+.hint {
+    font-size: 0.85rem;
+    color: #aaa;
+    font-style: italic;
+}
+
+.buttonsGroup {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+.applyBtn, .resetBtn {
+    flex: 1;
+    padding: 10px 0;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+.applyBtn {
+    background: #f55;
+    color: white;
+}
+.applyBtn:hover {
+    background: #e44;
+    transform: translateY(-2px);
+}
+.resetBtn {
+    background: #f0f0f0;
+    color: #333;
+}
+.resetBtn:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+/* Разделители */
+.divider {
+    margin: 20px 0;
+    border: none;
+    height: 1px;
+    background-color: #e0e0e0;
+}
+
+/* Исправление вылезания полей */
+.rangeInput {
+    box-sizing: border-box;
+    max-width: calc(50% - 12px);
+    min-width: 0;
+}
+
+/* Глобальное box-sizing для сайдбара */
+.filtersSidebar * {
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .filtersSidebar {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .checkboxGroup, .radioGroup {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .rangeGroup {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .rangeGroup {
+        flex-wrap: nowrap;
+    }
+    .rangeInput {
+        max-width: none;
+    }
+}
