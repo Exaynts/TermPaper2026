@@ -20,6 +20,7 @@ const Header = () => {
             <nav className="nav">
                 <ul className="nav-list">
                     <li><Link to="/">MathJam</Link></li>
+                    <li><Link to="/profile">Profile</Link></li>
                     <li className="dropdown">
                         <Link to="/courses">Courses</Link>
                         <div className="dropdown-content">
@@ -39,9 +40,14 @@ const Header = () => {
                     )}
                     {isAuthenticated && (
                         <>
-                            <li><Link to="/profile">Profile</Link></li>
-                            <li><Link to="/my-courses">My Courses</Link></li>
-                            <li><Link to="/saved-courses">Saved</Link></li>
+                            <li className="dropdown">
+                                <Link to="#">My Courses</Link>  {/* заглушка, не ведёт на страницу */}
+                                <div className="dropdown-content">
+                                    <Link to="/saved-courses">Saved</Link>
+                                    <Link to="/my-courses">Purchased</Link>
+                                    <Link to="/created-courses">Created</Link>
+                                </div>
+                            </li>
                             <li>
                                 <button onClick={handleLogout} className="logout-btn">
                                     Exit

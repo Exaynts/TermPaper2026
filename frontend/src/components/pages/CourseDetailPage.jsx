@@ -16,6 +16,8 @@ const CourseDetailPage = () => {
     const [progress, setProgress] = useState(0);
     const [completedLessons, setCompletedLessons] = useState([]);
     const [actionLoading, setActionLoading] = useState(false);
+    // Состояние для модального окна подтверждения покупки
+    const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
     useEffect(() => {
         fetchCourseDetails();
@@ -40,20 +42,17 @@ const CourseDetailPage = () => {
 
     const fetchUserStatus = async () => {
         try {
-            // Проверка, сохранён ли курс
             const savedRes = await api.get('/courses/saved_courses/');
             const savedCourses = savedRes.data.results || savedRes.data;
             const isCourseSaved = savedCourses.some(item => item.course?.course_id === parseInt(id));
             setIsSaved(isCourseSaved);
 
-            // Проверка, куплен ли курс и получение прогресса
             const purchasedRes = await api.get('/courses/my_courses/');
             const purchasedCourses = purchasedRes.data.results || purchasedRes.data;
             const purchased = purchasedCourses.find(item => item.course?.course_id === parseInt(id));
             if (purchased) {
                 setIsPurchased(true);
                 setProgress(purchased.progress || 0);
-                // Получить список пройденных уроков
                 const progressRes = await api.get('/progress/my-progress/');
                 const progressData = progressRes.data;
                 const courseProgress = progressData.find(p => p.course_id === parseInt(id));
@@ -68,26 +67,31 @@ const CourseDetailPage = () => {
         }
     };
 
-    const handlePurchase = async () => {
-        if (!isAuthenticated) {
-            navigate('/login');
-            return;
-        }
+    // Функция, которая выполнит реальную покупку после подтверждения
+    const confirmPurchase = async () => {
         setActionLoading(true);
         try {
             await api.post(`/courses/${id}/purchase/`);
             setIsPurchased(true);
-            // Обновить прогресс (0%)
             setProgress(0);
-            // Можно показать уведомление об успехе
             alert('The course has been successfully purchased!');
             await fetchUserStatus(); // обновить статус
+            setShowPurchaseModal(false);
         } catch (err) {
             console.error(err);
             alert('Error when purchasing course');
         } finally {
             setActionLoading(false);
         }
+    };
+
+    // Открыть модальное окно (вызывается при клике на "Купить курс")
+    const openPurchaseModal = () => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+        setShowPurchaseModal(true);
     };
 
     const handleSaveToggle = async () => {
@@ -113,13 +117,11 @@ const CourseDetailPage = () => {
     };
 
     const handleContinue = () => {
-        // Найти первый непройденный урок
         if (course && course.lessons && course.lessons.length) {
             const firstIncomplete = course.lessons.find(lesson => !completedLessons.includes(lesson.lesson_id));
             if (firstIncomplete) {
                 navigate(`/lessons/${firstIncomplete.lesson_id}`);
             } else if (course.lessons.length > 0) {
-                // Все пройдены – перейти на первый урок
                 navigate(`/lessons/${course.lessons[0].lesson_id}`);
             }
         }
@@ -136,6 +138,7 @@ const CourseDetailPage = () => {
 
     const hasDiscount = course.discount && course.discount > 0;
     const discountedPrice = course.discounted_price || course.price;
+    const finalPrice = formatPrice(discountedPrice);
 
     return (
         <div className={styles.container}>
@@ -145,7 +148,6 @@ const CourseDetailPage = () => {
                 </button>
             </div>
 
-            {/* Карточка с основной информацией о курсе */}
             <div className={styles.courseHeaderCard}>
                 <div className={styles.headerLeft}>
                     <h1 className={styles.title}>{course.name}</h1>
@@ -162,16 +164,16 @@ const CourseDetailPage = () => {
                         {hasDiscount ? (
                             <>
                                 <span className={styles.oldPrice}>{formatPrice(course.price)}₽</span>
-                                <span className={styles.currentPrice}>{formatPrice(discountedPrice)}₽</span>
+                                <span className={styles.currentPrice}>{finalPrice}₽</span>
                                 <span className={styles.discountBadge}>-{course.discount}%</span>
                             </>
                         ) : (
-                            <span className={styles.currentPrice}>{formatPrice(course.price)}₽</span>
+                            <span className={styles.currentPrice}>{finalPrice}₽</span>
                         )}
                     </div>
                     {!isPurchased ? (
                         <button
-                            onClick={handlePurchase}
+                            onClick={openPurchaseModal}
                             disabled={actionLoading}
                             className={styles.purchaseButton}
                         >
@@ -195,20 +197,17 @@ const CourseDetailPage = () => {
                 </div>
             </div>
 
-            {/* Блок с изображением (если есть) – можно без карточки, либо обернуть в карточку при желании */}
             {course.image && (
                 <div className={styles.imageWrapper}>
                     <img src={course.image} alt={course.name} className={styles.image} />
                 </div>
             )}
 
-            {/* Карточка "О курсе" (без отдельного фона) */}
             <div className={styles.descriptionCard}>
                 <h2>О курсе</h2>
                 <p>{course.description || 'No description'}</p>
             </div>
 
-            {/* Карточка прогресса (если куплен) */}
             {isPurchased && (
                 <div className={styles.progressCard}>
                     <div className={styles.progressHeader}>
@@ -221,7 +220,6 @@ const CourseDetailPage = () => {
                 </div>
             )}
 
-            {/* Карточка уроков */}
             <div className={styles.lessonsCard}>
                 <h2>Уроки курса ({course.lessons?.length || 0})</h2>
                 <ul className={styles.lessonsList}>
@@ -254,7 +252,6 @@ const CourseDetailPage = () => {
                 </ul>
             </div>
 
-            {/* Админские действия (без карточки) */}
             {isAuthenticated && user?.is_staff && (
                 <div className={styles.adminActions}>
                     <button onClick={() => navigate(`/courses/edit/${course.course_id}`)} className={styles.editButton}>
@@ -263,6 +260,22 @@ const CourseDetailPage = () => {
                     <button onClick={() => { if (window.confirm('Delete the Course?')) api.delete(`/courses/${course.course_id}/`).then(() => navigate('/courses')); }} className={styles.deleteButton}>
                         Delete Course
                     </button>
+                </div>
+            )}
+
+            {/* Модальное окно подтверждения покупки */}
+            {showPurchaseModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <p>Confirm course purchase<br />
+                        Your account will be debited {finalPrice} ₽</p>
+                        <div className={styles.modalButtons}>
+                            <button className={styles.modalCancel} onClick={() => setShowPurchaseModal(false)}>Cancel</button>
+                            <button className={styles.modalConfirm} onClick={confirmPurchase}>
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

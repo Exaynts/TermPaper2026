@@ -1,17 +1,87 @@
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 .title {
-  font-size: 48px;
-  text-align: center;
-  margin-bottom: 30px;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #000;
 }
 
-.emptyMessage {
-  text-align: center;
-  font-size: 24px;
-  color: #666;
+.coursesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.courseCard {
+    background: white;
+    border: 2px solid #eee;
+    border-radius: 20px;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.courseCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.cardLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.courseName {
+    font-size: 1.2rem;
+    margin: 0 0 10px;
+    color: #000;
+}
+
+.coursePrice {
+    color: #f55;
+    font-weight: bold;
+    margin: 0 0 5px;
+}
+
+.courseRating {
+    color: #ffd700;
+    margin: 0;
+}
+
+.removeButton {
+    margin-top: 15px;
+    background: #f55;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+}
+
+.removeButton:hover {
+    background: #d44;
+}
+
+.removeButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.loading, .error, .empty, .message {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .coursesGrid {
+        grid-template-columns: 1fr;
+    }
 }

@@ -30,7 +30,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     - PUT/PATCH /api/courses/{id}/ – обновление (только автор или админ)
     - DELETE /api/courses/{id}/ – удаление (только автор или админ)
     """
-    permission_classes = [IsAuthorOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = CourseFilter
     search_fields = ['name', 'description']
@@ -55,7 +54,20 @@ class CourseViewSet(viewsets.ModelViewSet):
         """Привязывать автора при создании курса автоматически"""
         serializer.save(created_by=self.request.user)
 
-    # Дополнительные actions
+    def get_permissions(self):
+        """
+        Назначает разрешения в зависимости от действия:
+        - Для действий, изменяющих курс (create, update, partial_update, destroy) – только автор или админ.
+        - Для действий, связанных с пользовательскими данными (save, unsave, purchase, move_to_bin, restore_from_bin) – только аутентифицированный пользователь.
+        - Для остальных (list, retrieve) – любой (AllowAny).
+        """
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthorOrReadOnly()]
+        elif self.action in ['save', 'unsave', 'purchase', 'move_to_bin', 'restore_from_bin']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
+
+    # Дополнительные действия (actions)
 
     @action(detail=True, methods=['post'])
     def save(self, request, pk=None):
