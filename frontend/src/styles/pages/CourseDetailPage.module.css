@@ -232,6 +232,12 @@
     color: #999;
 }
 
+.ratingLabel {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
 /* Группа кнопок для купленного курса */
 .buttonGroup {
     display: flex;

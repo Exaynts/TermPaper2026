@@ -5,3 +5,4 @@ from .saved_course import SavedCourse
 from .recycle_bin_course import RecycleBinCourse
 from .purchased_course import PurchasedCourse
 from .lesson_progress import LessonProgress
+from .course_rating import CourseRating

@@ -51,6 +51,7 @@ class Course(models.Model):
             self.save()
 
     def update_rating(self):
-        """Метод для пересчёта рейтинга курса (вызывается при добавлении оценок)"""
-        # Реализация будет зависеть от наличия модели Rating/Review
-        pass
+        from django.db.models import Avg
+        avg_rating = self.ratings.all().aggregate(Avg('rating'))['rating__avg']
+        self.rating = round(avg_rating, 2) if avg_rating else 0.0
+        self.save(update_fields=['rating'])

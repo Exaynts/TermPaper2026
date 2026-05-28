@@ -3,12 +3,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from .models import Category, Course, Lesson, SavedCourse, PurchasedCourse, RecycleBinCourse, LessonProgress
+from .models import Category, Course, Lesson, SavedCourse, PurchasedCourse, RecycleBinCourse, LessonProgress, CourseRating
 from .serializers import (
     CategorySerializer, CourseListSerializer, CourseDetailSerializer,
     CourseCreateUpdateSerializer, LessonCreateUpdateSerializer,
     SavedCourseSerializer, RecycleBinCourseSerializer,
-    PurchasedCourseSerializer, LessonProgressSerializer, LessonProgressCreateSerializer
+    PurchasedCourseSerializer, LessonProgressCreateSerializer
 )
 from .permissions import IsAuthorOrReadOnly
 from .filters import CourseFilter
@@ -242,6 +242,47 @@ class CourseViewSet(viewsets.ModelViewSet):
         courses = Course.objects.filter(created_by=user)
         serializer = self.get_serializer(courses, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_path='my-rating')
+    def my_rating(self, request, pk=None):
+        """Получить оценку, которую текущий пользователь поставил курсу"""
+        course = self.get_object()
+        if not request.user.is_authenticated:
+            return Response({'rating': None})
+        rating = CourseRating.objects.filter(user=request.user, course=course).first()
+        return Response({'rating': rating.rating if rating else None})
+
+    @action(detail=True, methods=['post'], url_path='rate')
+    def rate_course(self, request, pk=None):
+        """
+        Поставить оценку курсу (только для купивших курс).
+        Ожидает JSON: {"rating": 3}
+        """
+        course = self.get_object()
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=401)
+
+        # Проверить, куплен ли курс пользователем
+        if not PurchasedCourse.objects.filter(user=user, course=course, status='active').exists():
+            return Response({'error': 'You can only rate courses you have purchased'}, status=403)
+
+        rating_value = request.data.get('rating')
+        try:
+            rating_value = int(rating_value)
+            if rating_value < 1 or rating_value > 5:
+                raise ValueError
+        except (TypeError, ValueError):
+            return Response({'error': 'Rating must be an integer between 1 and 5'}, status=400)
+
+        # Обновить или создать оценку
+        obj, created = CourseRating.objects.update_or_create(
+            user=user, course=course,
+            defaults={'rating': rating_value}
+        )
+        course.update_rating()  # пересчитать средний рейтинг
+        return Response({'rating': rating_value, 'course_rating': course.rating})
+
 
 class LessonViewSet(viewsets.ModelViewSet):
     """

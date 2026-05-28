@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import ConfirmationModal from '../../components/common/ConfirmationModal';
+import StarRating from '../../components/common/StarRating';   // ← добавлен импорт
 import styles from '../../styles/pages/CourseDetailPage.module.css';
 
 // Иконка корзины (SVG)
@@ -17,7 +18,7 @@ const TrashIcon = () => (
 );
 
 const CourseDetailPage = () => {
-    const { id } = useParams();
+    const { id } = useParams();   // ← id курса из URL
     const navigate = useNavigate();
     const { isAuthenticated, user } = useAuth();
     const [course, setCourse] = useState(null);
@@ -30,6 +31,7 @@ const CourseDetailPage = () => {
     const [actionLoading, setActionLoading] = useState(false);
     const [showPurchaseModal, setShowPurchaseModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [userRating, setUserRating] = useState(null);
 
     useEffect(() => {
         fetchCourseDetails();
@@ -46,7 +48,7 @@ const CourseDetailPage = () => {
             setCourse(courseData);
             setError(null);
 
-            // Если пользователь является автором курса, который он просматривает, сделать редирект на редактирование
+            // Если пользователь является автором курса – редирект на редактирование
             if (isAuthenticated && user && courseData.created_by_id === user.id) {
                 navigate(`/edit-course/${id}`, { replace: true });
                 return;
@@ -69,6 +71,7 @@ const CourseDetailPage = () => {
             const purchasedRes = await api.get('/courses/my_courses/');
             const purchasedCourses = purchasedRes.data.results || purchasedRes.data;
             const purchased = purchasedCourses.find(item => item.course?.course_id === parseInt(id));
+
             if (purchased) {
                 setIsPurchased(true);
                 setProgress(purchased.progress || 0);
@@ -80,6 +83,14 @@ const CourseDetailPage = () => {
                 }
             } else {
                 setIsPurchased(false);
+            }
+
+            // Получить оценку пользователя (если есть)
+            try {
+                const ratingRes = await api.get(`/courses/${id}/my-rating/`);
+                setUserRating(ratingRes.data.rating);
+            } catch (err) {
+                console.error('Failed to load user rating', err);
             }
         } catch (err) {
             console.error('Error loading user status:', err);
@@ -257,6 +268,21 @@ const CourseDetailPage = () => {
                 </div>
             )}
 
+            {isPurchased && (
+                <div className={styles.ratingSection}>
+                    <div className={styles.ratingLabel}>Ваша оценка курсу:</div>
+                    <StarRating
+                        courseId={course.course_id}
+                        initialRating={userRating}
+                        readonly={false}
+                        onRatingChange={(data) => {
+                            setCourse(prev => ({ ...prev, rating: data.avgRating }));
+                            setUserRating(data.userRating);
+                        }}
+                    />
+                </div>
+            )}
+
             <div className={styles.lessonsCard}>
                 <h2>Course lessons ({course.lessons?.length || 0})</h2>
                 {isPurchased ? (
@@ -308,7 +334,6 @@ const CourseDetailPage = () => {
                 </div>
             )}
 
-            {/* Модальное окно подтверждения покупки */}
             <ConfirmationModal
                 isOpen={showPurchaseModal}
                 title="Confirm Purchase"
@@ -319,7 +344,6 @@ const CourseDetailPage = () => {
                 cancelText="Cancel"
             />
 
-            {/* Модальное окно подтверждения удаления курса (move to bin) */}
             <ConfirmationModal
                 isOpen={showDeleteModal}
                 title="Delete Course"

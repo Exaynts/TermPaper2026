@@ -1,0 +1,18 @@
+.starRating {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+}
+.star {
+    font-size: 3rem;
+    color: #ccc;
+    transition: color 0.1s;
+}
+.star.filled {
+    color: #ffc107;
+}
+.loading {
+    margin-left: 8px;
+    font-size: 0.8rem;
+    color: #888;
+}
