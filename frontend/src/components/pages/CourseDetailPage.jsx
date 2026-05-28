@@ -42,8 +42,15 @@ const CourseDetailPage = () => {
         setLoading(true);
         try {
             const response = await api.get(`/courses/${id}/`);
-            setCourse(response.data);
+            const courseData = response.data;
+            setCourse(courseData);
             setError(null);
+
+            // Если пользователь является автором курса, который он просматривает, сделать редирект на редактирование
+            if (isAuthenticated && user && courseData.created_by_id === user.id) {
+                navigate(`/edit-course/${id}`, { replace: true });
+                return;
+            }
         } catch (err) {
             console.error(err);
             setError('Failed to load course');

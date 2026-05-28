@@ -20,13 +20,14 @@ class CourseListSerializer(serializers.ModelSerializer):
     category_slug = serializers.CharField(source='category.slug', read_only=True)
     author_name = serializers.CharField(source='created_by.nickname', read_only=True)
     discounted_price = serializers.SerializerMethodField()
+    created_by_id = serializers.IntegerField(source='created_by.id', read_only=True)
 
     class Meta:
         model = Course
         fields = [
             'course_id', 'name', 'price', 'discount', 'discounted_price',
             'rating', 'status', 'image', 'description', 'category_title', 'category_slug',
-            'author_name', 'created_at'
+            'author_name', 'created_at', 'created_by_id',
         ]
 
     def get_discounted_price(self, obj):
@@ -41,13 +42,14 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(source='created_by', read_only=True)
     discounted_price = serializers.SerializerMethodField()
     lessons = LessonDetailSerializer(many=True, read_only=True)
+    created_by_id = serializers.IntegerField(source='created_by.id', read_only=True)
 
     class Meta:
         model = Course
         fields = [
             'course_id', 'name', 'price', 'discount', 'discounted_price',
             'rating', 'status', 'description', 'image', 'created_at',
-            'category', 'author', 'lessons'
+            'category', 'author', 'lessons', 'created_by_id'
         ]
 
     def get_discounted_price(self, obj):
@@ -104,11 +106,6 @@ class CourseCreateUpdateSerializer(serializers.ModelSerializer):
     def validate_discount(self, value):
         if value < 0 or value > 100:
             raise serializers.ValidationError("Discount must be between 0 and 100")
-        return value
-
-    def validate_discount(self, value):
-        if value < 0 or value > 100:
-            raise serializers.ValidationError("Скидка должна быть от 0 до 100")
         return value
 
 class LessonCreateUpdateSerializer(serializers.ModelSerializer):
