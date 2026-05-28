@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import LessonForm from '../../components/courses/LessonForm';
 import styles from '../../styles/pages/CreateCoursePage.module.css';
+import { validatePriceInput, validateDiscountInput } from '../../utils/validators';
 
 const CreateCoursePage = () => {
     const { isAuthenticated } = useAuth();
@@ -45,7 +46,7 @@ const CreateCoursePage = () => {
         }
     };
 
-    // Handle course fields
+    // сформировать поля курса
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
         if (type === 'file') {
@@ -58,9 +59,17 @@ const CreateCoursePage = () => {
             } else {
                 setImagePreview(null);
             }
-        } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
+            return;
         }
+
+        let processedValue = value;
+        if (name === 'price') {
+            processedValue = validatePriceInput(value);
+        } else if (name === 'discount') {
+            processedValue = validateDiscountInput(value);
+        }
+
+        setFormData(prev => ({ ...prev, [name]: processedValue }));
         if (fieldErrors[name]) {
             setFieldErrors(prev => ({ ...prev, [name]: '' }));
         }
@@ -224,13 +233,11 @@ const CreateCoursePage = () => {
                             <div className={`${styles.formGroup} ${fieldErrors.price ? styles.errorField : ''}`}>
                                 <label htmlFor="price">Price (₽) *</label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     id="price"
                                     name="price"
                                     className={styles.textInput}
                                     placeholder="0.00"
-                                    step="0.01"
-                                    min="0"
                                     value={formData.price}
                                     onChange={handleChange}
                                     required

@@ -92,7 +92,18 @@ class CourseCreateUpdateSerializer(serializers.ModelSerializer):
 
     def validate_price(self, value):
         if value < 0:
-            raise serializers.ValidationError("Цена не может быть отрицательной")
+            raise serializers.ValidationError("Price cannot be negative")
+        if value > 99_999_999:
+            raise serializers.ValidationError("Price cannot exceed 1,000,000 ₽")
+        # Валидация количества знаков после запятой (максимум 2)
+        if hasattr(value, 'as_tuple'):  # для Decimal
+            if value.as_tuple().exponent < -2:
+                raise serializers.ValidationError("Price can have at most 2 decimal places")
+        return value
+
+    def validate_discount(self, value):
+        if value < 0 or value > 100:
+            raise serializers.ValidationError("Discount must be between 0 and 100")
         return value
 
     def validate_discount(self, value):

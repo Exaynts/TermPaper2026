@@ -5,6 +5,7 @@ import api from '../../services/api';
 import LessonForm from '../../components/courses/LessonForm';
 import ConfirmationModal from '../../components/common/ConfirmationModal';
 import styles from '../../styles/pages/EditCoursePage.module.css';
+import { validatePriceInput, validateDiscountInput } from '../../utils/validators';
 
 const EditCoursePage = () => {
     const { isAuthenticated } = useAuth();
@@ -104,11 +105,19 @@ const EditCoursePage = () => {
                 reader.onloadend = () => setImagePreview(reader.result);
                 reader.readAsDataURL(file);
             } else {
-                setImagePreview(originalImageUrl);
+                setImagePreview(originalImageUrl || null);
             }
-        } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
+            return;
         }
+
+        let processedValue = value;
+        if (name === 'price') {
+            processedValue = validatePriceInput(value);
+        } else if (name === 'discount') {
+            processedValue = validateDiscountInput(value);
+        }
+
+        setFormData(prev => ({ ...prev, [name]: processedValue }));
         if (fieldErrors[name]) {
             setFieldErrors(prev => ({ ...prev, [name]: '' }));
         }
@@ -284,12 +293,11 @@ const EditCoursePage = () => {
                             <div className={`${styles.formGroup} ${fieldErrors.price ? styles.errorField : ''}`}>
                                 <label htmlFor="price">Price (₽) *</label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     id="price"
                                     name="price"
                                     className={styles.textInput}
-                                    step="0.01"
-                                    min="0"
+                                    placeholder="0.00"
                                     value={formData.price}
                                     onChange={handleChange}
                                     required
@@ -299,12 +307,11 @@ const EditCoursePage = () => {
                             <div className={`${styles.formGroup} ${fieldErrors.discount ? styles.errorField : ''}`}>
                                 <label htmlFor="discount">Discount (%)</label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     id="discount"
                                     name="discount"
                                     className={styles.textInput}
-                                    min="0"
-                                    max="100"
+                                    placeholder="0"
                                     value={formData.discount}
                                     onChange={handleChange}
                                 />
