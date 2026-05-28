@@ -228,7 +228,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         if course.created_by != request.user and not request.user.is_staff:
             return Response({'error': 'Only author can add lessons'}, status=status.HTTP_403_FORBIDDEN)
 
-        serializer = LessonCreateUpdateSerializer(data=request.data)
+        serializer = LessonCreateUpdateSerializer(data=request.data, context={'course': course})
         serializer.is_valid(raise_exception=True)
         serializer.save(course=course)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -295,14 +295,17 @@ class LessonProgressViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'], url_path='mark')
     def mark_completed(self, request):
-        """Отметить урок как пройденный (или снять отметку)"""
+        """
+        Отметить урок как пройденный или снять отметку.
+        Возвращает обновлённый прогресс курса.
+        """
         serializer = LessonProgressCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        lesson_id = serializer.validated_data['lesson']
+        lesson_id = request.data.get('lesson')
         lesson = get_object_or_404(Lesson, pk=lesson_id)
 
-        # Проверить, что пользователь купил курс, содержащий этот урок
+        # Проверить, что пользователь купил курс
         purchased = PurchasedCourse.objects.filter(
             user=request.user,
             course=lesson.course,
@@ -321,39 +324,28 @@ class LessonProgressViewSet(viewsets.ViewSet):
             lesson=lesson
         )
 
+        # Переключить состояние завершённости
         if progress.completed_at is None:
-            # Отметить как пройденный
             from django.utils import timezone
             progress.completed_at = timezone.now()
-            progress.save()
-
-            # Пересчитывать общий прогресс курса
-            total_lessons = lesson.course.lessons.count()
-            completed_count = LessonProgress.objects.filter(
-                purchased_course=purchased,
-                completed_at__isnull=False
-            ).count()
-
-            purchased.progress = int((completed_count / total_lessons) * 100) if total_lessons > 0 else 0
-            purchased.save()
-
-            return Response({'status': 'completed', 'progress': purchased.progress})
         else:
-            # Снимаем отметку
             progress.completed_at = None
-            progress.save()
+        progress.save()
 
-            # Пересчитываем прогресс
-            total_lessons = lesson.course.lessons.count()
+        # Пересчитать общий прогресс курса
+        total_lessons = lesson.course.lessons.count()
+        if total_lessons > 0:
             completed_count = LessonProgress.objects.filter(
                 purchased_course=purchased,
                 completed_at__isnull=False
             ).count()
+            purchased.progress = int((completed_count / total_lessons) * 100)
+        else:
+            purchased.progress = 0
+        purchased.save()
 
-            purchased.progress = int((completed_count / total_lessons) * 100) if total_lessons > 0 else 0
-            purchased.save()
-
-            return Response({'status': 'incomplete', 'progress': purchased.progress})
+        status_msg = 'completed' if progress.completed_at else 'incomplete'
+        return Response({'status': status_msg, 'progress': purchased.progress})
 
     @action(detail=False, methods=['get'], url_path='my-progress')
     def my_progress(self, request):

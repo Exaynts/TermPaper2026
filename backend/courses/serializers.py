@@ -108,25 +108,44 @@ class CourseCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Discount must be between 0 and 100")
         return value
 
+
 class LessonCreateUpdateSerializer(serializers.ModelSerializer):
     task_file = serializers.FileField(required=False, allow_null=True)
     image = serializers.ImageField(required=False, allow_null=True)
-    """Сериализатор для создания и обновления урока"""
+
     class Meta:
         model = Lesson
-        fields = [
-            'order', 'name', 'text', 'description', 'image', 'video', 'task_file'
-        ]
+        fields = ['order', 'name', 'text', 'description', 'image', 'video', 'task_file']
 
     def validate_order(self, value):
         if value < 0:
             raise serializers.ValidationError("Порядковый номер не может быть отрицательным")
         return value
 
+    def validate(self, data):
+        # Определяем курс: либо из контекста (создание), либо из существующего экземпляра (обновление)
+        course = None
+        if 'course' in self.context:
+            course = self.context['course']
+        elif self.instance and self.instance.course:
+            course = self.instance.course
+
+        if course:
+            order = data.get('order')
+            # При обновлении исключаем текущий урок
+            qs = Lesson.objects.filter(course=course, order=order)
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise serializers.ValidationError(
+                    {'order': f'Lesson with order {order} already exists in this course.'}
+                )
+        return data
+
     def validate_task_file(self, value):
         if value is None:
             return value
-        max_size = 25 * 1024 * 1024  # 25 МБ
+        max_size = 25 * 1024 * 1024
         if value.size > max_size:
             raise serializers.ValidationError(
                 f"File size must not exceed 25 MB (current: {value.size // (1024 * 1024)} MB)."

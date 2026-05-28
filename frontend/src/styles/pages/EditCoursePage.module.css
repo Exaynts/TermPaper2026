@@ -51,6 +51,7 @@
     padding: 20px 25px;
     margin-bottom: 25px;
     background: #fefefe;
+    min-width: 0;
 }
 
 .legend {
@@ -140,33 +141,7 @@
     margin-top: 4px;
 }
 
-.saveButton {
-    width: 100%;
-    padding: 14px;
-    background: var(--brandColor08);
-    color: white;
-    border: none;
-    border-radius: 40px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 10px;
-}
-
-.saveButton:hover {
-    background: var(--brandColor);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 12px rgba(255, 85, 85, 0.3);
-}
-
-.saveButton:disabled {
-    opacity: 0.6;
-    transform: none;
-    cursor: not-allowed;
-}
-
-/* Стили кнопки для добавления урока */
+/* Кнопка добавления урока */
 .addLessonBtn {
     background: none;
     border: 2px dashed #ccc;
@@ -185,21 +160,7 @@
     background: #fff0f0;
 }
 
-@media (max-width: 768px) {
-    .formCard {
-        padding: 20px;
-    }
-    .priceRow {
-        grid-template-columns: 1fr;
-        gap: 0;
-    }
-    .formCard h1 {
-        font-size: 1.8rem;
-    }
-}
-/* Скопируйте все стили из CreateCoursePage.module.css,
-   затем замените .createButton на .saveButton и добавьте: */
-
+/* Группа кнопок Cancel / Save */
 .buttonGroup {
     display: flex;
     gap: 15px;
@@ -247,4 +208,23 @@
     opacity: 0.6;
     transform: none;
     cursor: not-allowed;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .formCard {
+        padding: 20px;
+    }
+    .priceRow {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    .formCard h1 {
+        font-size: 1.8rem;
+    }
 }

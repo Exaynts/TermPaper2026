@@ -78,3 +78,40 @@
     font-size: 0.7rem;
     color: #888;
 }
+.fileExisting {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 8px 12px;
+    background: #f9f9f9;
+}
+
+.fileLink {
+    color: #007bff;
+    text-decoration: none;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fileLink:hover {
+    text-decoration: underline;
+}
+
+.changeFileButton {
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.changeFileButton:hover {
+    background: #e0e0e0;
+}

@@ -30,7 +30,6 @@ const EditCoursePage = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const [originalImageUrl, setOriginalImageUrl] = useState(null);
 
-    // Lessons state
     const [lessons, setLessons] = useState([]);
     const [removedLessonIds, setRemovedLessonIds] = useState([]);
     const [modalLessonId, setModalLessonId] = useState(null);
@@ -72,7 +71,6 @@ const EditCoursePage = () => {
                 setOriginalImageUrl(course.image);
                 setImagePreview(course.image);
             }
-            // Преобразуем уроки в формат, понятный LessonForm
             const loadedLessons = (course.lessons || []).map(lesson => ({
                 lesson_id: lesson.lesson_id,
                 name: lesson.name,
@@ -123,7 +121,6 @@ const EditCoursePage = () => {
         }
     };
 
-    // Lesson management
     const addLesson = () => {
         setLessons([...lessons, {
             lesson_id: null,
@@ -176,7 +173,6 @@ const EditCoursePage = () => {
         setFieldErrors({});
         setSaving(true);
 
-        // Validate course fields
         const errors = {};
         if (!formData.name.trim()) errors.name = 'Course name is required';
         if (!formData.price) errors.price = 'Price is required';
@@ -197,7 +193,6 @@ const EditCoursePage = () => {
             return;
         }
 
-        // 1. Update course
         const courseFormData = new FormData();
         courseFormData.append('name', formData.name);
         courseFormData.append('price', formData.price);
@@ -214,19 +209,19 @@ const EditCoursePage = () => {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-            // 2. Delete lessons marked for removal
             for (const lessonId of removedLessonIds) {
                 await api.delete(`/lessons/${lessonId}/`);
             }
 
-            // 3. Update existing lessons and create new ones
-            for (let i = 0; i < lessons.length; i++) {
-                const lesson = lessons[i];
+            // Принудительно пересчитываем порядок уроков
+            const reorderedLessons = lessons.map((lesson, idx) => ({ ...lesson, order: idx }));
+            for (let i = 0; i < reorderedLessons.length; i++) {
+                const lesson = reorderedLessons[i];
                 if (!lesson.name.trim()) continue;
 
                 const lessonFormData = new FormData();
                 lessonFormData.append('name', lesson.name);
-                lessonFormData.append('order', lesson.order !== undefined ? lesson.order : i);
+                lessonFormData.append('order', lesson.order);
                 if (lesson.description) lessonFormData.append('description', lesson.description);
                 if (lesson.text) lessonFormData.append('text', lesson.text);
                 if (lesson.video) lessonFormData.append('video', lesson.video);
@@ -234,12 +229,10 @@ const EditCoursePage = () => {
                 if (lesson.image) lessonFormData.append('image', lesson.image);
 
                 if (lesson.lesson_id) {
-                    // Update existing lesson
                     await api.patch(`/lessons/${lesson.lesson_id}/`, lessonFormData, {
                         headers: { 'Content-Type': 'multipart/form-data' }
                     });
                 } else {
-                    // Create new lesson
                     await api.post(`/courses/${courseId}/lessons/`, lessonFormData, {
                         headers: { 'Content-Type': 'multipart/form-data' }
                     });
@@ -265,6 +258,7 @@ const EditCoursePage = () => {
 
     if (!isAuthenticated) return null;
     if (loading) return <div className={styles.loading}>Loading...</div>;
+
 
     return (
         <div className={styles.editContainer}>

@@ -78,30 +78,72 @@ const LessonForm = ({ index, lesson, onChange, onRemove, canRemove }) => {
             </div>
             <div className={styles.formGroup}>
                 <label>Task file (PDF/DOC)</label>
-                <input
-                    type="file"
-                    name="task_file"
-                    accept=".pdf,.doc,.docx"
-                    className={styles.fileInput}
-                    onChange={handleChange}
-                />
+                {lesson.existing_task_file && !lesson.task_file ? (
+                    <div className={styles.fileExisting}>
+                        <a
+                            href={lesson.existing_task_file}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.fileLink}
+                            title={lesson.existing_task_file.split('/').pop()}
+                        >
+                            {lesson.existing_task_file.split('/').pop()}
+                        </a>
+                        <label className={styles.changeFileButton}>
+                            Replace
+                            <input
+                                type="file"
+                                name="task_file"
+                                accept=".pdf,.doc,.docx"
+                                onChange={handleChange}
+                                style={{ display: 'none' }}
+                            />
+                        </label>
+                    </div>
+                ) : (
+                    <input
+                        type="file"
+                        name="task_file"
+                        accept=".pdf,.doc,.docx"
+                        className={styles.fileInput}
+                        onChange={handleChange}
+                    />
+                )}
             </div>
             <div className={styles.formGroup}>
                 <label>Image for lesson</label>
-                <input
-                    type="file"
-                    name="image"
-                    accept="image/*"
-                    className={styles.fileInput}
-                    onChange={handleChange}
-                />
+                {lesson.existing_image && !lesson.image ? (
+                    <div className={styles.fileExisting}>
+                        <a
+                            href={lesson.existing_image}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.fileLink}
+                            title={lesson.existing_image.split('/').pop()}
+                        >
+                            {lesson.existing_image.split('/').pop()}
+                        </a>
+                        <label className={styles.changeFileButton}>
+                            Replace
+                            <input
+                                type="file"
+                                name="image"
+                                accept="image/*"
+                                onChange={handleChange}
+                                style={{ display: 'none' }}
+                            />
+                        </label>
+                    </div>
+                ) : (
+                    <input
+                        type="file"
+                        name="image"
+                        accept="image/*"
+                        className={styles.fileInput}
+                        onChange={handleChange}
+                    />
+                )}
             </div>
-            {lesson.existing_image && !lesson.image && (
-                <div className={styles.fileInfo}>Current image: {lesson.existing_image.split('/').pop()}</div>
-            )}
-            {lesson.existing_task_file && !lesson.task_file && (
-                <div className={styles.fileInfo}>Current task file: {lesson.existing_task_file.split('/').pop()}</div>
-            )}
         </div>
     );
 };

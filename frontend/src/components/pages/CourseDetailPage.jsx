@@ -72,7 +72,7 @@ const CourseDetailPage = () => {
             if (purchased) {
                 setIsPurchased(true);
                 setProgress(purchased.progress || 0);
-                const progressRes = await api.get('/progress/my-progress/');
+                const progressRes = await api.get('/lesson-progress/my-progress/');
                 const progressData = progressRes.data;
                 const courseProgress = progressData.find(p => p.course_id === parseInt(id));
                 if (courseProgress) {
@@ -145,9 +145,9 @@ const CourseDetailPage = () => {
         if (course && course.lessons && course.lessons.length) {
             const firstIncomplete = course.lessons.find(lesson => !completedLessons.includes(lesson.lesson_id));
             if (firstIncomplete) {
-                navigate(`/lessons/${firstIncomplete.lesson_id}`);
+                navigate(`/courses/${course.course_id}/lessons/${firstIncomplete.lesson_id}`);
             } else if (course.lessons.length > 0) {
-                navigate(`/lessons/${course.lessons[0].lesson_id}`);
+                navigate(`/courses/${course.course_id}/lessons/${course.lessons[0].lesson_id}`);
             }
         }
     };
@@ -259,34 +259,42 @@ const CourseDetailPage = () => {
 
             <div className={styles.lessonsCard}>
                 <h2>Course lessons ({course.lessons?.length || 0})</h2>
-                <ul className={styles.lessonsList}>
-                    {course.lessons && course.lessons.length > 0 ? (
-                        course.lessons.map(lesson => {
-                            const isCompleted = completedLessons.includes(lesson.lesson_id);
-                            const isClickable = isPurchased;
-                            return (
-                                <li key={lesson.lesson_id} className={styles.lessonItem}>
-                                    <div className={styles.lessonInfo}>
+                {isPurchased ? (
+                    <div className={styles.lessonsList}>
+                        {course.lessons && course.lessons.length > 0 ? (
+                            course.lessons.map(lesson => {
+                                const isCompleted = completedLessons.includes(lesson.lesson_id);
+                                return (
+                                    <Link
+                                        key={lesson.lesson_id}
+                                        to={`/courses/${course.course_id}/lessons/${lesson.lesson_id}`}
+                                        className={`${styles.lessonLink} ${isCompleted ? styles.completed : ''}`}
+                                    >
                                         <span className={styles.lessonOrder}>{lesson.order}.</span>
-                                        <span className={styles.lessonName}>
-                                            {isClickable ? (
-                                                <Link to={`/lessons/${lesson.lesson_id}`}>{lesson.name}</Link>
-                                            ) : (
-                                                lesson.name
-                                            )}
-                                        </span>
+                                        <span className={styles.lessonName}>{lesson.name}</span>
                                         {isCompleted && <span className={styles.completedBadge}>✓</span>}
-                                    </div>
-                                    {!isPurchased && (
-                                        <span className={styles.lockedIcon}>🔒</span>
-                                    )}
-                                </li>
-                            );
-                        })
-                    ) : (
-                        <li>There are no lessons yet</li>
-                    )}
-                </ul>
+                                    </Link>
+                                );
+                            })
+                        ) : (
+                            <p>There are no lessons yet</p>
+                        )}
+                    </div>
+                ) : (
+                    <div className={styles.lessonsList}>
+                        {course.lessons && course.lessons.length > 0 ? (
+                            course.lessons.map(lesson => (
+                                <div key={lesson.lesson_id} className={styles.lessonLocked}>
+                                    <span className={styles.lessonOrder}>{lesson.order}.</span>
+                                    <span className={styles.lessonName}>{lesson.name}</span>
+                                    <span className={styles.lockedIcon}>🔒</span>
+                                </div>
+                            ))
+                        ) : (
+                            <p>There are no lessons yet</p>
+                        )}
+                    </div>
+                )}
             </div>
 
             {isAuthenticated && user?.is_staff && (
