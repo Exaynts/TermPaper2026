@@ -1,4 +1,4 @@
-.createContainer {
+.editContainer {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -140,7 +140,7 @@
     margin-top: 4px;
 }
 
-.createButton {
+.saveButton {
     width: 100%;
     padding: 14px;
     background: var(--brandColor08);
@@ -154,13 +154,13 @@
     margin-top: 10px;
 }
 
-.createButton:hover {
+.saveButton:hover {
     background: var(--brandColor);
     transform: translateY(-2px);
     box-shadow: 0 5px 12px rgba(255, 85, 85, 0.3);
 }
 
-.createButton:disabled {
+.saveButton:disabled {
     opacity: 0.6;
     transform: none;
     cursor: not-allowed;
@@ -196,4 +196,55 @@
     .formCard h1 {
         font-size: 1.8rem;
     }
+}
+/* Скопируйте все стили из CreateCoursePage.module.css,
+   затем замените .createButton на .saveButton и добавьте: */
+
+.buttonGroup {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.cancelButton {
+    flex: 1;
+    padding: 14px;
+    background: #ccc;
+    color: #333;
+    border: none;
+    border-radius: 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cancelButton:hover {
+    background: #bbb;
+    transform: translateY(-2px);
+}
+
+.saveButton {
+    flex: 1;
+    padding: 14px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.saveButton:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(76, 175, 80, 0.3);
+}
+
+.saveButton:disabled {
+    opacity: 0.6;
+    transform: none;
+    cursor: not-allowed;
 }

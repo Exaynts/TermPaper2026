@@ -22,6 +22,8 @@ import ChangePasswordPage from './components/pages/ChangePasswordPage';
 import CourseDetailPage from './components/pages/CourseDetailPage';
 import CourseListPage from './components/pages/CourseListPage';
 import CreateCoursePage from './components/pages/CreateCoursePage';
+import CreatedCoursesPage from './components/pages/CreatedCoursesPage';
+import EditCoursePage from './components/pages/EditCoursePage';
 import FAQPage from './components/pages/FAQPage';
 import LoginPage from './components/pages/LoginPage';
 import MyCoursesPage from './components/pages/MyCoursesPage';
@@ -121,6 +123,16 @@ function AppRoutes() {
             <Route path="/create-course" element={
                 <ProtectedRoute>
                     <PageWrapper><CreateCoursePage /></PageWrapper>
+                </ProtectedRoute>
+            } />
+            <Route path="/created-courses" element={
+                <ProtectedRoute>
+                    <PageWrapper><CreatedCoursesPage /></PageWrapper>
+                </ProtectedRoute>
+            } />
+            <Route path="/edit-course/:id" element={
+                <ProtectedRoute>
+                    <PageWrapper><EditCoursePage /></PageWrapper>
                 </ProtectedRoute>
             } />
 

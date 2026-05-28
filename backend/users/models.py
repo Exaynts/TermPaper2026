@@ -6,7 +6,8 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    nickname = models.CharField(max_length=150, unique=True, verbose_name='Никнейм')
+    email = models.EmailField(unique=True, verbose_name='Email адрес')
+    nickname = models.CharField(max_length=50, unique=True, verbose_name='Никнейм')
     phone_number = models.CharField(max_length=20, blank=True, null=True, verbose_name='Телефон')
     date_of_birth = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
 

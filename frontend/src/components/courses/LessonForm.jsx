@@ -96,6 +96,12 @@ const LessonForm = ({ index, lesson, onChange, onRemove, canRemove }) => {
                     onChange={handleChange}
                 />
             </div>
+            {lesson.existing_image && !lesson.image && (
+                <div className={styles.fileInfo}>Current image: {lesson.existing_image.split('/').pop()}</div>
+            )}
+            {lesson.existing_task_file && !lesson.task_file && (
+                <div className={styles.fileInfo}>Current task file: {lesson.existing_task_file.split('/').pop()}</div>
+            )}
         </div>
     );
 };

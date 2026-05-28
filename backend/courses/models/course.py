@@ -18,6 +18,8 @@ class Course(models.Model):
     description = models.TextField(blank=True, verbose_name='Описание')
     image = models.ImageField(upload_to='courses/%Y/%m/%d/', blank=True, null=True, verbose_name='Изображение')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    is_deleted = models.BooleanField(default=False, verbose_name='Удалён автором')
+    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name='Дата удаления')
 
     # Связи
     created_by = models.ForeignKey(

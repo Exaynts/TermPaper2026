@@ -80,10 +80,13 @@ class CourseCreateUpdateSerializer(serializers.ModelSerializer):
     def validate_name(self, value):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            # Проверить, есть ли уже у этого пользователя курс с таким названием (без учёта регистра)
+            instance = self.instance
+            # Если обновляем курс и имя не изменилось – пропускаем
+            if instance and instance.name == value:
+                return value
             if Course.objects.filter(created_by=request.user, name__iexact=value).exists():
                 raise serializers.ValidationError(
-                    "You have already created a course with this name! Please choose a different name."
+                    "You have already created a course with this name. Please choose a different name."
                 )
         return value
 
@@ -113,6 +116,8 @@ class LessonCreateUpdateSerializer(serializers.ModelSerializer):
         return value
 
     def validate_task_file(self, value):
+        if value is None:
+            return value
         max_size = 25 * 1024 * 1024  # 25 МБ
         if value.size > max_size:
             raise serializers.ValidationError(
@@ -132,11 +137,23 @@ class SavedCourseSerializer(serializers.ModelSerializer):
 
 class PurchasedCourseSerializer(serializers.ModelSerializer):
     """Сериализатор для купленных курсов"""
-    course = CourseListSerializer(read_only=True)
+    course = serializers.SerializerMethodField()
 
     class Meta:
         model = PurchasedCourse
         fields = ['id', 'course', 'progress', 'purchased_at', 'status']
+
+    def get_course(self, obj):
+        # Вернуть объект, если курс помечен как удалённый
+        if obj.course.is_deleted:
+            return {
+                'course_id': obj.course.course_id,
+                'name': obj.course.name,
+                'is_deleted': True,
+                'deleted_at': obj.course.deleted_at,
+            }
+        # Если курс не удален, использовать существующий сериализатор
+        return CourseListSerializer(obj.course).data
 
 
 class RecycleBinCourseSerializer(serializers.ModelSerializer):

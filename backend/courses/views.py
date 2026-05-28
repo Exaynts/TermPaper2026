@@ -38,9 +38,10 @@ class CourseViewSet(viewsets.ModelViewSet):
     ordering = ['-created_at']
 
     def get_queryset(self):
-        """Для списка – только опубликованные курсы. Для детального – все (проверка прав позже)"""
+        """Добавить в список только опубликованные и не удалённые курсы"""
         if self.action == 'list':
-            return Course.objects.filter(status='published').select_related('category', 'created_by').prefetch_related(
+            return Course.objects.filter(status='published', is_deleted=False).select_related('category',
+                                                                                              'created_by').prefetch_related(
                 'lessons')
         return Course.objects.all().select_related('category', 'created_by').prefetch_related('lessons')
 
@@ -62,10 +63,10 @@ class CourseViewSet(viewsets.ModelViewSet):
         - Для действий, связанных с пользовательскими данными (save, unsave, purchase, move_to_bin, restore_from_bin) – только аутентифицированный пользователь.
         - Для остальных (list, retrieve) – любой (AllowAny).
         """
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+        if self.action in ['create', 'update', 'partial_update', 'soft_delete', 'destroy']:
             return [IsAuthorOrReadOnly()]
         elif self.action in ['save', 'unsave', 'purchase', 'move_to_recycle_bin', 'restore_from_bin',
-                             'remove_from_bin', 'add_lesson']:
+                             'remove_from_bin', 'add_lesson', 'my_created']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
@@ -210,11 +211,20 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response({'status': 'restored', 'message': 'Курс восстановлен из корзины'},
                         status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['delete'], url_path='soft_delete')
+    def soft_delete(self, request, pk=None):
+        """Удаление курса (скрыть, но не удалять из БД)"""
+        course = self.get_object()
+        from django.utils import timezone
+        course.is_deleted = True
+        course.deleted_at = timezone.now()
+        course.save()
+        return Response({'status': 'deleted', 'message': 'Course hidden from store'}, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['post'], url_path='lessons')
     def add_lesson(self, request, pk=None):
         """Создать урок в курсе"""
         course = self.get_object()
-        # Проверяем, что пользователь — автор курса или админ
         if course.created_by != request.user and not request.user.is_staff:
             return Response({'error': 'Only author can add lessons'}, status=status.HTTP_403_FORBIDDEN)
 
@@ -223,6 +233,15 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer.save(course=course)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @action(detail=False, methods=['get'], url_path='my_created')
+    def my_created(self, request):
+        """Возвращает курсы, созданные текущим пользователем"""
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=401)
+        courses = Course.objects.filter(created_by=user)
+        serializer = self.get_serializer(courses, many=True)
+        return Response(serializer.data)
 
 class LessonViewSet(viewsets.ModelViewSet):
     """
@@ -257,6 +276,13 @@ class LessonViewSet(viewsets.ModelViewSet):
             self.permission_denied(self.request, message="Вы не являетесь автором этого курса")
         serializer.save(course=course)
 
+    def perform_destroy(self, instance):
+        """Мягкое удаление курса: пометить как удалённый, но не удалять из БД"""
+        from django.utils import timezone
+        instance.is_deleted = True
+        instance.deleted_at = timezone.now()
+        instance.save()
+
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAuthorOrReadOnly()]
@@ -276,7 +302,7 @@ class LessonProgressViewSet(viewsets.ViewSet):
         lesson_id = serializer.validated_data['lesson']
         lesson = get_object_or_404(Lesson, pk=lesson_id)
 
-        # Проверяем, что пользователь купил курс, содержащий этот урок
+        # Проверить, что пользователь купил курс, содержащий этот урок
         purchased = PurchasedCourse.objects.filter(
             user=request.user,
             course=lesson.course,
@@ -289,19 +315,19 @@ class LessonProgressViewSet(viewsets.ViewSet):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        # Ищем или создаём запись прогресса
+        # Найти или создать запись прогресса
         progress, created = LessonProgress.objects.get_or_create(
             purchased_course=purchased,
             lesson=lesson
         )
 
         if progress.completed_at is None:
-            # Отмечаем пройденным
+            # Отметить как пройденный
             from django.utils import timezone
             progress.completed_at = timezone.now()
             progress.save()
 
-            # Пересчитываем общий прогресс курса
+            # Пересчитывать общий прогресс курса
             total_lessons = lesson.course.lessons.count()
             completed_count = LessonProgress.objects.filter(
                 purchased_course=purchased,
