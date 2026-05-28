@@ -79,31 +79,37 @@ const CourseDetailPage = () => {
         }
     };
 
-    // Функция, которая выполнит реальную покупку после подтверждения
-    const confirmPurchase = async () => {
+    const handlePurchaseConfirm = async () => {
         setActionLoading(true);
         try {
             await api.post(`/courses/${id}/purchase/`);
             setIsPurchased(true);
             setProgress(0);
             alert('The course has been successfully purchased!');
-            await fetchUserStatus(); // обновить статус
-            setShowPurchaseModal(false);
+            await fetchUserStatus();
         } catch (err) {
             console.error(err);
             alert('Error when purchasing course');
         } finally {
             setActionLoading(false);
+            setShowPurchaseModal(false);
         }
     };
 
-    // Открыть модальное окно (вызывается при клике на "Купить курс")
-    const openPurchaseModal = () => {
-        if (!isAuthenticated) {
-            navigate('/login');
-            return;
+    const handleDeleteCourse = async () => {
+        setActionLoading(true);
+        try {
+            await api.post(`/courses/${id}/move_to_bin/`);
+            setIsPurchased(false);
+            alert('Course moved to recycle bin');
+            navigate('/courses');
+        } catch (err) {
+            console.error(err);
+            alert('Error moving course to bin');
+        } finally {
+            setActionLoading(false);
+            setShowDeleteModal(false);
         }
-        setShowPurchaseModal(true);
     };
 
     const handleSaveToggle = async () => {
@@ -185,28 +191,39 @@ const CourseDetailPage = () => {
                         )}
                     </div>
                     {!isPurchased ? (
-                        <button
-                            onClick={openPurchaseModal}
-                            disabled={actionLoading}
-                            className={styles.purchaseButton}
-                        >
-                            {actionLoading ? 'Processing...' : 'Buy a course'}
-                        </button>
+                        <>
+                            <button
+                                onClick={() => setShowPurchaseModal(true)}
+                                disabled={actionLoading}
+                                className={styles.purchaseButton}
+                            >
+                                {actionLoading ? 'Processing...' : 'Buy course'}
+                            </button>
+                            <button
+                                onClick={handleSaveToggle}
+                                disabled={actionLoading}
+                                className={`${styles.saveButton} ${isSaved ? styles.saved : ''}`}
+                            >
+                                {isSaved ? '★ In favorites' : '☆ Save'}
+                            </button>
+                        </>
                     ) : (
-                        <button
-                            onClick={handleContinue}
-                            className={styles.continueButton}
-                        >
-                            Continue training
-                        </button>
+                        <div className={styles.buttonGroup}>
+                            <button
+                                onClick={handleContinue}
+                                className={styles.continueButton}
+                            >
+                                Continue training
+                            </button>
+                            <button
+                                onClick={() => setShowDeleteModal(true)}
+                                className={styles.deleteCourseButton}
+                                title="Move to recycle bin"
+                            >
+                                <TrashIcon />
+                            </button>
+                        </div>
                     )}
-                    <button
-                        onClick={handleSaveToggle}
-                        disabled={actionLoading}
-                        className={`${styles.saveButton} ${isSaved ? styles.saved : ''}`}
-                    >
-                        {isSaved ? '★ In favorites' : '☆ Save'}
-                    </button>
                 </div>
             </div>
 

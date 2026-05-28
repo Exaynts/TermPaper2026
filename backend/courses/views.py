@@ -92,28 +92,22 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response({'status': 'not_saved', 'message': 'Курс не был в сохранённых'},
                         status=status.HTTP_404_NOT_FOUND)
 
-    @action(detail=True, methods=['post'])
-    def move_to_bin(self, request, pk=None):
-        """Переместить курс в корзину восстановления"""
-        course = self.get_object()
-        # Проверяем, не находится ли уже в корзине
-        if RecycleBinCourse.objects.filter(user=request.user, course=course).exists():
-            return Response({'status': 'already_in_bin', 'message': 'Курс уже в корзине'},
-                            status=status.HTTP_400_BAD_REQUEST)
+    @action(detail=False, methods=['get'], url_path='purchased_courses')
+    def purchased_courses(self, request):
+        """Возвратить курсы, купленные пользователем"""
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=401)
 
-        RecycleBinCourse.objects.create(user=request.user, course=course)
-        return Response({'status': 'moved_to_bin', 'message': 'Курс перемещён в корзину'}, status=status.HTTP_200_OK)
+        # Получить ID курсов, которые купил пользователь (используем модель PurchasedCourse)
+        purchased_course_ids = PurchasedCourse.objects.filter(user=user).values_list('course_id', flat=True)
 
-    @action(detail=True, methods=['post'])
-    def restore_from_bin(self, request, pk=None):
-        """Восстановить курс из корзины"""
-        course = self.get_object()
-        deleted, _ = RecycleBinCourse.objects.filter(user=request.user, course=course).delete()
-        if deleted:
-            return Response({'status': 'restored', 'message': 'Курс восстановлен из корзины'},
-                            status=status.HTTP_200_OK)
-        return Response({'status': 'not_in_bin', 'message': 'Курс не найден в корзине'},
-                        status=status.HTTP_404_NOT_FOUND)
+        courses = Course.objects.filter(course_id__in=purchased_course_ids)
+        serializer = self.get_serializer(courses, many=True)
+
+        # Сформировать ответ в том же формате, что и для saved_courses
+        data = [{'course': course} for course in serializer.data]
+        return Response({'results': data})
 
     @action(detail=True, methods=['post'])
     def purchase(self, request, pk=None):
@@ -159,6 +153,61 @@ class CourseViewSet(viewsets.ModelViewSet):
         binned = RecycleBinCourse.objects.filter(user=request.user).select_related('course')
         serializer = RecycleBinCourseSerializer(binned, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def move_to_recycle_bin(self, request, pk=None):
+        """Переместить курс в корзину восстановления"""
+        course = self.get_object()
+        user = request.user
+        # Проверить, не находится ли уже в корзине
+        if RecycleBinCourse.objects.filter(user=user, course=course).exists():
+            return Response({'status': 'already_in_bin', 'message': 'Курс уже в корзине'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Удалить запись о покупке, если она есть
+        PurchasedCourse.objects.filter(user=user, course=course).delete()
+        # Добавить в корзину
+        RecycleBinCourse.objects.create(user=user, course=course)
+        return Response({'status': 'moved_to_bin', 'message': 'Курс перемещён в корзину'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['delete'], url_path='remove_from_bin')
+    def remove_from_bin(self, request, pk=None):
+        """Безвозвратно удалить курс из корзины пользователя (без возможности восстановления)"""
+        course = self.get_object()
+        user = request.user
+
+        bin_entry = RecycleBinCourse.objects.filter(user=user, course=course).first()
+        if not bin_entry:
+            return Response({'status': 'not_in_bin', 'message': 'Курс не найден в корзине'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        bin_entry.delete()
+        return Response({'status': 'removed_from_bin', 'message': 'Курс полностью удалён из корзины'},
+                        status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], url_path='restore_from_bin')
+    def restore_from_bin(self, request, pk=None):
+        """Восстановить курс из корзины (вернуть в купленные)"""
+        course = self.get_object()
+        user = request.user
+
+        bin_entry = RecycleBinCourse.objects.filter(user=user, course=course).first()
+        if not bin_entry:
+            return Response({'status': 'not_in_bin', 'message': 'Курс не найден в корзине'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        # Восстанавливаем запись о покупке, если её нет
+        PurchasedCourse.objects.get_or_create(
+            user=user,
+            course=course,
+            defaults={'progress': 0, 'status': 'active'}
+        )
+
+        # Удаляем из корзины
+        bin_entry.delete()
+
+        return Response({'status': 'restored', 'message': 'Курс восстановлен из корзины'},
+                        status=status.HTTP_200_OK)
 
 
 class LessonViewSet(viewsets.ModelViewSet):

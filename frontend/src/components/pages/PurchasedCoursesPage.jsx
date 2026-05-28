@@ -87,7 +87,7 @@ const PurchasedCoursesPage = () => {
                                     disabled={movingId === course.course_id}
                                     className={styles.recycleButton}
                                 >
-                                    {movingId === course.course_id ? 'Moving...' : 'Put in Recycle Bin'}
+                                    {movingId === course.course_id ? 'Moving...' : 'Move to Recycle Bin'}
                                 </button>
                             </div>
                         );
