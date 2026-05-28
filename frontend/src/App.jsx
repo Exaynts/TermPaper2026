@@ -25,7 +25,9 @@ import FAQPage from './components/pages/FAQPage';
 import LoginPage from './components/pages/LoginPage';
 import MyCoursesPage from './components/pages/MyCoursesPage';
 import ProfilePage from './components/pages/ProfilePage';
+import PurchasedCoursesPage from './components/pages/PurchasedCoursesPage';
 import RegisterPage from './components/pages/RegisterPage';
+import RecycleBinPage from './components/pages/RecycleBinPage';
 import SavedCoursesPage from './components/pages/SavedCoursesPage';
 import TermsAndConditionsPage from './components/pages/TermsAndConditionsPage';
 
@@ -98,6 +100,16 @@ function AppRoutes() {
             <Route path="/saved-courses" element={
                 <ProtectedRoute>
                     <PageWrapper><SavedCoursesPage /></PageWrapper>
+                </ProtectedRoute>
+            } />
+            <Route path="/purchased-courses" element={
+                <ProtectedRoute>
+                    <PageWrapper><PurchasedCoursesPage /></PageWrapper>
+                </ProtectedRoute>
+            } />
+            <Route path="/recycle-bin" element={
+                <ProtectedRoute>
+                    <PageWrapper><RecycleBinPage /></PageWrapper>
                 </ProtectedRoute>
             } />
             <Route path="/change-password" element={

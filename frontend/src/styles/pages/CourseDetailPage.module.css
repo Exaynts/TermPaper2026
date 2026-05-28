@@ -384,6 +384,57 @@
     transform: scale(1.05);
 }
 
+/* Группа кнопок для купленного курса */
+.buttonGroup {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.continueButton {
+    flex: 2;
+    background: #28a745;
+    color: white;
+    padding: 10px 24px;
+    border-radius: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-align: center;
+}
+
+.continueButton:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+.deleteCourseButton {
+    flex: 0 0 auto;
+    background: #f55;
+    border: none;
+    border-radius: 40px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.deleteCourseButton:hover {
+    background: #d44;
+    transform: translateY(-2px);
+}
+
+.trashIcon {
+    width: 20px;
+    height: 20px;
+    stroke: white;
+    fill: none;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
     .courseHeaderCard {

@@ -3,14 +3,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from .models import Category, Course, Lesson, SavedCourse, RecycleBinCourse, PurchasedCourse, LessonProgress
+from .models import Category, Course, Lesson, SavedCourse, PurchasedCourse, RecycleBinCourse, LessonProgress
 from .serializers import (
     CategorySerializer, CourseListSerializer, CourseDetailSerializer,
     CourseCreateUpdateSerializer, LessonCreateUpdateSerializer,
     SavedCourseSerializer, RecycleBinCourseSerializer,
     PurchasedCourseSerializer, LessonProgressSerializer, LessonProgressCreateSerializer
 )
-from .permissions import IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly
+from .permissions import IsAuthorOrReadOnly
 from .filters import CourseFilter
 
 
@@ -63,7 +63,8 @@ class CourseViewSet(viewsets.ModelViewSet):
         """
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAuthorOrReadOnly()]
-        elif self.action in ['save', 'unsave', 'purchase', 'move_to_bin', 'restore_from_bin']:
+        elif self.action in ['save', 'unsave', 'purchase', 'move_to_recycle_bin', 'restore_from_bin',
+                             'remove_from_bin']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 

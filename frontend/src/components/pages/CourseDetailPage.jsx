@@ -2,7 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
+import ConfirmationModal from '../../components/common/ConfirmationModal';
 import styles from '../../styles/pages/CourseDetailPage.module.css';
+
+// Иконка корзины (SVG)
+const TrashIcon = () => (
+    <svg className={styles.trashIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 6h18" />
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+        <path d="M8 4V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1" />
+        <line x1="10" y1="11" x2="10" y2="17" />
+        <line x1="14" y1="11" x2="14" y2="17" />
+    </svg>
+);
 
 const CourseDetailPage = () => {
     const { id } = useParams();
@@ -16,8 +28,8 @@ const CourseDetailPage = () => {
     const [progress, setProgress] = useState(0);
     const [completedLessons, setCompletedLessons] = useState([]);
     const [actionLoading, setActionLoading] = useState(false);
-    // Состояние для модального окна подтверждения покупки
     const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         fetchCourseDetails();
@@ -139,6 +151,7 @@ const CourseDetailPage = () => {
     const hasDiscount = course.discount && course.discount > 0;
     const discountedPrice = course.discounted_price || course.price;
     const finalPrice = formatPrice(discountedPrice);
+    const originalPrice = formatPrice(course.price);
 
     return (
         <div className={styles.container}>
@@ -154,16 +167,16 @@ const CourseDetailPage = () => {
                     <div className={styles.meta}>
                         <span className={styles.rating}>★ {Number(course.rating || 0).toFixed(1)}</span>
                         <span className={styles.category}>
-                            Категория: <Link to={`/courses?category=${course.category?.slug}`}>{course.category?.title}</Link>
+                            Category: <Link to={`/courses?category=${course.category?.slug}`}>{course.category?.title}</Link>
                         </span>
-                        <span className={styles.author}>Автор: {course.author || course.author_name || 'MathJam'}</span>
+                        <span className={styles.author}>Author: {course.author || course.author_name || 'MathJam'}</span>
                     </div>
                 </div>
                 <div className={styles.headerRight}>
                     <div className={styles.priceBlock}>
                         {hasDiscount ? (
                             <>
-                                <span className={styles.oldPrice}>{formatPrice(course.price)}₽</span>
+                                <span className={styles.oldPrice}>{originalPrice}₽</span>
                                 <span className={styles.currentPrice}>{finalPrice}₽</span>
                                 <span className={styles.discountBadge}>-{course.discount}%</span>
                             </>
@@ -204,14 +217,14 @@ const CourseDetailPage = () => {
             )}
 
             <div className={styles.descriptionCard}>
-                <h2>О курсе</h2>
+                <h2>About the course</h2>
                 <p>{course.description || 'No description'}</p>
             </div>
 
             {isPurchased && (
                 <div className={styles.progressCard}>
                     <div className={styles.progressHeader}>
-                        <span>Ваш прогресс</span>
+                        <span>Your progress</span>
                         <span>{progress}%</span>
                     </div>
                     <div className={styles.progressBar}>
@@ -221,7 +234,7 @@ const CourseDetailPage = () => {
             )}
 
             <div className={styles.lessonsCard}>
-                <h2>Уроки курса ({course.lessons?.length || 0})</h2>
+                <h2>Course lessons ({course.lessons?.length || 0})</h2>
                 <ul className={styles.lessonsList}>
                     {course.lessons && course.lessons.length > 0 ? (
                         course.lessons.map(lesson => {
@@ -264,20 +277,26 @@ const CourseDetailPage = () => {
             )}
 
             {/* Модальное окно подтверждения покупки */}
-            {showPurchaseModal && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modalContent}>
-                        <p>Confirm course purchase<br />
-                        Your account will be debited {finalPrice} ₽</p>
-                        <div className={styles.modalButtons}>
-                            <button className={styles.modalCancel} onClick={() => setShowPurchaseModal(false)}>Cancel</button>
-                            <button className={styles.modalConfirm} onClick={confirmPurchase}>
-                                Confirm
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <ConfirmationModal
+                isOpen={showPurchaseModal}
+                title="Confirm Purchase"
+                message={`Are you sure you want to purchase this course? ${finalPrice}₽ will be deducted from your account.`}
+                onConfirm={handlePurchaseConfirm}
+                onCancel={() => setShowPurchaseModal(false)}
+                confirmText="Confirm"
+                cancelText="Cancel"
+            />
+
+            {/* Модальное окно подтверждения удаления курса (move to bin) */}
+            <ConfirmationModal
+                isOpen={showDeleteModal}
+                title="Delete Course"
+                message="Are you sure you want to delete this course from your purchased list? It will be moved to the recycle bin and you can restore it later."
+                onConfirm={handleDeleteCourse}
+                onCancel={() => setShowDeleteModal(false)}
+                confirmText="Delete"
+                cancelText="Cancel"
+            />
         </div>
     );
 };

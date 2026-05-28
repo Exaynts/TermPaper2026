@@ -41,11 +41,12 @@ const Header = () => {
                     {isAuthenticated && (
                         <>
                             <li className="dropdown">
-                                <Link to="#">My Courses</Link>  {/* заглушка, не ведёт на страницу */}
+                                <Link to="#">My Courses</Link>
                                 <div className="dropdown-content">
                                     <Link to="/saved-courses">Saved</Link>
-                                    <Link to="/my-courses">Purchased</Link>
+                                    <Link to="/purchased-courses">Purchased</Link>
                                     <Link to="/created-courses">Created</Link>
+                                    <Link to="/recycle-bin">Recycle Bin</Link>
                                 </div>
                             </li>
                             <li>
