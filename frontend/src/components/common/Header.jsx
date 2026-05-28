@@ -45,8 +45,9 @@ const Header = () => {
                                 <div className="dropdown-content">
                                     <Link to="/saved-courses">Saved</Link>
                                     <Link to="/purchased-courses">Purchased</Link>
-                                    <Link to="/created-courses">Created</Link>
                                     <Link to="/recycle-bin">Recycle Bin</Link>
+                                    <Link to="/created-courses">Created</Link>
+                                    <Link to="/create-course">Create Course</Link>
                                 </div>
                             </li>
                             <li>

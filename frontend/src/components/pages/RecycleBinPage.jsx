@@ -63,9 +63,9 @@ const RecycleBinPage = () => {
     const handlePermanentDelete = async () => {
         if (!deleteModalCourse) return;
         const courseId = deleteModalCourse.id;
-        setRestoringId(courseId); // используем тот же индикатор загрузки
+        setRestoringId(courseId);
         try {
-            await api.delete(`/courses/${courseId}/permanently_delete/`);
+            await api.delete(`/courses/${courseId}/remove_from_bin/`);
             // Удаляем курс из списка корзины
             setBinCourses(prev => prev.filter(item => item.course?.course_id !== courseId));
         } catch (err) {

@@ -21,6 +21,7 @@ import AboutUsPage from './components/pages/AboutUsPage';
 import ChangePasswordPage from './components/pages/ChangePasswordPage';
 import CourseDetailPage from './components/pages/CourseDetailPage';
 import CourseListPage from './components/pages/CourseListPage';
+import CreateCoursePage from './components/pages/CreateCoursePage';
 import FAQPage from './components/pages/FAQPage';
 import LoginPage from './components/pages/LoginPage';
 import MyCoursesPage from './components/pages/MyCoursesPage';
@@ -92,6 +93,11 @@ function AppRoutes() {
                     <PageWrapper><ProfilePage /></PageWrapper>
                 </ProtectedRoute>
             } />
+            <Route path="/change-password" element={
+                <ProtectedRoute>
+                    <PageWrapper><ChangePasswordPage /></PageWrapper>
+                </ProtectedRoute>
+            } />
             <Route path="/my-courses" element={
                 <ProtectedRoute>
                     <PageWrapper><MyCoursesPage /></PageWrapper>
@@ -112,9 +118,9 @@ function AppRoutes() {
                     <PageWrapper><RecycleBinPage /></PageWrapper>
                 </ProtectedRoute>
             } />
-            <Route path="/change-password" element={
+            <Route path="/create-course" element={
                 <ProtectedRoute>
-                    <PageWrapper><ChangePasswordPage /></PageWrapper>
+                    <PageWrapper><CreateCoursePage /></PageWrapper>
                 </ProtectedRoute>
             } />
 

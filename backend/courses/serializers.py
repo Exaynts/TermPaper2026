@@ -47,7 +47,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
         fields = [
             'course_id', 'name', 'price', 'discount', 'discounted_price',
             'rating', 'status', 'description', 'image', 'created_at',
-            'category', 'author', 'lessons'                       # ← добавить 'lessons'
+            'category', 'author', 'lessons'
         ]
 
     def get_discounted_price(self, obj):
@@ -72,13 +72,20 @@ class LessonListSerializer(serializers.ModelSerializer):
 
 
 class CourseCreateUpdateSerializer(serializers.ModelSerializer):
-    """Сериализатор для создания и обновления курса"""
     class Meta:
         model = Course
-        fields = [
-            'name', 'price', 'discount', 'status', 'description',
-            'image', 'category'
-        ]
+        fields = ['course_id', 'name', 'price', 'discount', 'status', 'description', 'image', 'category']
+        read_only_fields = ['course_id']
+
+    def validate_name(self, value):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            # Проверить, есть ли уже у этого пользователя курс с таким названием (без учёта регистра)
+            if Course.objects.filter(created_by=request.user, name__iexact=value).exists():
+                raise serializers.ValidationError(
+                    "You have already created a course with this name! Please choose a different name."
+                )
+        return value
 
     def validate_price(self, value):
         if value < 0:
@@ -90,8 +97,9 @@ class CourseCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Скидка должна быть от 0 до 100")
         return value
 
-
 class LessonCreateUpdateSerializer(serializers.ModelSerializer):
+    task_file = serializers.FileField(required=False, allow_null=True)
+    image = serializers.ImageField(required=False, allow_null=True)
     """Сериализатор для создания и обновления урока"""
     class Meta:
         model = Lesson
@@ -102,6 +110,14 @@ class LessonCreateUpdateSerializer(serializers.ModelSerializer):
     def validate_order(self, value):
         if value < 0:
             raise serializers.ValidationError("Порядковый номер не может быть отрицательным")
+        return value
+
+    def validate_task_file(self, value):
+        max_size = 25 * 1024 * 1024  # 25 МБ
+        if value.size > max_size:
+            raise serializers.ValidationError(
+                f"File size must not exceed 25 MB (current: {value.size // (1024 * 1024)} MB)."
+            )
         return value
 
 

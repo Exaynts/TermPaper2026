@@ -19,6 +19,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = None
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -64,7 +65,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAuthorOrReadOnly()]
         elif self.action in ['save', 'unsave', 'purchase', 'move_to_recycle_bin', 'restore_from_bin',
-                             'remove_from_bin']:
+                             'remove_from_bin', 'add_lesson']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
@@ -208,6 +209,19 @@ class CourseViewSet(viewsets.ModelViewSet):
 
         return Response({'status': 'restored', 'message': 'Курс восстановлен из корзины'},
                         status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], url_path='lessons')
+    def add_lesson(self, request, pk=None):
+        """Создать урок в курсе"""
+        course = self.get_object()
+        # Проверяем, что пользователь — автор курса или админ
+        if course.created_by != request.user and not request.user.is_staff:
+            return Response({'error': 'Only author can add lessons'}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = LessonCreateUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(course=course)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class LessonViewSet(viewsets.ModelViewSet):

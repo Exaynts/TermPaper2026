@@ -1,0 +1,80 @@
+.lessonCard {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 25px;
+    transition: box-shadow 0.2s;
+}
+
+.lessonCard:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.lessonHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.lessonHeader h3 {
+    margin: 0;
+    color: #f55;
+    font-size: 1.2rem;
+}
+
+.removeLessonBtn {
+    background: #ffdddd;
+    border: none;
+    color: #f55;
+    padding: 5px 12px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.removeLessonBtn:hover {
+    background: #f55;
+    color: white;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.formGroup label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.textInput, .textArea, .fileInput {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    transition: 0.2s;
+    font-family: inherit;
+}
+
+.textInput:focus, .textArea:focus {
+    border-color: #f55;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255,85,85,0.2);
+}
+
+.textArea {
+    resize: vertical;
+}
+
+.hint {
+    font-size: 0.7rem;
+    color: #888;
+}
