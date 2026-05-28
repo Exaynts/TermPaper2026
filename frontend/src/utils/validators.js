@@ -16,9 +16,9 @@ export const validatePriceInput = (value) => {
     let integerPart = parts[0] || '';
     let fractionalPart = parts[1] || '';
 
-    // Ограничиваем целую часть до 9 цифр
-    if (integerPart.length > 9) {
-        integerPart = integerPart.slice(0, 9);
+    // Ограничиваем целую часть до 8 цифр
+    if (integerPart.length > 8) {
+        integerPart = integerPart.slice(0, 8);
     }
 
     // Убираем ведущие нули в целой части, но не оставляем пустую строку
@@ -57,7 +57,7 @@ export const validatePriceInput = (value) => {
 export const validateDiscountInput = (value) => {
     let filtered = value.replace(/[^\d]/g, '');
     if (filtered === '') return '';
-    let num = parseInt(filtered, 10);
+    let num = parseInt(filtered, 9);
     if (num > 100) num = 100;
     return num.toString();
 };
