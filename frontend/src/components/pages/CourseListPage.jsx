@@ -160,7 +160,7 @@ const CourseListPage = () => {
                     </form>
                 </div>
                 <div className={styles.courseList}>
-                    {courses.length === 0 && !loading && <p>No courses found</p>}
+                    {courses.length === 0 && !loading && <p className={styles.noCourseFound}>No courses found</p>}
                     {courses.map(course => (
                         <CourseCard key={course.course_id} course={course} />
                     ))}

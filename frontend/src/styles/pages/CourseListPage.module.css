@@ -29,6 +29,13 @@
     flex-direction: column;
     gap: 20px;
 }
+
+.noCourseFound {
+    font-size: 48px;
+    font-weight: 700;
+    text-align: center;
+}
+
 .loading, .error {
     text-align: center;
     padding: 40px;
