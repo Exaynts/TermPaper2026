@@ -54,3 +54,38 @@
     background-color: #d44;
     transform: translateY(-2px);
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.pageButton {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pageButton:hover:not(:disabled) {
+    background: #f0f0f0;
+    border-color: #f55;
+}
+
+.pageButton.activePage {
+    background: #f55;
+    color: white;
+    border-color: #f55;
+}
+
+.pageButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import ConfirmationModal from '../../components/common/ConfirmationModal';
-import StarRating from '../../components/common/StarRating';   // ← добавлен импорт
+import StarRating from '../../components/common/StarRating';
 import styles from '../../styles/pages/CourseDetailPage.module.css';
 
 // Иконка корзины (SVG)

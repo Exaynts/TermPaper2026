@@ -4,15 +4,13 @@ import CourseCard from '../../components/common/CourseCard';
 import CourseFilters from '../../components/courses/CourseFilters';
 import styles from '../../styles/pages/CourseListPage.module.css';
 
-// Константа количества курсов на страницу (должна совпадать с PAGE_SIZE в config/settings.py)
+// Определить константу количества курсов на страницу (совпадает с PAGE_SIZE в бэкенде)
 const PAGE_SIZE = 5;
 
 const CourseListPage = () => {
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [hasMore, setHasMore] = useState(false);
-    const [nextPage, setNextPage] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
     // Состояния фильтров
@@ -24,20 +22,23 @@ const CourseListPage = () => {
     const [ratingMax, setRatingMax] = useState('');
     const [sortBy, setSortBy] = useState('');
 
-    // Сброс пагинации и списка курсов
-    const resetPagination = () => {
-        setCourses([]);
-        setHasMore(false);
-        setNextPage(null);
-    };
+    // Пагинация
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
-    // Функция загрузки курсов с возможностью добавить новые данные к существующим
-    const loadCourses = useCallback(async (page = 1, append = false) => {
+    // Сбросить состояние и загрузить первую страницу
+    const resetAndFetch = useCallback(() => {
+        setCourses([]);
+        setCurrentPage(1);
+        setTotalPages(1);
+        fetchCourses(1, false);
+    }, []);
+
+    // Загрузить курсы. append = true – добавить к существующим, false – заменить
+    const fetchCourses = useCallback(async (page, append = false) => {
         setLoading(true);
         try {
-            let url = '/courses/';
             const params = new URLSearchParams();
-
             if (searchTerm) params.append('search', searchTerm);
             if (priceMin) params.append('price_min', priceMin);
             if (priceMax) params.append('price_max', priceMax);
@@ -47,58 +48,69 @@ const CourseListPage = () => {
             if (selectedCategories.length) {
                 params.append('categories', selectedCategories.join(','));
             }
-
             let ordering = '';
             if (sortBy === 'price_asc') ordering = 'price';
             else if (sortBy === 'price_desc') ordering = '-price';
             else if (sortBy === 'rating') ordering = '-rating';
             else if (sortBy === 'newest') ordering = '-created_at';
             if (ordering) params.append('ordering', ordering);
-
             params.append('page', page);
             params.append('page_size', PAGE_SIZE);
 
-            if (params.toString()) url += `?${params.toString()}`;
+            const url = `/courses/?${params.toString()}`;
             const response = await api.get(url);
             const data = response.data.results || response.data;
-            const next = response.data.next;
+            const count = response.data.count || data.length;
+            const total = Math.ceil(count / PAGE_SIZE);
+
+            setTotalPages(total);
 
             if (append) {
                 setCourses(prev => [...prev, ...data]);
             } else {
                 setCourses(data);
             }
-            setHasMore(!!next);
-            setNextPage(next);
             setError(null);
         } catch (err) {
             console.error(err);
             setError('Failed to load courses');
             setCourses([]);
-            setHasMore(false);
         } finally {
             setLoading(false);
         }
     }, [searchTerm, priceMin, priceMax, hasDiscount, ratingMin, ratingMax, selectedCategories, sortBy]);
 
-    // Загрузка первой страницы при изменении фильтров или поиска
+    // Применить фильтры и поиск (сбросить пагинацию, загрузить первую страницу)
     const performFiltering = useCallback(() => {
-        resetPagination();
-        loadCourses(1, false);
-    }, [loadCourses]);
+        setCourses([]);
+        setCurrentPage(1);
+        setTotalPages(1);
+        fetchCourses(1, false);
+    }, [fetchCourses]);
 
-    // Обработчик отправки формы поиска (лупа)
+    // Переключиться на определённую страницу (заменить список)
+    const goToPage = (page) => {
+        if (page < 1 || page > totalPages) return;
+        setCurrentPage(page);
+        fetchCourses(page, false);
+    };
+
+    // Загрузить следующую страницу (добавить курсы к уже загруженным)
+    const loadMore = () => {
+        const nextPage = currentPage + 1;
+        if (nextPage <= totalPages) {
+            setCurrentPage(nextPage);
+            fetchCourses(nextPage, true);
+        }
+    };
+
+    // Обработать отправку формы поиска (лупа)
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         performFiltering();
     };
 
-    // Применение всех фильтров (кнопка «Apply»)
-    const applyFilters = () => {
-        performFiltering();
-    };
-
-    // Сброс всех фильтров и поиска
+    // Сбросить все фильтры и поиск
     const resetFilters = () => {
         setSelectedCategories([]);
         setPriceMin('');
@@ -108,25 +120,46 @@ const CourseListPage = () => {
         setRatingMax('');
         setSortBy('');
         setSearchTerm('');
-        resetPagination();
-        loadCourses(1, false);
+        performFiltering();
     };
 
-    // Загрузка следующей страницы (кнопка Load more)
-    const loadMore = () => {
-        if (!nextPage) return;
-        // Извлекаем номер следующей страницы из URL next
-        const urlParams = new URLSearchParams(nextPage.split('?')[1]);
-        const nextPageNum = urlParams.get('page');
-        if (nextPageNum) {
-            loadCourses(parseInt(nextPageNum), true);
-        }
-    };
-
-    // Первоначальная загрузка при монтировании
+    // При изменении фильтров или поиска сбросить пагинацию и загрузить первую страницу
     useEffect(() => {
-        loadCourses(1, false);
-    }, []);
+        performFiltering();
+    }, [searchTerm, priceMin, priceMax, hasDiscount, ratingMin, ratingMax, selectedCategories, sortBy]);
+
+    // Первоначальная загрузка
+    useEffect(() => {
+        performFiltering();
+    }, []); // пустой массив – только при монтировании
+
+    // Создать кнопки пагинации (если страниц больше одной)
+    const renderPagination = () => {
+        if (totalPages <= 1) return null;
+        const maxVisible = 5;
+        let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        let end = Math.min(totalPages, start + maxVisible - 1);
+        if (end - start + 1 < maxVisible) {
+            start = Math.max(1, end - maxVisible + 1);
+        }
+        const pages = [];
+        for (let i = start; i <= end; i++) pages.push(i);
+        return (
+            <div className={styles.pagination}>
+                <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} className={styles.pageButton}>
+                    Previous
+                </button>
+                {pages.map(p => (
+                    <button key={p} onClick={() => goToPage(p)} className={`${styles.pageButton} ${p === currentPage ? styles.activePage : ''}`}>
+                        {p}
+                    </button>
+                ))}
+                <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} className={styles.pageButton}>
+                    Next
+                </button>
+            </div>
+        );
+    };
 
     if (error) return <div className={styles.error}>{error}</div>;
 
@@ -148,7 +181,7 @@ const CourseListPage = () => {
                 onRatingMaxChange={setRatingMax}
                 onSortChange={setSortBy}
                 onResetFilters={resetFilters}
-                onApplyFilters={applyFilters}
+                onApplyFilters={performFiltering}
             />
             <div className={styles.content}>
                 <div className={styles.searchBar}>
@@ -169,11 +202,12 @@ const CourseListPage = () => {
                         <CourseCard key={course.course_id} course={course} />
                     ))}
                     {loading && <div className={styles.loading}>Loading...</div>}
-                    {!loading && hasMore && (
+                    {!loading && courses.length > 0 && currentPage < totalPages && (
                         <button onClick={loadMore} className={styles.loadMoreButton}>
                             Load more
                         </button>
                     )}
+                    {renderPagination()}
                 </div>
             </div>
         </div>
