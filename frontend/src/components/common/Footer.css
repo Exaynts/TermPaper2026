@@ -49,12 +49,19 @@
   color: #f88;
   text-decoration: underline;
 }
+.footer-slogan {
+  text-align: center;
+  padding: 10px 0 5px;
+  font-size: 30px;
+  font-weight: 700;
+}
 
 .footer-bottom {
   background-color: #f88;
   padding: 15px 0;
   text-align: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;

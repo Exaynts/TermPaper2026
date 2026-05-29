@@ -36,8 +36,10 @@ const Footer = () => {
                     </ul>
                 </div>
             </div>
-            <div className="footer-bottom">
+            <div className="footer-slogan">
                 <p className="footer-slogan">We make mathematics understandable and engaging for everyone!</p>
+            </div>
+            <div className="footer-bottom">
                 <p className="copyright">&copy; 2026 MathJam. All rights reserved.</p>
             </div>
 
