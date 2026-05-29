@@ -163,6 +163,14 @@ const CourseDetailPage = () => {
         }
     };
 
+    const handleBuyClick = () => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+        setShowPurchaseModal(true);
+    };
+
     const formatPrice = (price) => {
         const num = Number(price);
         return num % 1 === 0 ? num.toFixed(0) : num.toFixed(2);
@@ -211,7 +219,7 @@ const CourseDetailPage = () => {
                     {!isPurchased ? (
                         <>
                             <button
-                                onClick={() => setShowPurchaseModal(true)}
+                                onClick={handleBuyClick}
                                 disabled={actionLoading}
                                 className={styles.purchaseButton}
                             >
