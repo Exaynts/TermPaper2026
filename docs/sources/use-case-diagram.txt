@@ -1,0 +1,48 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+
+actor "Гость" as Guest
+actor "Авторизованный\nпользователь" as AuthUser
+actor "Администратор" as Admin
+
+rectangle "MathJam Платформа" {
+  usecase "Просмотр списка курсов" as UC1
+  usecase "Поиск курсов" as UC2
+  usecase "Просмотр карточки курса" as UC3
+  usecase "Регистрация / Логин" as UC4
+  usecase "Редактирование профиля" as UC5
+  usecase "Сохранение в избранное" as UC6
+  usecase "Отметка прогресса уроков" as UC7
+  usecase "Изучение уроков" as UC8
+  usecase "Корзина восстановления" as UC9
+  usecase "Просмотр купленных курсов" as UC10
+  usecase "Покупка курса" as UC11
+  usecase "Управление курсами (CRUD)" as UC12
+  usecase "Управление категориями" as UC13
+  usecase "Управление пользователями" as UC14
+  usecase "Просмотр статистики" as UC15
+}
+
+Guest --> UC1
+Guest --> UC2
+Guest --> UC3
+Guest --> UC4
+
+AuthUser --> UC4
+AuthUser --> UC5
+AuthUser --> UC6
+AuthUser --> UC7
+AuthUser --> UC8
+AuthUser --> UC9
+AuthUser --> UC10
+AuthUser --> UC11
+
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+
+AuthUser ..|> Guest
+Admin ..|> AuthUser
+@enduml

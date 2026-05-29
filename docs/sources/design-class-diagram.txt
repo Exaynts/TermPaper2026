@@ -1,0 +1,105 @@
+@startuml
+skinparam classAttributeIconSize 0
+left to right direction
+
+' === Django/DRF (Backend) ===
+package "Django REST Framework (Backend)" {
+  
+  class "User (Model)" as UserModel {
+    - user_id: AutoField
+    - nickname: CharField
+    - email: EmailField
+    - password: CharField
+    + get_full_name()
+    + check_password()
+  }
+
+  class "Course (Model)" as CourseModel {
+    - course_id: AutoField
+    - name: CharField
+    - price: DecimalField
+    - discount: IntegerField
+    + update_rating()
+  }
+
+  class "CourseViewSet" as CourseVS {
+    + list()
+    + create()
+    + retrieve()
+    + update()
+    + destroy()
+    + increment_views()
+    + my_courses()
+  }
+
+  class "CourseSerializer" as CourseSer {
+    + validate_price()
+    + to_representation()
+  }
+
+  class "IsAuthorOrReadOnly" as CoursePerm {
+    + has_object_permission()
+  }
+
+  class "JWTAuthentication" as JWTAuth {
+    + authenticate()
+  }
+}
+
+' === React (Frontend) ===
+package "React SPA (Frontend)" {
+  
+  class "AuthContext" as AuthCtx {
+    - user: Object
+    - accessToken: string
+    - refreshToken: string
+    + login()
+    + logout()
+    + refreshToken()
+  }
+
+  class "api.js (Axios instance)" as Api {
+    + get()
+    + post()
+    + put()
+    + delete()
+    + setupInterceptors()
+  }
+
+  class "CourseList" as CourseList {
+    + state: courses[]
+    + useEffect()
+    + render()
+  }
+
+  class "CourseForm" as CourseForm {
+    + state: formData
+    + handleSubmit()
+    + handleChange()
+  }
+
+  class "useAuth" as UseAuth {
+    + user
+    + login()
+    + logout()
+  }
+}
+
+' === Связи (Backend) ===
+UserModel --> CourseModel : created_by
+JWTAuth --> CourseVS : аутентифицирует
+CoursePerm --> CourseVS : применяется к действиям
+CourseVS --> CourseSer : использует
+CourseSer --> CourseModel : сериализует
+
+' === Связи (Frontend) ===
+AuthCtx --> Api : использует для запросов
+CourseList --> Api : вызывает getCourses()
+CourseList --> UseAuth : получает статус аутентификации
+CourseForm --> Api : вызывает createCourse()
+CourseForm --> AuthCtx : проверяет токен перед отправкой
+
+' === Взаимодействие Frontend ↔ Backend ===
+Api ..> JWTAuth : отправляет Bearer token
+Api ..> CourseVS : HTTP-запросы
+@enduml

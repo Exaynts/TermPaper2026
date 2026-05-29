@@ -1,0 +1,52 @@
+@startuml
+' Component Diagram for Educational Platform (Trajectory B)
+
+left to right direction
+skinparam componentStyle rectangle
+
+' === Компоненты ===
+package "Клиент (Frontend)" {
+  [React SPA] as React
+  [AuthContext] as Auth
+  [Axios API Client] as Axios
+  [React Router] as Router
+  [UI Components] as UI
+}
+
+package "Сервер (Backend)" {
+  [Django REST API] as Django
+  [JWT Auth] as JWT
+  [ViewSet (Course)] as ViewCourse
+  [ViewSet (Lesson)] as ViewLesson
+  [ViewSet (User)] as ViewUser
+  [ViewSet (Saved/Recycle/Purchase)] as ViewRelation
+  [Serializer Layer] as Serializer
+  [Permission Layer] as Permission
+}
+
+package "База данных" {
+  database "PostgreSQL / SQLite" as DB
+}
+
+' === Связи между компонентами ===
+React --> Axios : использует
+React --> Router : использует
+React --> Auth : использует
+Axios --> Django : HTTP / REST API (JSON)
+Django --> JWT : проверка токенов
+Django --> Permission : проверка прав
+Django --> Serializer : сериализация/валидация
+Serializer --> ViewCourse : преобразование
+Serializer --> ViewLesson
+Serializer --> ViewUser
+Serializer --> ViewRelation
+ViewCourse --> DB : ORM (SQL)
+ViewLesson --> DB
+ViewUser --> DB
+ViewRelation --> DB
+
+' === Связи с внешними компонентами (опционально) ===
+Django ..> [Платёжный шлюз] : (в перспективе)
+React ..> [WebSocket] : (для траектории В)
+
+@enduml
