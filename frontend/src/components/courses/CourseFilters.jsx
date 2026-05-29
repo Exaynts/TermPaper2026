@@ -3,7 +3,8 @@ import api from '../../services/api';
 import styles from './CourseFilters.module.css';
 
 const CourseFilters = ({
-    selectedCategories, priceMin, priceMax, hasDiscount, ratingMin, ratingMax, sortBy,
+    selectedCategories = [],
+    priceMin, priceMax, hasDiscount, ratingMin, ratingMax, sortBy,
     onCategoryChange, onPriceMinChange, onPriceMaxChange, onHasDiscountChange,
     onRatingMinChange, onRatingMaxChange, onSortChange,
     onApplyFilters, onResetFilters
@@ -57,6 +58,8 @@ const CourseFilters = ({
         onRatingMaxChange(val);
     };
 
+    const isSelected = (id) => Array.isArray(selectedCategories) && selectedCategories.includes(id);
+
     return (
         <aside className={styles.filtersSidebar}>
             <h2 className={styles.title}>Filters</h2>
@@ -68,7 +71,7 @@ const CourseFilters = ({
                         <label key={cat.category_id} className={styles.checkboxLabel}>
                             <input
                                 type="checkbox"
-                                checked={selectedCategories.includes(cat.category_id)}
+                                checked={isSelected(cat.category_id)}
                                 onChange={() => onCategoryChange(cat.category_id)}
                             />
                             {cat.title}
