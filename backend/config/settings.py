@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 
 # Базовая директория проекта (backend)
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'drf_spectacular',
     'corsheaders',
     'django_filters',
     # локальные приложения
@@ -92,9 +94,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Кастомная модель пользователя
 AUTH_USER_MODEL = 'users.User'
-
 
 # Настройки DRF
 REST_FRAMEWORK = {
@@ -109,10 +109,10 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # JWT Settings
-from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
@@ -160,3 +160,11 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 DEFAULT_FILTER_BACKENDS = ('django_filters.rest_framework.DjangoFilterBackend',)
+
+# Настройки для документации OpenAPI
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'MathJam API',
+    'DESCRIPTION': 'API для образовательной платформы онлайн-курсов по математике',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}

@@ -48,6 +48,47 @@
 
 ---
 
+### Структура проекта Django
+```bash
+backend/
+├── config/
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── courses/
+│   ├── migrations/
+│   ├── models/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── filters.py
+│   ├── permissions.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── users/
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── backends.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── media/
+├── static/
+├── db.sqlite3
+├── manage.py
+└── requirements.txt
+```
+
+---
+
 ## 🛠 Установка и запуск
 
 ### Требования
@@ -80,7 +121,7 @@ python manage.py runserver
 ```bash
 cd ../frontend
 npm install
-cp .env.example .env   # при необходимости измените VITE_API_URL
+cp .env.example .env
 npm run dev
 ```
 
@@ -90,6 +131,15 @@ npm run dev
 - Админка Django: http://localhost:8000/admin
 - API (browsable): http://localhost:8000/api/courses/
 ```
+
+---
+
+## 📚 Документация API
+После запуска бэкенда (`python manage.py runserver`) документацию можно посмотреть по адресам:
+
+- **Swagger UI**: http://localhost:8000/api/schema/swagger-ui/
+- **ReDoc**: http://localhost:8000/api/schema/redoc/
+- **Сырая OpenAPI-схема (JSON)**: http://localhost:8000/api/schema/
 
 ---
 

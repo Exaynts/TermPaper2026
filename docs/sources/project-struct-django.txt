@@ -1,0 +1,54 @@
+@startuml
+!define FOLDER folder
+!define FILE file
+
+FOLDER backend {
+  FOLDER config {
+    FILE __init__.py
+    FILE asgi.py
+    FILE settings.py
+    FILE urls.py
+    FILE wsgi.py
+  }
+  FOLDER courses {
+    FOLDER migrations
+    FOLDER models {
+      FILE __init__.py
+      FILE category.py
+      FILE course.py
+      FILE course_rating.py
+      FILE lesson.py
+      FILE lesson_progress.py
+      FILE purchased_course.py
+      FILE recycle_bin_course.py
+      FILE saved_course.py
+    }
+    FILE __init__.py
+    FILE admin.py
+    FILE apps.py
+    FILE filters.py
+    FILE permissions.py
+    FILE serializers.py
+    FILE tests.py
+    FILE urls.py
+    FILE views.py
+  }
+  FOLDER users {
+    FOLDER migrations
+    FILE __init__.py
+    FILE admin.py
+    FILE apps.py
+    FILE backends.py
+    FILE models.py
+    FILE serializers.py
+    FILE tests.py
+    FILE urls.py
+    FILE views.py
+  }
+  FOLDER media
+  FOLDER static
+  FILE db.sqlite3
+  FILE manage.py
+  FILE requirements.txt
+}
+@enduml
