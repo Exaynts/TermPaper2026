@@ -1,21 +1,18 @@
 import os
 from pathlib import Path
-from datetime import timedelta
 from dotenv import load_dotenv
-
 
 # Базовая директория проекта (backend)
 BASE_DIR = Path(__file__).resolve().parent.parent
+ROOT_DIR = BASE_DIR.parent
 
 # Загрузка переменных окружения из файла .env
-load_dotenv()
+load_dotenv(ROOT_DIR / '.env')
 
 # Секретный ключ (Ключ вынесен в .env файл в корне проекта)
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-change-me')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
-
-ALLOWED_HOSTS = []
 
 # Определение установленных приложений
 INSTALLED_APPS = [
@@ -32,8 +29,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     # локальные приложения
-    'users.apps.UsersConfig',      # кастомная модель пользователя
-    'courses.apps.CoursesConfig',  # основная логика курсов
+    'users.apps.UsersConfig',
+    'courses.apps.CoursesConfig',
 ]
 
 MIDDLEWARE = [
@@ -66,7 +63,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# База данных (SQLite для разработки, для продакшена используйте PostgreSQL)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -74,7 +70,6 @@ DATABASES = {
     }
 }
 
-# Валидаторы паролей (стандартные)
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -82,7 +77,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Интернационализация
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
@@ -131,7 +125,7 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# Настройки CORS (для React на порту 3000)
+# Настройки CORS (для React порт 3000)
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
@@ -161,8 +155,8 @@ CORS_ALLOW_HEADERS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'users.backends.EmailBackend',  # Кастомный backend для входа по email
-    'django.contrib.auth.backends.ModelBackend',  # Стандартный (для username)
+    'users.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 DEFAULT_FILTER_BACKENDS = ('django_filters.rest_framework.DjangoFilterBackend',)

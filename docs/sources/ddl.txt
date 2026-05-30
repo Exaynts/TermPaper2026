@@ -1,0 +1,152 @@
+-- ======================================================
+-- DDL скрипт для базы данных MathJam
+-- ======================================================
+
+-- 1. Таблица пользователей (расширенная модель User)
+CREATE TABLE users (
+    user_id BIGSERIAL PRIMARY KEY,
+    nickname VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(254) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    first_name VARCHAR(150) NOT NULL,
+    last_name VARCHAR(150) NOT NULL,
+    phone_number VARCHAR(20),
+    date_of_birth DATE,
+    sex CHAR(1) CHECK (sex IN ('M', 'F', 'O')),
+    math_level VARCHAR(20) CHECK (math_level IN ('beginner', 'intermediate', 'advanced')),
+    avatar VARCHAR(255),
+    is_active BOOLEAN DEFAULT TRUE,
+    is_staff BOOLEAN DEFAULT FALSE,
+    date_joined TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Индексы для ускорения поиска по часто используемым полям
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_nickname ON users(nickname);
+
+-- 2. Таблица категорий курсов
+CREATE TABLE categories (
+    category_id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(150) NOT NULL UNIQUE,
+    slug VARCHAR(150) NOT NULL UNIQUE
+);
+
+-- 3. Таблица курсов
+CREATE TABLE courses (
+    course_id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
+    discount INT CHECK (discount BETWEEN 0 AND 100),
+    rating DECIMAL(3,2) CHECK (rating BETWEEN 0 AND 5),
+    status VARCHAR(20) NOT NULL CHECK (status IN ('draft', 'published', 'archived')),
+    description TEXT,
+    image VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by_id BIGINT NOT NULL,
+    category_id BIGINT NOT NULL,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    deleted_at TIMESTAMP,
+    FOREIGN KEY (created_by_id) REFERENCES users(user_id) ON DELETE SET NULL,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE RESTRICT
+);
+
+-- Индексы для фильтрации и сортировки
+CREATE INDEX idx_courses_status ON courses(status);
+CREATE INDEX idx_courses_category ON courses(category_id);
+CREATE INDEX idx_courses_created_by ON courses(created_by_id);
+CREATE INDEX idx_courses_rating ON courses(rating DESC);
+CREATE INDEX idx_courses_price ON courses(price);
+
+-- 4. Таблица уроков (принадлежат курсу)
+CREATE TABLE lessons (
+    lesson_id BIGSERIAL PRIMARY KEY,
+    course_id BIGINT NOT NULL,
+    order_no INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    text_content TEXT,
+    description TEXT,
+    image VARCHAR(255),
+    video VARCHAR(255),
+    task_file VARCHAR(255),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
+    UNIQUE (course_id, order_no)  -- уникальный порядок в пределах курса
+);
+
+CREATE INDEX idx_lessons_course ON lessons(course_id);
+
+-- 5. Таблица сохранённых курсов (избранное)
+CREATE TABLE saved_courses (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    course_id BIGINT NOT NULL,
+    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
+    UNIQUE (user_id, course_id)
+);
+
+-- 6. Таблица корзины восстановления (удалённые курсы)
+CREATE TABLE recycle_bin_courses (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    course_id BIGINT NOT NULL,
+    deleted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
+    UNIQUE (user_id, course_id)
+);
+
+-- 7. Таблица купленных курсов (прогресс, статус покупки)
+CREATE TABLE purchased_courses (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    course_id BIGINT NOT NULL,
+    progress INT DEFAULT 0 CHECK (progress BETWEEN 0 AND 100),
+    purchased_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'EXPIRED', 'REFUNDED')),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
+    UNIQUE (user_id, course_id)
+);
+
+CREATE INDEX idx_purchased_user ON purchased_courses(user_id);
+CREATE INDEX idx_purchased_course ON purchased_courses(course_id);
+
+-- 8. Таблица прогресса по отдельным урокам
+CREATE TABLE lesson_progress (
+    id BIGSERIAL PRIMARY KEY,
+    lesson_id BIGINT NOT NULL,
+    purchased_course_id BIGINT NOT NULL,
+    completed_at TIMESTAMP,
+    FOREIGN KEY (lesson_id) REFERENCES lessons(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (purchased_course_id) REFERENCES purchased_courses(id) ON DELETE CASCADE,
+    UNIQUE (lesson_id, purchased_course_id)
+);
+
+-- 9. Таблица оценок курсов пользователями
+CREATE TABLE course_ratings (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    course_id BIGINT NOT NULL,
+    rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
+    UNIQUE (user_id, course_id)
+);
+
+-- Индекс для быстрого подсчёта среднего рейтинга курса
+CREATE INDEX idx_ratings_course ON course_ratings(course_id);
+
+-- ======================================================
+COMMENT ON TABLE users IS 'Пользователи платформы (кастомная модель User)';
+COMMENT ON TABLE categories IS 'Категории курсов';
+COMMENT ON TABLE courses IS 'Курсы с информацией о цене, скидке, рейтинге и статусе';
+COMMENT ON TABLE lessons IS 'Уроки, входящие в состав курса';
+COMMENT ON TABLE saved_courses IS 'Избранные курсы пользователей';
+COMMENT ON TABLE recycle_bin_courses IS 'Корзина восстановления – временно удалённые курсы';
+COMMENT ON TABLE purchased_courses IS 'Купленные курсы и общий прогресс пользователя';
+COMMENT ON TABLE lesson_progress IS 'Отметки о прохождении каждого урока в рамках купленного курса';
+COMMENT ON TABLE course_ratings IS 'Оценки, поставленные пользователями курсам';
+-- ======================================================
