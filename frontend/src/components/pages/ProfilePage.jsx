@@ -471,7 +471,7 @@ const ProfilePage = () => {
                         </div>
                     </div>
 
-                    {/* My Courses */}
+                    {/* My Courses. Commented out due to being irrelevant
                     <div className={styles.myCourses}>
                         <h3>My Courses</h3>
                         {loadingCourses ? (
@@ -501,6 +501,7 @@ const ProfilePage = () => {
                             </Link>
                         </div>
                     </div>
+                    */}
                 </div>
             </div>
             {/* Модальное окно удаления аккаунта */}
