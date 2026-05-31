@@ -11,7 +11,7 @@ import './components/common/Footer.css';
 // Компоненты
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
-import CourseCard from './components/common/CourseCard';
+import CourseCard from './components/courses/CourseCard';
 
 import CourseFilters from './components/courses/CourseFilters';
 

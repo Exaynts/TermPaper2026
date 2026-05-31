@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../services/api';
-import CourseCard from '../../components/common/CourseCard';
+import CourseCard from '../../components/courses/CourseCard';
 import CourseFilters from '../../components/courses/CourseFilters';
 import styles from '../../styles/pages/CourseListPage.module.css';
 

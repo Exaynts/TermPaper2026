@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1780234498090" clover="3.2.0">
+  <project timestamp="1780234498090" name="All files">
+    <metrics statements="35" coveredstatements="30" conditionals="22" coveredconditionals="17" methods="8" coveredmethods="6" elements="65" coveredelements="53" complexity="0" loc="35" ncloc="35" packages="3" files="4" classes="4"/>
+    <package name="components.courses">
+      <metrics statements="10" coveredstatements="10" conditionals="16" coveredconditionals="13" methods="2" coveredmethods="2"/>
+      <file name="CourseCard.jsx" path="C:\Users\Jamushka\PycharmProjects\CourseWork2026\frontend\src\components\courses\CourseCard.jsx">
+        <metrics statements="10" coveredstatements="10" conditionals="16" coveredconditionals="13" methods="2" coveredmethods="2"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="7" count="1" type="cond" truecount="2" falsecount="0"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="12" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="17" count="1" type="cond" truecount="2" falsecount="0"/>
+        <line num="19" count="1" type="stmt"/>
+      </file>
+      <file name="CourseCard.module.css" path="C:\Users\Jamushka\PycharmProjects\CourseWork2026\frontend\src\components\courses\CourseCard.module.css">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="components.pages">
+      <metrics statements="25" coveredstatements="20" conditionals="6" coveredconditionals="4" methods="6" coveredmethods="4"/>
+      <file name="LoginPage.jsx" path="C:\Users\Jamushka\PycharmProjects\CourseWork2026\frontend\src\components\pages\LoginPage.jsx">
+        <metrics statements="25" coveredstatements="20" conditionals="6" coveredconditionals="4" methods="6" coveredmethods="4"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="5" type="stmt"/>
+        <line num="8" count="5" type="stmt"/>
+        <line num="9" count="5" type="stmt"/>
+        <line num="10" count="5" type="stmt"/>
+        <line num="11" count="5" type="stmt"/>
+        <line num="12" count="5" type="stmt"/>
+        <line num="14" count="5" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="20" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="27" count="5" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="32" count="5" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="37" count="5" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="66" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="styles.pages">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="LoginPage.module.css" path="C:\Users\Jamushka\PycharmProjects\CourseWork2026\frontend\src\styles\pages\LoginPage.module.css">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+  </project>
+</coverage>

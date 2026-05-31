@@ -278,7 +278,7 @@ const CourseDetailPage = () => {
 
             {isPurchased && (
                 <div className={styles.ratingSection}>
-                    <div className={styles.ratingLabel}>Ваша оценка курсу:</div>
+                    <div className={styles.ratingLabel}>Your course raring:</div>
                     <StarRating
                         courseId={course.course_id}
                         initialRating={userRating}
