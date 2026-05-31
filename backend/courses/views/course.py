@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiResponse, inline_serializer
 from rest_framework import serializers as drf_serializers
+from django.db import transaction
 
 from ..models import (
     Course, SavedCourse, PurchasedCourse, RecycleBinCourse, CourseRating
@@ -39,6 +40,7 @@ class CourseViewSet(viewsets.ModelViewSet):
                 'lessons')
         return Course.objects.all().select_related('category', 'created_by').prefetch_related('lessons')
 
+
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return CourseCreateUpdateSerializer
@@ -46,9 +48,11 @@ class CourseViewSet(viewsets.ModelViewSet):
             return CourseListSerializer
         return CourseDetailSerializer
 
+
     def perform_create(self, serializer):
         """Привязывать автора при создании курса автоматически"""
         serializer.save(created_by=self.request.user)
+
 
     def get_permissions(self):
         """
@@ -64,7 +68,6 @@ class CourseViewSet(viewsets.ModelViewSet):
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
-    # Дополнительные действия (actions) с декораторами @extend_schema
 
     @extend_schema(
         description="Сохранить курс в избранное.",
@@ -86,6 +89,7 @@ class CourseViewSet(viewsets.ModelViewSet):
             return Response({'status': 'saved', 'message': 'Курс сохранён'}, status=status.HTTP_201_CREATED)
         return Response({'status': 'already_saved', 'message': 'Курс уже сохранён'}, status=status.HTTP_200_OK)
 
+
     @extend_schema(
         description="Удалить курс из избранного.",
         request=None,
@@ -103,6 +107,7 @@ class CourseViewSet(viewsets.ModelViewSet):
             return Response({'status': 'unsaved', 'message': 'Курс удалён из сохранённых'}, status=status.HTTP_200_OK)
         return Response({'status': 'not_saved', 'message': 'Курс не был в сохранённых'},
                         status=status.HTTP_404_NOT_FOUND)
+
 
     @extend_schema(
         description="Возвращает курсы, купленные пользователем (список объектов с вложенным курсом).",
@@ -124,6 +129,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         # Сформировать ответ в том же формате, что и для saved_courses
         data = [{'course': course} for course in serializer.data]
         return Response({'results': data})
+
 
     @extend_schema(
         description="Купить курс. Требует авторизации.",
@@ -157,6 +163,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer = PurchasedCourseSerializer(purchased)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
     @extend_schema(
         description="Мои купленные курсы (список PurchasedCourse с вложенным курсом).",
         responses={200: PurchasedCourseSerializer(many=True)}
@@ -167,6 +174,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         purchased = PurchasedCourse.objects.filter(user=request.user).select_related('course')
         serializer = PurchasedCourseSerializer(purchased, many=True)
         return Response(serializer.data)
+
 
     @extend_schema(
         description="Мои сохранённые курсы (список SavedCourse с вложенным курсом).",
@@ -179,6 +187,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer = SavedCourseSerializer(saved, many=True)
         return Response(serializer.data)
 
+
     @extend_schema(
         description="Мои курсы в корзине (список RecycleBinCourse с вложенным курсом).",
         responses={200: RecycleBinCourseSerializer(many=True)}
@@ -190,6 +199,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer = RecycleBinCourseSerializer(binned, many=True)
         return Response(serializer.data)
 
+
     @extend_schema(
         description="Переместить курс в корзину восстановления.",
         request=None,
@@ -198,21 +208,23 @@ class CourseViewSet(viewsets.ModelViewSet):
             400: OpenApiResponse(description="Курс уже в корзине"),
         }
     )
+    @transaction.atomic
     @action(detail=True, methods=['post'])
     def move_to_recycle_bin(self, request, pk=None):
-        """Переместить курс в корзину восстановления"""
+        """Переместить курс в корзину восстановления."""
         course = self.get_object()
         user = request.user
-        # Проверить, не находится ли уже в корзине
+
         if RecycleBinCourse.objects.filter(user=user, course=course).exists():
             return Response({'status': 'already_in_bin', 'message': 'Курс уже в корзине'},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        # Удалить запись о покупке, если она есть
+        # Удалить покупку и добавить в корзину. Если одна из операций не удастся, курс не потеряется.
         PurchasedCourse.objects.filter(user=user, course=course).delete()
-        # Добавить в корзину
         RecycleBinCourse.objects.create(user=user, course=course)
+
         return Response({'status': 'moved_to_bin', 'message': 'Курс перемещён в корзину'}, status=status.HTTP_200_OK)
+
 
     @extend_schema(
         description="Безвозвратно удалить курс из корзины пользователя (без возможности восстановления).",
@@ -237,6 +249,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response({'status': 'removed_from_bin', 'message': 'Курс полностью удалён из корзины'},
                         status=status.HTTP_200_OK)
 
+
     @extend_schema(
         description="Восстановить курс из корзины (вернуть в купленные).",
         request=None,
@@ -245,9 +258,10 @@ class CourseViewSet(viewsets.ModelViewSet):
             404: OpenApiResponse(description="Курс не найден в корзине"),
         }
     )
+    @transaction.atomic
     @action(detail=True, methods=['post'], url_path='restore_from_bin')
     def restore_from_bin(self, request, pk=None):
-        """Восстановить курс из корзины (вернуть в купленные)"""
+        """Восстановить курс из корзины (вернуть в купленные)."""
         course = self.get_object()
         user = request.user
 
@@ -255,25 +269,24 @@ class CourseViewSet(viewsets.ModelViewSet):
         if not bin_entry:
             return Response({'status': 'not_in_bin', 'message': 'Курс не найден в корзине'},
                             status=status.HTTP_404_NOT_FOUND)
-
-        # Восстанавливаем запись о покупке, если её нет
+        # Восстановить покупку и удалить из корзины
         PurchasedCourse.objects.get_or_create(
             user=user,
             course=course,
             defaults={'progress': 0, 'status': 'active'}
         )
-
-        # Удаляем из корзины
         bin_entry.delete()
 
         return Response({'status': 'restored', 'message': 'Курс восстановлен из корзины'},
                         status=status.HTTP_200_OK)
+
 
     @extend_schema(
         description="Удаление курса (скрыть, но не удалять из БД).",
         request=None,
         responses={200: OpenApiResponse(description="Курс скрыт")}
     )
+    @transaction.atomic
     @action(detail=True, methods=['delete'], url_path='soft_delete')
     def soft_delete(self, request, pk=None):
         """Удаление курса (скрыть, но не удалять из БД)"""
@@ -283,6 +296,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         course.deleted_at = timezone.now()
         course.save()
         return Response({'status': 'deleted', 'message': 'Course hidden from store'}, status=status.HTTP_200_OK)
+
 
     @extend_schema(
         description="Создать урок в курсе. Требует авторизации (автор курса или админ).",
@@ -300,6 +314,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         ),
         responses={201: OpenApiResponse(description="Урок создан")}
     )
+    @transaction.atomic
     @action(detail=True, methods=['post'], url_path='lessons')
     def add_lesson(self, request, pk=None):
         """Создать урок в курсе"""
@@ -312,6 +327,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(course=course)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
     @extend_schema(
         description="Возвращает курсы, созданные текущим пользователем.",
@@ -327,6 +343,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(courses, many=True)
         return Response(serializer.data)
 
+
     @extend_schema(
         description="Получить оценку, которую текущий пользователь поставил курсу.",
         responses={200: inline_serializer(name='MyRatingResponse', fields={'rating': drf_serializers.IntegerField(allow_null=True)})}
@@ -340,11 +357,13 @@ class CourseViewSet(viewsets.ModelViewSet):
         rating = CourseRating.objects.filter(user=request.user, course=course).first()
         return Response({'rating': rating.rating if rating else None})
 
+
     @extend_schema(
         description="Поставить оценку курсу (только для купивших курс). Ожидает JSON: {'rating': 3}.",
         request=inline_serializer(name='RateRequest', fields={'rating': drf_serializers.IntegerField(min_value=1, max_value=5)}),
         responses={200: inline_serializer(name='RateResponse', fields={'rating': drf_serializers.IntegerField(), 'course_rating': drf_serializers.DecimalField(max_digits=3, decimal_places=2)})}
     )
+    @transaction.atomic
     @action(detail=True, methods=['post'], url_path='rate')
     def rate_course(self, request, pk=None):
         """
@@ -375,3 +394,31 @@ class CourseViewSet(viewsets.ModelViewSet):
         )
         course.update_rating()  # пересчитать средний рейтинг
         return Response({'rating': rating_value, 'course_rating': course.rating})
+
+
+    @transaction.atomic
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def purchase(self, request, pk=None):
+        """Купить курс. Операция атомарна: либо всё, либо ничего."""
+        course = self.get_object()
+
+        # Проверить, куплен ли уже курс?
+        if PurchasedCourse.objects.filter(user=request.user, course=course).exists():
+            return Response({'status': 'already_purchased', 'message': 'Курс уже куплен'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Проверить статус курса
+        if course.status != 'published':
+            return Response({'status': 'not_available', 'message': 'Курс недоступен для покупки'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Создать запись о покупке и базовую запись прогресса
+        purchased = PurchasedCourse.objects.create(
+            user=request.user,
+            course=course,
+            progress=0,
+            status='active'
+        )
+
+        serializer = PurchasedCourseSerializer(purchased)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
