@@ -117,7 +117,7 @@ const CourseDetailPage = () => {
     const handleDeleteCourse = async () => {
         setActionLoading(true);
         try {
-            await api.post(`/courses/${id}/move_to_bin/`);
+            await api.post(`/courses/${id}/move_to_recycle_bin/`);
             setIsPurchased(false);
             alert('Course moved to recycle bin');
             navigate('/courses');
