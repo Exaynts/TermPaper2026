@@ -10,7 +10,7 @@ ROOT_DIR = BASE_DIR.parent
 # Загрузка переменных окружения из файла .env
 load_dotenv(ROOT_DIR / '.env')
 
-# Секретный ключ (Ключ вынесен в .env файл в корне проекта)
+# Секретный ключ. Ключ вынесен в .env файл в корне проекта
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-change-me')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
