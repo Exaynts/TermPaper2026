@@ -48,7 +48,8 @@
 
 ---
 
-### Структура проекта Django
+### Структура проекта
+**Backend**
 ```bash
 backend/
 ├── config/
@@ -86,7 +87,69 @@ backend/
 ├── manage.py
 └── requirements.txt
 ```
-
+**Frontend**
+```bash
+frontend/
+├── public/
+│   └── index.html
+├── src/
+│   ├── components/
+│   │   ├── common/
+│   │   │   ├── Header.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   ├── Loader.jsx
+│   │   │   ├── Modal.jsx
+│   │   │   └── Pagination.jsx
+│   │   ├── courses/
+│   │   │   ├── CourseCard.jsx
+│   │   │   ├── CourseFilters.jsx
+│   │   │   └── LessonList.jsx
+│   │   └── forms/
+│   │       ├── LoginForm.jsx
+│   │       ├── RegisterForm.jsx
+│   │       └── ProfileForm.jsx
+│   ├── pages/
+│   │   ├── HomePage.jsx
+│   │   ├── CourseListPage.jsx
+│   │   ├── CourseDetailPage.jsx
+│   │   ├── LessonDetailPage.jsx
+│   │   ├── LoginPage.jsx
+│   │   ├── RegisterPage.jsx
+│   │   ├── ProfilePage.jsx
+│   │   ├── MyCoursesPage.jsx
+│   │   ├── SavedCoursesPage.jsx
+│   │   ├── RecycleBinPage.jsx
+│   │   ├── CreateCoursePage.jsx
+│   │   └── EditCoursePage.jsx
+│   ├── contexts/
+│   │   └── AuthContext.jsx
+│   ├── services/
+│   │   └── api.js
+│   ├── hooks/
+│   │   └── useLocalStorage.js
+│   ├── styles/
+│   │   ├── global.css
+│   │   └── pages/
+│   │       ├── CourseListPage.module.css
+│   │       └── ...
+│   ├── utils/
+│   │   └── validators.js
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── .env
+├── package.json
+└── vite.config.js
+```
+**Остальное**
+```bash
+├── .venv
+├── .env
+├── .gitignore
+├── main.py
+├── package-lock.json
+└── README.md
+```
 ---
 
 ## 🛠 Установка и запуск

@@ -1,0 +1,70 @@
+@startuml
+!define FOLDER folder
+!define FILE file
+
+FOLDER frontend {
+  FOLDER public {
+    FILE index.html
+  }
+  FOLDER src {
+    FOLDER components {
+      FOLDER common {
+        FILE Header.jsx
+        FILE Footer.jsx
+        FILE Loader.jsx
+        FILE Modal.jsx
+        FILE Pagination.jsx
+      }
+      FOLDER courses {
+        FILE CourseCard.jsx
+        FILE CourseFilters.jsx
+        FILE LessonList.jsx
+      }
+      FOLDER forms {
+        FILE LoginForm.jsx
+        FILE RegisterForm.jsx
+        FILE ProfileForm.jsx
+      }
+    }
+    FOLDER pages {
+      FILE HomePage.jsx
+      FILE CourseListPage.jsx
+      FILE CourseDetailPage.jsx
+      FILE LessonDetailPage.jsx
+      FILE LoginPage.jsx
+      FILE RegisterPage.jsx
+      FILE ProfilePage.jsx
+      FILE MyCoursesPage.jsx
+      FILE SavedCoursesPage.jsx
+      FILE RecycleBinPage.jsx
+      FILE CreateCoursePage.jsx
+      FILE EditCoursePage.jsx
+    }
+    FOLDER contexts {
+      FILE AuthContext.jsx
+    }
+    FOLDER services {
+      FILE api.js
+    }
+    FOLDER hooks {
+      FILE useLocalStorage.js
+    }
+    FOLDER styles {
+      FILE global.css
+      FOLDER pages {
+        FILE CourseListPage.module.css
+        FILE CourseDetailPage.module.css
+      }
+    }
+    FOLDER utils {
+      FILE validators.js
+    }
+    FILE App.jsx
+    FILE main.jsx
+    FILE index.css
+  }
+  FILE .env
+  FILE package.json
+  FILE vite.config.js
+}
+@enduml

@@ -3,6 +3,7 @@ from .models import (
     Category, Course, Lesson,
     SavedCourse, RecycleBinCourse, PurchasedCourse, LessonProgress
 )
+from decimal import Decimal
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -93,6 +94,8 @@ class CourseCreateUpdateSerializer(serializers.ModelSerializer):
         return value
 
     def validate_price(self, value):
+        if not isinstance(value, (int, float, Decimal)):
+            raise serializers.ValidationError("Price must be a number.")
         if value < 0:
             raise serializers.ValidationError("Price cannot be negative")
         if value > 99_999_999:
@@ -104,6 +107,8 @@ class CourseCreateUpdateSerializer(serializers.ModelSerializer):
         return value
 
     def validate_discount(self, value):
+        if not isinstance(value, (int, float, Decimal)):
+            raise serializers.ValidationError("Discount must be a number.")
         if value < 0 or value > 100:
             raise serializers.ValidationError("Discount must be between 0 and 100")
         return value
@@ -118,6 +123,8 @@ class LessonCreateUpdateSerializer(serializers.ModelSerializer):
         fields = ['order', 'name', 'text', 'description', 'image', 'video', 'task_file']
 
     def validate_order(self, value):
+        if not isinstance(value, (int, float, Decimal)):
+            raise serializers.ValidationError("Order must be a number.")
         if value < 0:
             raise serializers.ValidationError("Порядковый номер не может быть отрицательным")
         return value
