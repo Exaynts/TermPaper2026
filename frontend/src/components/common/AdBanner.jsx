@@ -61,7 +61,7 @@ const AdBanner = () => {
           >
             <div className={styles.bottom}>
               <span className={styles.link}>
-                MathJam math courses from 100 rubles
+                MathJam math courses from 0 rubles
               </span>
               <div className={styles.arrowLink}>
                 <svg
