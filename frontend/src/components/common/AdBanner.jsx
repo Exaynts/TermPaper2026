@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import styles from '../AdBanner.module.css';
-import studentImage from '../../assets/images/student_learning.PNG';
+import styles from './AdBanner.module.css';
+import studentImage from './../../assets/images/studentLearning.PNG';
 
-const AdBanner = () => {
+const AdBanner = ({ onHide }) => {   // ← добавляем onHide
   const [isFeedbackMode, setIsFeedbackMode] = useState(false);
   const [selectedReason, setSelectedReason] = useState(null);
 
@@ -22,9 +22,10 @@ const AdBanner = () => {
 
   const handleSubmit = () => {
     if (selectedReason) {
-      // Отправить жалобу (можно добавить API-вызов)
       console.log('Complaint sent. Reason:', selectedReason);
       alert('Thanks for your feedback!');
+
+      if (onHide) onHide();
       setIsFeedbackMode(false);
       setSelectedReason(null);
     }
@@ -54,14 +55,14 @@ const AdBanner = () => {
             </div>
           </div>
           <a
-            href="https://github.com/Exaynts/MathJam"
+            href="https://github.com/Exaynts/TermPaper2026"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.bottomContainer}
           >
             <div className={styles.bottom}>
               <span className={styles.link}>
-                MathJam math courses from 0 rubles
+                Buy math online courses from 0 rubles in MathJam
               </span>
               <div className={styles.arrowLink}>
                 <svg

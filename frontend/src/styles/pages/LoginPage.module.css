@@ -130,3 +130,19 @@
   margin-bottom: 20px;
   text-align: center;
 }
+
+/* Левый и правый баннеры */
+.bannerLeft,
+.bannerRight {
+  flex-shrink: 0;
+  width: 300px;
+  margin: 2rem;
+}
+
+/* Скрыть баннеры на узких экранах */
+@media (max-width: 1024px) {
+  .bannerLeft,
+  .bannerRight {
+    display: none;
+  }
+}

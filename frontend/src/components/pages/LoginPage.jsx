@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from '../../styles/pages/LoginPage.module.css';
+import AdBanner from '../common/AdBanner';
 
 const LoginPage = () => {
     const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -10,6 +11,11 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    const [showLeftBanner, setShowLeftBanner] = useState(true);
+    const [showRightBanner, setShowRightBanner] = useState(true);
+    const hideLeft = () => setShowLeftBanner(false);
+    const hideRight = () => setShowRightBanner(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,6 +42,10 @@ const LoginPage = () => {
 
     return (
         <div className={styles.loginContainer}>
+            {/* Левый баннер */}
+            <div className={styles.bannerLeft}>
+               {showLeftBanner && <AdBanner onHide={hideLeft} />}
+            </div>
             <div className={styles.dataForm}>
                 <h1>Sign in</h1>
                 {error && <div className={styles.errorMessage}>{error}</div>}
@@ -88,6 +98,10 @@ const LoginPage = () => {
                         </p>
                     </div>
                 </form>
+            </div>
+            {/* Правый баннер */}
+            <div className={styles.bannerRight}>
+               {showRightBanner && <AdBanner onHide={hideRight} />}
             </div>
         </div>
     );
