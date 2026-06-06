@@ -146,9 +146,9 @@ npm run dev
 ```
 
 ### 5. Запуск через Docker (продакшен-режим)
-# Убедитесь, что Docker Desktop запущен
-docker-compose up -d --build
+Убедитесь, что Docker Desktop запущен
 ```bash
+docker-compose up -d --build
 - Фронтенд: http://localhost
 - API: http://localhost:8000/api/
 - Админка: http://localhost:8000/admin
