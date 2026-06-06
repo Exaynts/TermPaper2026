@@ -9,7 +9,7 @@
 
 - **Всего коммитов:** 60+  
 - **Период разработки:** 18 недель
-
+![График активности](docs/images/git-commit-activity.png)
 ---
 
 ## 🚀 Технологический стек
@@ -146,7 +146,6 @@ npm run dev
 ```
 
 ### 5. Запуск через Docker (продакшен-режим)
-bash
 # Убедитесь, что Docker Desktop запущен
 docker-compose up -d --build
 ```bash
