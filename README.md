@@ -5,6 +5,12 @@
 Приложение позволяет пользователям регистрироваться, просматривать курсы, покупать доступ, отслеживать прогресс, сохранять курсы в избранное и восстанавливать удалённые курсы из корзины.
 
 ---
+## 📊 Статистика разработки
+
+- **Всего коммитов:** 60+  
+- **Период разработки:** 18 недель
+
+---
 
 ## 🚀 Технологический стек
 
@@ -22,6 +28,15 @@
 - **React Router** — маршрутизация
 - **Axios** — HTTP-клиент (перехватчики для JWT)
 - **CSS Modules** — изоляция стилей
+
+### Тестирование и документация
+- **pytest** + **pytest-django** — модульные тесты бэкенда
+- **Vitest** + **React Testing Library** — модульные тесты фронтенда
+- **Cypress** — интеграционное (E2E) тестирование
+- **drf-spectacular** — OpenAPI 3.0 (Swagger/ReDoc)
+
+### Контейнеризация (опционально)
+- **Docker** + **docker-compose** — для продакшен-развёртывания
 
 ---
 
@@ -52,38 +67,13 @@
 **Backend**
 ```bash
 backend/
-├── config/
-│   ├── __init__.py
-│   ├── asgi.py
+├── config/             # Настройки проекта
 │   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── courses/
-│   ├── migrations/
-│   ├── models/
-│   ├── __init__.py
-│   ├── admin.py
-│   ├── apps.py
-│   ├── filters.py
-│   ├── permissions.py
-│   ├── serializers.py
-│   ├── tests.py
-│   ├── urls.py
-│   └── views.py
-├── users/
-│   ├── migrations/
-│   ├── __init__.py
-│   ├── admin.py
-│   ├── apps.py
-│   ├── backends.py
-│   ├── models.py
-│   ├── serializers.py
-│   ├── tests.py
-│   ├── urls.py
-│   └── views.py
-├── media/
-├── static/
-├── db.sqlite3
+│   └── urls.py
+├── courses/            # Приложение курсов (модели, API)
+├── users/              # Приложение пользователей (аутентификация)
+├── media/              # Загруженные изображения
+├── static/             # Статические файлы
 ├── manage.py
 └── requirements.txt
 ```
@@ -91,65 +81,25 @@ backend/
 ```bash
 frontend/
 ├── public/
-│   └── index.html
 ├── src/
-│   ├── components/
-│   │   ├── common/
-│   │   │   ├── Header.jsx
-│   │   │   ├── Footer.jsx
-│   │   │   ├── Loader.jsx
-│   │   │   ├── Modal.jsx
-│   │   │   └── Pagination.jsx
-│   │   ├── courses/
-│   │   │   ├── CourseCard.jsx
-│   │   │   ├── CourseFilters.jsx
-│   │   │   └── LessonList.jsx
-│   │   └── forms/
-│   │       ├── LoginForm.jsx
-│   │       ├── RegisterForm.jsx
-│   │       └── ProfileForm.jsx
-│   ├── pages/
-│   │   ├── HomePage.jsx
-│   │   ├── CourseListPage.jsx
-│   │   ├── CourseDetailPage.jsx
-│   │   ├── LessonDetailPage.jsx
-│   │   ├── LoginPage.jsx
-│   │   ├── RegisterPage.jsx
-│   │   ├── ProfilePage.jsx
-│   │   ├── MyCoursesPage.jsx
-│   │   ├── SavedCoursesPage.jsx
-│   │   ├── RecycleBinPage.jsx
-│   │   ├── CreateCoursePage.jsx
-│   │   └── EditCoursePage.jsx
-│   ├── contexts/
-│   │   └── AuthContext.jsx
-│   ├── services/
-│   │   └── api.js
-│   ├── hooks/
-│   │   └── useLocalStorage.js
-│   ├── styles/
-│   │   ├── global.css
-│   │   └── pages/
-│   │       ├── CourseListPage.module.css
-│   │       └── ...
-│   ├── utils/
-│   │   └── validators.js
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
-├── .env
+│   ├── components/     # Переиспользуемые компоненты
+│   ├── pages/          # Страницы приложения
+│   ├── contexts/       # AuthContext
+│   ├── services/       # API-клиент (Axios)
+│   ├── styles/         # CSS Modules
+│   └── App.jsx
 ├── package.json
 └── vite.config.js
 ```
-**Остальное**
+**Документация и диаграммы**
 ```bash
-├── .venv
-├── .env
-├── .gitignore
-├── main.py
-├── package-lock.json
-└── README.md
+docs/
+├── diagrams/               # Готовые диаграммы (PNG)
+├── sources/                # Исходники диаграмм (PlantUML)
+├── screenshots/            # Скриншоты интерфейса
+└── testing/                # Скриншоты тестов
 ```
+
 ---
 
 ## 🛠 Установка и запуск
@@ -161,8 +111,8 @@ frontend/
 
 ### 1. Клонирование репозитория
 ```bash
-git clone https://github.com/your-username/MathJam.git
-cd MathJam
+git clone https://github.com/Exaynts/TermPaper2026.git
+cd TermPaper2026
 ```
 
 ### 2. Настройка бэкенда
@@ -170,11 +120,11 @@ cd MathJam
 cd backend
 python -m venv venv
 
-Активация окружения:
-- Windows: venv\Scripts\activate
-- macOS/Linux: source venv/bin/activate
+# Активация окружения:
+# Windows: venv\Scripts\activate
+# macOS/Linux: source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env   # заполните SECRET_KEY и другие переменные
+cp .env.example .env              # Pаполните SECRET_KEY и другие переменные для корректной работы
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
@@ -184,7 +134,7 @@ python manage.py runserver
 ```bash
 cd ../frontend
 npm install
-cp .env.example .env
+cp .env.example .env              # При необходимости укажите VITE_API_URL
 npm run dev
 ```
 
@@ -195,10 +145,20 @@ npm run dev
 - API (browsable): http://localhost:8000/api/courses/
 ```
 
+### 5. Запуск через Docker (продакшен-режим)
+bash
+# Убедитесь, что Docker Desktop запущен
+docker-compose up -d --build
+```bash
+- Фронтенд: http://localhost
+- API: http://localhost:8000/api/
+- Админка: http://localhost:8000/admin
+```
+
 ---
 
 ## 📚 Документация API
-После запуска бэкенда (`python manage.py runserver`) документацию можно посмотреть по адресам:
+После запуска бэкенда документация доступна по адресам:
 
 - **Swagger UI**: http://localhost:8000/api/schema/swagger-ui/
 - **ReDoc**: http://localhost:8000/api/schema/redoc/
@@ -208,17 +168,18 @@ npm run dev
 
 ## 👥 API-эндпоинты (основные)
   ### Эндпоинты представлены в виде: Метод  Эндпоинт  Описание
-- POST	/api/auth/register/	Регистрация  
-- POST	/api/auth/login/	Получение JWT (access/refresh)  
-- POST	/api/auth/token/refresh/	Обновление access-токена  
-- GET/PATCH	/api/auth/profile/	Профиль пользователя  
-- GET	/api/courses/	Список курсов  
-- GET	/api/courses/{id}/	Детали курса (с уроками)  
-- POST	/api/courses/{id}/purchase/	Покупка курса  
-- POST	/api/courses/{id}/save/	Сохранить в избранное  
-- POST	/api/courses/{id}/move_to_bin/	Переместить в корзину  
-- POST	/api/courses/{id}/restore_from_bin/	Восстановить из корзины  
-- POST	/api/progress/mark/	Отметить урок пройденным  
+- POST	/api/auth/register/	                 Регистрация  
+- POST	/api/auth/login/	                   Получение JWT (access/refresh)  
+- POST	/api/auth/token/refresh/       	     Обновление access-токена  
+- GET/PATCH	/api/auth/profile/	             Профиль пользователя  
+- GET	  /api/courses/	                       Список курсов  
+- GET	  /api/courses/{id}/	                 Детали курса (с уроками)  
+- POST	/api/courses/{id}/purchase/	         Покупка курса  
+- POST	/api/courses/{id}/save/            	 Сохранить в избранное  
+- POST	/api/courses/{id}/move_to_bin/	     Переместить в корзину  
+- POST	/api/courses/{id}/restore_from_bin/	 Восстановить из корзины  
+- POST	/api/progress/mark/	                 Отметить урок пройденным  
+- GET	  /api/progress/my-progress/	         Прогресс по всем купленным курсам
 
 ---
 
@@ -226,7 +187,7 @@ npm run dev
 - Бэкенд (pytest)
 ```bash
 cd backend  
-pytest
+pytest -v
 ```
 
 - Фронтенд (Jest + React Testing Library)  
@@ -234,6 +195,20 @@ pytest
 cd frontend  
 npm test
 ```
+
+- Интеграционное тестирование (Cypress)
+```bash
+cd frontend
+npm run test:e2e:open    # интерактивный режим
+# или
+npm run test:e2e         # автоматический режим (headless)
+```
+
+---
+
+📐 Диаграммы и проектная документация
+Все диаграммы проекта (Use Case, ER, компонентов, последовательности) хранятся в папке docs/diagrams/
+Исходные коды для диаграм имеются в папке docs/sources
 
 ---
 
@@ -244,5 +219,5 @@ npm test
 Профиль: «Разработка и сопровождение программного обеспечения»  
 
 ### 📄 Лицензия
-Проект создан в учебных целях. Он не для коммерческого использования.  
+Проект создан в учебных целях. Не для коммерческого использования.  
 
