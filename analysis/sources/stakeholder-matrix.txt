@@ -1,93 +1,87 @@
 @startuml
-' Матрица стейкхолдеров платформы MathJam
-' Формат: таблица с колонками: Стейкхолдер | Роль | Интересы | Влияние
+title Матрица стейкхолдеров\nИнтернет-магазин зоотоваров «Лапки»
 
-skinparam componentStyle rectangle
-left to right direction
+' Определение стейкхолдеров
+rectangle "Стейкхолдер" as Stakeholder #LightBlue
+rectangle "Роль в проекте" as Role #LightGreen
+rectangle "Интересы" as Interests #Yellow
+rectangle "Влияние" as Influence #Orange
 
-' Заголовок таблицы
-title Матрица стейкхолдеров платформы MathJam
+' Данные стейкхолдеров
+rectangle "Гость" as S1
+rectangle "Неавторизованный\nпользователь" as R1
+rectangle "Ознакомление с каталогом,\nпоиск и фильтрация товаров,\nпросмотр бесплатного контента" as I1
+rectangle "Низкое" as Inf1
 
-' Таблица в виде компонентов
-rectangle "Стейкхолдер" as Stakeholder
-rectangle "Роль в проекте" as Role
-rectangle "Интересы" as Interests
-rectangle "Влияние" as Impact
+rectangle "Авторизованный\nпользователь" as S2
+rectangle "Покупатель" as R2
+rectangle "Просмотр и покупка товаров,\nуправление корзиной и избранным,\nоставление отзывов,\nотслеживание заказов" as I2
+rectangle "Высокое" as Inf2
 
-' Строка 1: Гость (неавторизованный пользователь)
-rectangle "Гость" as Guest
-rectangle "Неавторизованный\nпользователь" as GuestRole
-rectangle "Ознакомление с каталогом,\nпоиск курсов,\nпросмотр бесплатных материалов" as GuestInterests
-rectangle "Низкое" as GuestImpact
+rectangle "Администратор" as S3
+rectangle "Управляющий\nплатформой" as R3
+rectangle "Управление каталогом,\nкатегориями и пользователями,\nмодерация отзывов,\nпросмотр статистики" as I3
+rectangle "Критическое" as Inf3
 
-' Строка 2: Авторизованный пользователь
-rectangle "Авторизованный\nпользователь" as AuthUser
-rectangle "Покупатель курсов" as AuthRole
-rectangle "Покупка курсов,\nизучение уроков,\nотслеживание прогресса,\nизбранное,\nкорзина восстановления" as AuthInterests
-rectangle "Среднее" as AuthImpact
+rectangle "Разработчик" as S4
+rectangle "Поддержка и развитие" as R4
+rectangle "Стабильность системы,\nбезопасность данных,\nрасширение функционала,\nкачество кода" as I4
+rectangle "Критическое" as Inf4
 
-' Строка 3: Администратор
-rectangle "Администратор" as Admin
-rectangle "Управление платформой" as AdminRole
-rectangle "Управление курсами,\nкатегориями и пользователями,\nмодерация контента,\nпросмотр статистики" as AdminInterests
-rectangle "Высокое" as AdminImpact
+' Группировка для отображения таблицы
+package "Матрица стейкхолдеров" {
+  
+  card "**Стейкхолдер**" as H1
+  card "**Роль в проекте**" as H2
+  card "**Интересы**" as H3
+  card "**Влияние**" as H4
+  
+  card "Гость" as C1
+  card "Неавторизованный\nпользователь" as C2
+  card "Ознакомление с каталогом,\nпоиск и фильтрация товаров" as C3
+  card "Низкое" as C4
+  
+  card "Авторизованный\nпользователь" as C5
+  card "Покупатель" as C6
+  card "Просмотр и покупка товаров,\nуправление корзиной и избранным,\nоставление отзывов" as C7
+  card "Высокое" as C8
+  
+  card "Администратор" as C9
+  card "Управляющий\nплатформой" as C10
+  card "Управление каталогом,\nкатегориями и пользователями,\nмодерация отзывов" as C11
+  card "Критическое" as C12
+  
+  card "Разработчик" as C13
+  card "Поддержка и развитие" as C14
+  card "Стабильность системы,\nбезопасность данных,\nрасширение функционала" as C15
+  card "Критическое" as C16
+}
 
-' Строка 4: Разработчик (команда поддержки)
-rectangle "Разработчик" as Dev
-rectangle "Поддержка и развитие" as DevRole
-rectangle "Стабильность системы,\nбезопасность,\nрасширение функционала" as DevInterests
-rectangle "Критическое" as DevImpact
+' Связи для имитации таблицы
+H1 -[hidden]- H2
+H2 -[hidden]- H3
+H3 -[hidden]- H4
 
-' Строка 5: Автор курсов (преподаватель)
-rectangle "Автор курсов" as Author
-rectangle "Создатель контента" as AuthorRole
-rectangle "Возможность создавать\nи публиковать курсы,\nотслеживать прогресс\nучащихся" as AuthorInterests
-rectangle "Среднее" as AuthorImpact
+C1 -[hidden]- C2
+C2 -[hidden]- C3
+C3 -[hidden]- C4
 
-' Связи для группировки (визуальное объединение строк)
-Guest -[hidden]--- GuestRole
-GuestRole -[hidden]--- GuestInterests
-GuestInterests -[hidden]--- GuestImpact
+C5 -[hidden]- C6
+C6 -[hidden]- C7
+C7 -[hidden]- C8
 
-AuthUser -[hidden]--- AuthRole
-AuthRole -[hidden]--- AuthInterests
-AuthInterests -[hidden]--- AuthImpact
+C9 -[hidden]- C10
+C10 -[hidden]- C11
+C11 -[hidden]- C12
 
-Admin -[hidden]--- AdminRole
-AdminRole -[hidden]--- AdminInterests
-AdminInterests -[hidden]--- AdminImpact
+C13 -[hidden]- C14
+C14 -[hidden]- C15
+C15 -[hidden]- C16
 
-Dev -[hidden]--- DevRole
-DevRole -[hidden]--- DevInterests
-DevInterests -[hidden]--- DevImpact
-
-Author -[hidden]--- AuthorRole
-AuthorRole -[hidden]--- AuthorInterests
-AuthorInterests -[hidden]--- AuthorImpact
-
-' Связи для расположения столбцов (заголовки + строки)
-Stakeholder -[hidden]--- Guest
-Stakeholder -[hidden]--- AuthUser
-Stakeholder -[hidden]--- Admin
-Stakeholder -[hidden]--- Dev
-Stakeholder -[hidden]--- Author
-
-Role -[hidden]--- GuestRole
-Role -[hidden]--- AuthRole
-Role -[hidden]--- AdminRole
-Role -[hidden]--- DevRole
-Role -[hidden]--- AuthorRole
-
-Interests -[hidden]--- GuestInterests
-Interests -[hidden]--- AuthInterests
-Interests -[hidden]--- AdminInterests
-Interests -[hidden]--- DevInterests
-Interests -[hidden]--- AuthorInterests
-
-Impact -[hidden]--- GuestImpact
-Impact -[hidden]--- AuthImpact
-Impact -[hidden]--- AdminImpact
-Impact -[hidden]--- DevImpact
-Impact -[hidden]--- AuthorImpact
+' Вертикальное выравнивание
+H1 -[hidden]down- C1
+C1 -[hidden]down- C5
+C5 -[hidden]down- C9
+C9 -[hidden]down- C13
 
 @enduml
