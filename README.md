@@ -124,7 +124,7 @@ python -m venv venv
 # Windows: venv\Scripts\activate
 # macOS/Linux: source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env              # Pаполните SECRET_KEY и другие переменные для корректной работы
+cp .env.example .env              # Pаположите SECRET_KEY и другие переменные для корректной работы
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver

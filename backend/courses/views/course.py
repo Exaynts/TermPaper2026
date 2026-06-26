@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiResponse, inline_serializer
 from rest_framework import serializers as drf_serializers
 from django.db import transaction
+from notifications.models import Notification
 
 from ..models import (
     Course, SavedCourse, PurchasedCourse, RecycleBinCourse, CourseRating
@@ -246,6 +247,15 @@ class CourseViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_404_NOT_FOUND)
 
         bin_entry.delete()
+
+        # Отправить уведомление об удалении курса из корзины
+        Notification.objects.create(
+            user=user,
+            type='removed_from_bin',
+            message=f'The course "{course.name}" has been permanently deleted from the recycle bin.',
+            data={'course_id': course.course_id}
+        )
+
         return Response({'status': 'removed_from_bin', 'message': 'Курс полностью удалён из корзины'},
                         status=status.HTTP_200_OK)
 
@@ -276,6 +286,14 @@ class CourseViewSet(viewsets.ModelViewSet):
             defaults={'progress': 0, 'status': 'active'}
         )
         bin_entry.delete()
+
+        # Отправить уведомление о восстановлении из корзины
+        Notification.objects.create(
+            user=user,
+            type='restored_from_bin',
+            message=f'The course "{course.name}" has been restored from the recycle bin.',
+            data={'course_id': course.course_id}
+        )
 
         return Response({'status': 'restored', 'message': 'Курс восстановлен из корзины'},
                         status=status.HTTP_200_OK)
