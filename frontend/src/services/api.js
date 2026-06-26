@@ -71,3 +71,12 @@ api.interceptors.response.use(
 
 export default api;
 
+// Уведомления
+export const fetchNotifications = () =>
+  api.get('/notifications/').then(res => res.data);
+
+export const markNotificationRead = (id) =>
+  api.post(`/notifications/${id}/mark_as_read/`).then(res => res.data);
+
+export const markAllNotificationsRead = () =>
+  api.post('/notifications/mark_all_read/').then(res => res.data);

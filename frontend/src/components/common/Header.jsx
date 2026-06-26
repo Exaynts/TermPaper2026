@@ -1,10 +1,12 @@
+// frontend/src/components/common/Header.jsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import NotificationsDropdown from './NotificationsDropdown';
 import './Header.css';
 
 const Header = () => {
-    const { isAuthenticated, logout } = useAuth();
+    const { isAuthenticated, user, logout } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -20,7 +22,6 @@ const Header = () => {
             <nav className="nav">
                 <ul className="nav-list">
                     <li><Link to="/">MathJam</Link></li>
-                    <li><Link to="/profile">Profile</Link></li>
                     <li className="dropdown">
                         <Link to="/courses">Courses</Link>
                         <div className="dropdown-content">
@@ -40,6 +41,8 @@ const Header = () => {
                     )}
                     {isAuthenticated && (
                         <>
+                            <li><Link to="/profile">Profile</Link></li>
+                            <li className="notification-item"><NotificationsDropdown/></li>
                             <li className="dropdown">
                                 <Link to="#">My Courses</Link>
                                 <div className="dropdown-content">
