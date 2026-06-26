@@ -1,0 +1,45 @@
+@startuml
+' BUC-диаграмма (Business Use Case)
+' Описывает бизнес-процессы платформы MathJam на верхнем уровне
+' Отличается от системной Use Case тем, что фокусируется на бизнес-целях, а не на функциях системы
+
+left to right direction
+skinparam actorStyle awesome
+
+actor "Гость" as Guest
+actor "Авторизованный\nпользователь" as AuthUser
+actor "Администратор" as Admin
+
+rectangle "Бизнес-процессы платформы MathJam" {
+  usecase "Ознакомление с каталогом курсов" as BUC1
+  usecase "Регистрация / Вход в систему" as BUC2
+  usecase "Управление личным профилем" as BUC3
+  usecase "Приобретение доступа к курсу" as BUC4
+  usecase "Обучение и отслеживание прогресса" as BUC5
+  usecase "Управление избранным" as BUC6
+  usecase "Восстановление удалённых курсов" as BUC7
+  usecase "Управление контентом (CRUD)" as BUC8
+  usecase "Администрирование платформы" as BUC9
+}
+
+' Связи для гостя
+Guest --> BUC1
+Guest --> BUC2
+
+' Связи для авторизованного пользователя
+AuthUser --> BUC2
+AuthUser --> BUC3
+AuthUser --> BUC4
+AuthUser --> BUC5
+AuthUser --> BUC6
+AuthUser --> BUC7
+
+' Связи для администратора
+Admin --> BUC8
+Admin --> BUC9
+
+' Наследование ролей
+AuthUser ..|> Guest
+Admin ..|> AuthUser
+
+@enduml

@@ -8,7 +8,8 @@
 ## 📊 Статистика разработки
 
 - **Всего коммитов:** 60+  
-- **Период разработки:** 18 недель
+- **Период разработки:** 18 недель  
+- **Ветки:** `main` (основная)  
 ![График активности](docs/images/git-commit-activity.png)
 ---
 
@@ -91,12 +92,23 @@ frontend/
 ├── package.json
 └── vite.config.js
 ```
+
 **Документация и диаграммы**
 ```bash
-docs/
-├── diagrams/               # Готовые диаграммы (PNG)
-├── sources/                # Исходники диаграмм (PlantUML)
-├── screenshots/            # Скриншоты интерфейса
+analysis/                   # Этап 0: Бизнес-анализ
+├── diagrams/               # IDEF0, BUC, матрица стейкхолдеров
+└── sources/                # Исходники PlantUML
+requirements/               # Этап 1: Требования
+├── diagrams/               # Use Case, диаграмма активности
+└── sources/                # Исходники PlantUML
+design/                     # Этапы 2-4: Архитектура, БД, детальное проектирование
+├── diagrams/               # ER, компонентов, последовательности, состояния
+└── sources/                # Исходники PlantUML
+implementation/             # Реализационные артефакты (опционально)
+└── diagrams/               # Структуры проектов Django и React
+docs/                       # Вспомогательные материалы
+├── images/                 # Скриншоты интерфейса
+├── sources/                # DDL-скрипты
 └── testing/                # Скриншоты тестов
 ```
 
@@ -109,11 +121,17 @@ docs/
 - Node.js 18+
 - npm или yarn
 
-### 1. Клонирование репозитория
+### 1. Клонирование репозитория и установка зависимостей
 ```bash
 git clone https://github.com/Exaynts/TermPaper2026.git
 cd TermPaper2026
 ```
+
+Cоздайте/активирeйте виртуальное окружение и установите все необходимые библиотеки командами
+```bash
+venv/scripts/activate
+pip install -r requirements.txt
+``` 
 
 ### 2. Настройка бэкенда
 ```bash
@@ -166,19 +184,31 @@ docker-compose up -d --build
 ---
 
 ## 👥 API-эндпоинты (основные)
-  ### Эндпоинты представлены в виде: Метод  Эндпоинт  Описание
-- POST	/api/auth/register/	                 Регистрация  
-- POST	/api/auth/login/	                   Получение JWT (access/refresh)  
-- POST	/api/auth/token/refresh/       	     Обновление access-токена  
-- GET/PATCH	/api/auth/profile/	             Профиль пользователя  
-- GET	  /api/courses/	                       Список курсов  
-- GET	  /api/courses/{id}/	                 Детали курса (с уроками)  
-- POST	/api/courses/{id}/purchase/	         Покупка курса  
-- POST	/api/courses/{id}/save/            	 Сохранить в избранное  
-- POST	/api/courses/{id}/move_to_bin/	     Переместить в корзину  
-- POST	/api/courses/{id}/restore_from_bin/	 Восстановить из корзины  
-- POST	/api/progress/mark/	                 Отметить урок пройденным  
-- GET	  /api/progress/my-progress/	         Прогресс по всем купленным курсам
+
+| Метод | Эндпоинт | Права доступа | Описание |
+|-------|----------|---------------|----------|
+| POST | `/api/auth/register/` | AllowAny | Регистрация нового пользователя |
+| POST | `/api/auth/login/` | AllowAny | Вход (JWT-токены) |
+| POST | `/api/auth/token/refresh/` | AllowAny | Обновление access-токена |
+| GET/PATCH | `/api/auth/profile/` | IsAuthenticated | Профиль пользователя |
+| POST | `/api/auth/logout/` | IsAuthenticated | Выход (блокировка refresh-токена) |
+| GET | `/api/courses/` | AllowAny | Список курсов (фильтрация, пагинация) |
+| GET | `/api/courses/{id}/` | AllowAny | Детали курса с уроками |
+| POST | `/api/courses/{id}/purchase/` | IsAuthenticated | Покупка курса |
+| POST | `/api/courses/{id}/save/` | IsAuthenticated | Сохранить в избранное |
+| POST | `/api/courses/{id}/unsave/` | IsAuthenticated | Удалить из избранного |
+| POST | `/api/courses/{id}/move_to_bin/` | IsAuthenticated | Переместить в корзину |
+| POST | `/api/courses/{id}/restore_from_bin/` | IsAuthenticated | Восстановить из корзины |
+| GET | `/api/courses/my_courses/` | IsAuthenticated | Список купленных курсов |
+| GET | `/api/courses/saved_courses/` | IsAuthenticated | Список сохранённых курсов |
+| GET | `/api/courses/recycle_bin/` | IsAuthenticated | Список курсов в корзине |
+| POST | `/api/progress/mark/` | IsAuthenticated | Отметить урок пройденным |
+| GET | `/api/progress/my-progress/` | IsAuthenticated | Прогресс по купленным курсам |
+| POST | `/api/courses/{id}/rate/` | IsAuthenticated | Оценка курса |
+| GET | `/api/courses/{id}/my-rating/` | IsAuthenticated | Оценка пользователя |
+| GET | `/api/notifications/` | IsAuthenticated | Список уведомлений |
+| POST | `/api/notifications/{id}/mark_as_read/` | IsAuthenticated | Отметить уведомление прочитанным |
+| POST | `/api/notifications/mark_all_read/` | IsAuthenticated | Отметить все прочитанными |
 
 ---
 
@@ -205,9 +235,15 @@ npm run test:e2e         # автоматический режим (headless)
 
 ---
 
-📐 Диаграммы и проектная документация
-Все диаграммы проекта (Use Case, ER, компонентов, последовательности) хранятся в папке docs/diagrams/  
-Исходные коды для диаграмм имеются в папке docs/sources  
+## 📐 Диаграммы и проектная документация
+
+Все диаграммы проекта распределены по этапам:
+
+- **Анализ** (`analysis/diagrams/`): [IDEF0](analysis/diagrams/idef0-a0.PNG), [BUC](analysis/diagrams/buc-diagram.PNG), [Матрица стейкхолдеров](analysis/diagrams/stakeholder-matrix.PNG)
+- **Требования** (`requirements/diagrams/`): [Use Case](requirements/diagrams/use-case-diagram.PNG), [Диаграмма активности покупки](requirements/diagrams/activity-purchase.PNG)
+- **Проектирование** (`design/diagrams/`): [Domain Model](design/diagrams/domain-model-diagram.PNG), [ER-диаграмма](design/diagrams/er-diagram.PNG), [Компонентная](design/diagrams/component-diagram.PNG), [Последовательности](design/diagrams/sequence-auth.PNG), [Состояний](design/diagrams/state-diagram.PNG), [Классов проектирования](design/diagrams/design-class-diagram.PNG)
+
+Исходные коды диаграмм (PlantUML) доступны в папках `*/sources/`.
 
 ---
 

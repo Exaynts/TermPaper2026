@@ -1,0 +1,38 @@
+@startuml
+actor "Пользователь" as User
+participant "React SPA" as React
+participant "Axios Interceptor" as Axios
+participant "Django REST API" as API
+participant "TokenObtainPairView" as LoginView
+participant "TokenRefreshView" as RefreshView
+database "БД" as DB
+
+== Успешный вход ==
+User -> React: Ввод email/nickname и пароля
+React -> API: POST /api/auth/login/
+API -> LoginView: Передача credentials
+LoginView -> DB: SELECT user WHERE (email=? OR username=?)
+DB --> LoginView: Данные пользователя
+LoginView -> LoginView: Проверка пароля (check_password)
+LoginView -> LoginView: Генерация access + refresh токенов
+LoginView --> API: {access, refresh}
+API --> React: 200 OK с токенами
+React -> React: Сохранение токенов в localStorage
+React --> User: Перенаправление на главную
+
+== Обновление истёкшего access-токена ==
+React -> Axios: GET /api/courses/ (с истёкшим токеном)
+Axios -> API: Запрос с истёкшим токеном
+API -> API: Проверка JWT (просрочен)
+API --> Axios: 401 Unauthorized
+Axios -> API: POST /api/auth/token/refresh/ {refresh}
+API -> RefreshView: Валидация refresh-токена
+RefreshView -> RefreshView: Генерация нового access-токена
+RefreshView --> API: {access}
+API --> Axios: 200 OK (новый access)
+Axios -> Axios: Обновление токена в localStorage
+Axios -> API: Повтор исходного запроса (GET /api/courses/)
+API --> Axios: 200 OK с данными
+Axios --> React: Данные курсов
+React --> User: Отображение
+@enduml

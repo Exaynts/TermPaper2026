@@ -1,0 +1,65 @@
+@startuml
+' IDEF0 A-0 Контекстная диаграмма
+' Платформа онлайн-курсов по математике "MathJam"
+
+left to right direction
+skinparam component {
+  BackgroundColor #f0f8ff
+  BorderColor #2a5bd7
+}
+skinparam arrow {
+  Color #333333
+  FontColor #333333
+}
+
+rectangle "Система" as System {
+  rectangle "MathJam\nОбразовательная платформа" as Platform #lightblue
+}
+
+' === ICOM-стрелки ===
+
+' ВХОДЫ (Input) – что преобразуется
+rectangle "Информация о курсах\n(название, цена, уроки)" as Input1 #lightgreen
+rectangle "Запросы пользователей\n(поиск, покупка)" as Input2 #lightgreen
+rectangle "Платежи / симуляция покупки" as Input3 #lightgreen
+
+' УПРАВЛЕНИЕ (Control) – правила, ограничения, стандарты
+rectangle "Бизнес-правила\n(скидки, статусы)" as Control1 #lightyellow
+rectangle "Требования к данным\n(форматы, валидация)" as Control2 #lightyellow
+rectangle "Политика безопасности\n(JWT, CORS)" as Control3 #lightyellow
+
+' ВЫХОДЫ (Output) – результат работы системы
+rectangle "Каталог курсов\nс фильтрацией" as Output1 #lightcoral
+rectangle "Прогресс пользователя\n(проценты, уроки)" as Output2 #lightcoral
+rectangle "Уведомления (email, UI)" as Output3 #lightcoral
+
+' МЕХАНИЗМЫ (Mechanism) – исполнители
+rectangle "Администратор\n(управление курсами)" as Mech1 #lavender
+rectangle "Авторизованный\nпользователь" as Mech2 #lavender
+rectangle "Django REST API\n+ React SPA" as Mech3 #lavender
+rectangle "База данных\n(PostgreSQL/SQLite)" as Mech4 #lavender
+
+' === СТРЕЛКИ ===
+
+' Входы в систему
+Input1 --> Platform
+Input2 --> Platform
+Input3 --> Platform
+
+' Управление – сверху вниз
+Control1 -down-> Platform
+Control2 -down-> Platform
+Control3 -down-> Platform
+
+' Выходы из системы
+Platform --> Output1
+Platform --> Output2
+Platform --> Output3
+
+' Механизмы – снизу вверх
+Mech1 -up-> Platform
+Mech2 -up-> Platform
+Mech3 -up-> Platform
+Mech4 -up-> Platform
+
+@enduml

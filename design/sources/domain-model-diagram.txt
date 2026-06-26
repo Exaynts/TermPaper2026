@@ -1,0 +1,128 @@
+@startuml
+' Domain Model for Educational Platform
+
+skinparam classAttributeIconSize 0
+left to right direction
+
+' === Классы ===
+class User {
+  - userId: Long
+  - nickname: String
+  - email: String
+  - passwordHash: String
+  - firstName: String
+  - lastName: String
+  - phoneNumber: String
+  - dateOfBirth: Date
+  - sex: SexEnum
+  - mathLevel: MathLevelEnum
+  - avatar: String
+  - isActive: Boolean
+  - isStaff: Boolean
+  + getFullName()
+  + checkPassword()
+}
+
+class Course {
+  - courseId: Long
+  - name: String
+  - price: BigDecimal
+  - discount: Integer
+  - rating: Double
+  - status: CourseStatusEnum
+  - description: Text
+  - image: String
+  - createdAt: DateTime
+  - isDeleted: Boolean
+  - deletedAt: DateTime
+  + publish()
+  + updateRating()
+}
+
+class Lesson {
+  - lessonId: Long
+  - order: Integer
+  - name: String
+  - text: Text
+  - description: Text
+  - image: String
+  - video: String
+  - taskFile: String
+}
+
+class Category {
+  - categoryId: Long
+  - title: String
+  - slug: String
+}
+
+class SavedCourse {
+  - savedAt: DateTime
+}
+
+class RecycleBinCourse {
+  - deletedAt: DateTime
+}
+
+class PurchasedCourse {
+  - progress: Integer
+  - purchasedAt: DateTime
+  - status: PurchaseStatusEnum
+}
+
+class LessonProgress {
+  - completedAt: DateTime
+}
+
+class CourseRating {
+  - rating: Integer
+  - createdAt: DateTime
+  - updatedAt: DateTime
+}
+
+' === Связи ===
+User "1" -- "0..*" Course : created_by
+Course "1" -- "0..*" Lesson : contains
+Category "1" -- "0..*" Course : categorized
+
+User "1" -- "0..*" SavedCourse : saves
+Course "1" -- "0..*" SavedCourse : saved_by
+
+User "1" -- "0..*" RecycleBinCourse : deletes
+Course "1" -- "0..*" RecycleBinCourse : deleted_in
+
+User "1" -- "0..*" PurchasedCourse : buys
+Course "1" -- "0..*" PurchasedCourse : purchased_in
+
+User "1" -- "0..*" CourseRating : rates
+Course "1" -- "0..*" CourseRating : rated_by
+
+PurchasedCourse "1" -- "0..*" LessonProgress : tracks
+Lesson "1" -- "0..*" LessonProgress : progressed_by
+
+' === Перечисления ===
+enum SexEnum {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum MathLevelEnum {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CourseStatusEnum {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PurchaseStatusEnum {
+  ACTIVE
+  EXPIRED
+  REFUNDED
+}
+
+@enduml

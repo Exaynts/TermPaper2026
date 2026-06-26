@@ -1,0 +1,131 @@
+@startuml
+!define table(x) entity x << (T,#FFAAAA) >>
+!define primary_key(x) <b><color:darkgreen>x</color></b>
+!define foreign_key(x) <color:blue><u>x</u></color>
+
+table(users) {
+  * primary_key(user_id) : BIGINT <<generated>>
+  --
+  * nickname : VARCHAR(50) <<unique>>
+  * email : VARCHAR(254) <<unique>>
+  * password_hash : VARCHAR(255)
+  * first_name : VARCHAR(150)
+  * last_name : VARCHAR(150)
+  * phone_number : VARCHAR(20)
+  * date_of_birth : DATE
+  * sex : VARCHAR(1)
+  * math_level : VARCHAR(20)
+  * avatar : VARCHAR(255)
+  * is_active : BOOLEAN
+  * is_staff : BOOLEAN
+  * date_joined : TIMESTAMP
+}
+
+table(categories) {
+  * primary_key(category_id) : BIGINT <<generated>>
+  --
+  * title : VARCHAR(150) <<unique>>
+  * slug : VARCHAR(150) <<unique>>
+}
+
+table(courses) {
+  * primary_key(course_id) : BIGINT <<generated>>
+  --
+  * name : VARCHAR(255)
+  * price : DECIMAL(10,2)
+  * discount : INT
+  * rating : DECIMAL(3,2)
+  * status : VARCHAR(20)
+  * description : TEXT
+  * image : VARCHAR(255)
+  * created_at : TIMESTAMP
+  * created_by_id : BIGINT <<foreign_key>>
+  * category_id : BIGINT <<foreign_key>>
+  * is_deleted : BOOLEAN
+  * deleted_at : TIMESTAMP
+}
+
+table(lessons) {
+  * primary_key(lesson_id) : BIGINT <<generated>>
+  --
+  * course_id : BIGINT <<foreign_key>>
+  * order_no : INT
+  * name : VARCHAR(255)
+  * text_content : TEXT
+  * description : TEXT
+  * image : VARCHAR(255)
+  * video : VARCHAR(255)
+  * task_file : VARCHAR(255)
+}
+
+table(saved_courses) {
+  * primary_key(id) : BIGINT <<generated>>
+  --
+  * user_id : BIGINT <<foreign_key>>
+  * course_id : BIGINT <<foreign_key>>
+  * saved_at : TIMESTAMP
+  --
+  * UNIQUE (user_id, course_id)
+}
+
+table(recycle_bin_courses) {
+  * primary_key(id) : BIGINT <<generated>>
+  --
+  * user_id : BIGINT <<foreign_key>>
+  * course_id : BIGINT <<foreign_key>>
+  * deleted_at : TIMESTAMP
+  --
+  * UNIQUE (user_id, course_id)
+}
+
+table(purchased_courses) {
+  * primary_key(id) : BIGINT <<generated>>
+  --
+  * user_id : BIGINT <<foreign_key>>
+  * course_id : BIGINT <<foreign_key>>
+  * progress : INT
+  * purchased_at : TIMESTAMP
+  * status : VARCHAR(20)
+  --
+  * UNIQUE (user_id, course_id)
+}
+
+table(lesson_progress) {
+  * primary_key(id) : BIGINT <<generated>>
+  --
+  * lesson_id : BIGINT <<foreign_key>>
+  * purchased_course_id : BIGINT <<foreign_key>>
+  * completed_at : TIMESTAMP
+}
+
+table(course_ratings) {
+  * primary_key(id) : BIGINT <<generated>>
+  --
+  * user_id : BIGINT <<foreign_key>>
+  * course_id : BIGINT <<foreign_key>>
+  * rating : INT
+  * created_at : TIMESTAMP
+  * updated_at : TIMESTAMP
+  --
+  * UNIQUE (user_id, course_id)
+}
+
+' Отношения
+users ||--o{ courses : "created_by"
+users ||--o{ saved_courses : "saves"
+users ||--o{ recycle_bin_courses : "deletes"
+users ||--o{ purchased_courses : "buys"
+users ||--o{ course_ratings : "rates"
+
+categories ||--o{ courses : "categorized"
+
+courses ||--o{ lessons : "contains"
+courses ||--o{ saved_courses : "saved_by"
+courses ||--o{ recycle_bin_courses : "deleted_in"
+courses ||--o{ purchased_courses : "purchased_in"
+courses ||--o{ course_ratings : "rated_by"
+
+purchased_courses ||--o{ lesson_progress : "tracks"
+lessons ||--o{ lesson_progress : "progressed_by"
+
+@enduml
