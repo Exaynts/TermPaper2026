@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from courses.models import PurchasedCourse, LessonProgress, RecycleBinCourse
 from .models import Notification
+from .services import EmailNotificationService
 
 User = get_user_model()
 
@@ -59,3 +60,14 @@ def notify_bin_action(sender, instance, created, **kwargs):
     else:
         # Если запись существует, но была обновлена – обработать отдельно
         pass
+
+@receiver(post_save, sender=Notification)
+def send_email_on_notification(sender, instance, created, **kwargs):
+    """Отправить email при создании нового уведомления."""
+    if created:
+        # Отправить письмо
+        try:
+            EmailNotificationService.send_notification_email(instance)
+        except Exception as e:
+            # Логировать возможную ошибку
+            print(f"Failed to send email for notification {instance.id}: {e}")
