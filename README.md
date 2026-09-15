@@ -171,7 +171,7 @@ docs/                       # Вспомогательные материалы
 
 ---
 
-## 🛠 Установка и запуск
+## 🛠 Установка и запуск (для разработки)
 
 ### Требования
 - Python 3.10+
@@ -231,42 +231,185 @@ docker-compose up -d --build
 
 ---
 
-## ⚠️ Устранение неполадок (Troubleshooting)
+## 🐳 Установка через Docker (только продакшен)
 
-### 🔹 Ошибка при запуске Docker
-- **Проблема:** `docker-compose up` не работает или контейнеры не стартуют.
-- **Решение:** 
-  1. Убедитесь, что **Docker Desktop** запущен (зелёный индикатор в левом нижнем углу).
-  2. Проверьте, что порты `80`, `8000`, `5432` не заняты другими программами.
-  3. Выполните `docker-compose down -v`, затем `docker-compose up -d --build`.
+Этот раздел — для тех, кому нужно **просто запустить готовый проект** без настройки среды разработки. Понадобится только **Docker Desktop**. Python, Node.js, виртуальные окружения и IDE устанавливать **не нужно**.
 
-### 🔹 Не загружаются изображения (медиафайлы)
-- **Проблема:** Картинки курсов и аватары не отображаются.
-- **Решение:**
-  1. Убедитесь, что папка `backend/media/` существует и содержит файлы.
-  2. Проверьте настройки в `settings.py`: `MEDIA_URL = '/media/'`, `MEDIA_ROOT = BASE_DIR / 'media'`.
-  3. При локальном запуске (`DEBUG=True`) медиафайлы раздаются автоматически через `urlpatterns += static(...)`.
+### Требования
 
-### 🔹 Ошибка 401 при запросе к API
-- **Проблема:** Запрос возвращает `401 Unauthorized`.
-- **Решение:**
-  1. Проверьте, что вы авторизованы (токен сохранён в `localStorage`).
-  2. Если токен истёк, он должен обновиться автоматически через Axios-перехватчик.
-  3. Убедитесь, что заголовок `Authorization: Bearer <token>` присутствует в запросе.
+- **Docker Desktop** — [скачать](https://www.docker.com/products/docker-desktop/)
+  - Windows 10/11 (Pro/Enterprise), macOS 11+, или Linux (Ubuntu 20.04+)
+  - Минимум **6 ГБ свободной оперативной памяти** (рекомендуется 8 ГБ)
+  - 5 ГБ свободного места на диске
+  - **Git** — [скачать](https://git-scm.com/) (для клонирования репозитория)
+  - Стабильное интернет-соединение **на время первой сборки** (~5–10 минут)
 
-### 🔹 Ошибка при сборке Docker (Cypress или npm ci)
-- **Проблема:** Сборка падает на этапе установки зависимостей.
-- **Решение:**
-  1. Удалите `cypress` из `dependencies` в `package.json` (перенесите в `devDependencies`).
-  2. Либо запускайте сборку без Docker, используя локальную установку Python и Node.js.
+### Шаг 1. Установить и запустить Docker Desktop
 
-### 🔹 Не отправляются email-уведомления
-- **Проблема:** Письма не приходят на почту.
-- **Решение:**
-  1. Проверьте настройки SMTP в `.env` (`EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`).
-  2. Используйте **пароль приложения** для Gmail (не обычный пароль).
-  3. Проверьте папку «Спам» в почтовом ящике.
-  4. Для отладки временно включите консольный бэкенд: `EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'`.
+1. Скачать и установить Docker Desktop с официального сайта.
+2. Запустить Docker Desktop.
+3. Дождаться, пока индикатор в левом нижнем углу станет **зелёным** (`Engine running`).
+
+> ⚠️ Если зелёного индикатора нет — перезагрузите компьютер после установки.
+
+### Шаг 2. Клонировать репозиторий
+
+Откройте терминал (PowerShell, cmd, Git Bash) и выполните:
+
+```bash
+git clone https://github.com/Exaynts/TermPaper2026.git
+cd TermPaper2026
+```
+
+### Шаг 3. Создать файл `.env`
+
+В корне проекта (рядом с `docker-compose.yml`) создайте файл `.env`. Скопируйте содержимое `.env.example` и заполните **3 обязательных переменные**:
+
+```ini
+SECRET_KEY=замените-на-длинную-случайную-строку
+DB_PASSWORD=придумайте-надёжный-пароль
+EMAIL_HOST_PASSWORD=пароль-приложения-gmail
+```
+
+Полный минимальный `.env`:
+
+```ini
+# Django
+SECRET_KEY=change-me-to-a-long-random-string
+DEBUG=False
+
+# Database
+USE_POSTGRES=True
+DB_NAME=mathjam_db
+DB_USER=mathjam_user
+DB_PASSWORD=change-me-to-a-strong-password
+DB_HOST=db
+DB_PORT=5432
+
+# Hosts
+ALLOWED_HOSTS=localhost,127.0.0.1,backend
+CORS_ALLOWED_ORIGINS=http://localhost,http://127.0.0.1
+
+# Email (SMTP) — опционально, но нужно для уведомлений
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-password
+DEFAULT_FROM_EMAIL=your-email@gmail.com
+```
+
+> 💡 **Как получить пароль приложения Gmail:**
+> 1. Включите двухэтапную аутентификацию: [myaccount.google.com/security](https://myaccount.google.com/security)
+> 2. Создайте пароль приложения: [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
+> 3. Скопируйте 16-значный код без пробелов в `EMAIL_HOST_PASSWORD`.
+
+### Шаг 4. Запустить приложение
+
+В корне проекта (где `docker-compose.yml`) выполните:
+
+```bash
+docker-compose up -d --build
+```
+
+- Первая сборка занимает **5–10 минут** — скачиваются образы Python, Node, PostgreSQL, Nginx и собираются контейнеры.
+- Последующие запуски (`docker-compose up -d`) — **10–20 секунд**.
+
+Дождитесь сообщения:
+
+```
+✔ Container mathjam_db        Healthy
+✔ Container mathjam_backend   Started
+✔ Container mathjam_frontend  Started
+```
+
+### Шаг 5. Создать администратора
+
+```bash
+docker-compose exec backend python manage.py createsuperuser
+```
+
+Введите **email**, **nickname**, **имя**, **фамилию** и **пароль** (минимум 8 символов, не только цифры).
+
+### Шаг 6. Открыть в браузере
+
+| Что | Адрес |
+|-----|-------|
+| **Фронтенд** | http://localhost |
+| **API** | http://localhost:8000/api/ |
+| **Админка Django** | http://localhost:8000/admin |
+| **Swagger UI** | http://localhost:8000/api/schema/swagger-ui/ |
+| **ReDoc** | http://localhost:8000/api/schema/redoc/ |
+
+### 🎛 Управление контейнерами
+
+| Действие | Команда |
+|----------|---------|
+| Запустить | `docker-compose up -d` |
+| Остановить (данные сохраняются) | `docker-compose stop` |
+| Перезапустить | `docker-compose restart` |
+| Удалить контейнеры (данные сохраняются) | `docker-compose down` |
+| **Полный сброс** (⚠️ удалит БД) | `docker-compose down -v` |
+| Пересобрать образы | `docker-compose up -d --build` |
+| Логи конкретного сервиса | `docker-compose logs -f backend` |
+| Список контейнеров | `docker-compose ps` |
+| Войти в shell контейнера | `docker-compose exec backend bash` |
+
+### 🧱 Что «внутри коробки»
+
+Docker Compose поднимает **три изолированных контейнера**:
+
+| Контейнер | Образ | Порт | Назначение |
+|-----------|-------|------|------------|
+| `mathjam_db` | `postgres:15` | 5432 | База данных |
+| `mathjam_backend` | собран из `backend/Dockerfile` | 8000 | Django + DRF + Gunicorn |
+| `mathjam_frontend` | собран из `frontend/Dockerfile` | 80 | React (статика) + Nginx |
+
+**Тома (volumes):**
+- `postgres_data` — данные БД (сохраняются между перезапусками)
+- `static_volume` — CSS/JS админки Django (общий для Nginx и backend)
+- `media_volume` — загруженные картинки курсов и аватары
+
+**Особенности:**
+- Фронтенд и API доступны через **один порт 80** — Nginx проксирует `/api/` на backend.
+- `entrypoint.sh` автоматически применяет миграции и собирает статику при старте.
+- Healthcheck гарантирует, что backend стартует **после** готовности PostgreSQL.
+
+### ⚠️ Частые проблемы при первом запуске
+
+| Симптом | Причина | Решение |
+|---------|---------|---------|
+| `failed to solve: python:3.13-slim` | Нет доступа к Docker Hub | Настроить зеркало или включить VPN на время сборки |
+| `cannot allocate memory` | Мало RAM для Docker | Увеличить лимит через `.wslconfig` (Windows) или Settings → Resources |
+| `port is already allocated` | Порты 80/8000/5432 заняты | Закрыть конфликтующие приложения (Skype, старый Django) |
+| Контейнер `backend` перезапускается | Не задан `SECRET_KEY` или `DB_PASSWORD` | Проверить `.env` |
+| Стили админки не грузятся | Nginx не видит `static_volume` | Проверить `docker-compose.yml` и `nginx.conf` |
+| Страница открывается, но API не работает | Nginx не проксирует `/api/` | Проверить логи: `docker-compose logs frontend` |
+
+Полный список — в разделе [«Устранение неполадок»](#-устранение-неполадок-troubleshooting).
+
+### ✅ Преимущества Docker-варианта
+
+- **Ничего не нужно устанавливать вручную** — только Docker Desktop.
+- **Одинаковое окружение** — работает одинаково на Windows, macOS, Linux.
+- **Изоляция** — не конфликтует с другими Python/Node-проектами.
+- **Продакшен-режим** — `DEBUG=False`, Gunicorn, PostgreSQL, Nginx.
+- **Быстрый запуск** — вторая сборка за 10 секунд, остановка за 2 секунды.
+
+---
+
+## ⚠️ Устранение неполадок
+
+### Локальная разработка (без Docker)
+
+- **Медиафайлы не загружаются** — проверьте `MEDIA_URL`, `MEDIA_ROOT` и `static()` в `urls.py` (работает только при `DEBUG=True`).
+- **Ошибка 401 при запросе к API** — токен истёк или отсутствует; проверьте `localStorage` и перехватчик Axios.
+- **Email-уведомления не приходят** — используйте пароль приложения Gmail; для отладки включите `EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'`.
+
+### Docker / продакшен
+
+См. раздел [«Частые проблемы при первом запуске»](#-частые-проблемы-при-первом-запуске).
 
 ---
 
