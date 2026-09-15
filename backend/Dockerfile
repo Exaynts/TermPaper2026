@@ -1,27 +1,28 @@
-FROM python:3.13-slim AS builder
-
-WORKDIR /app
-
-# Установить системные зависимости для сборки
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
-
-# Финальный образ
 FROM python:3.13-slim
 
 WORKDIR /app
 
-COPY --from=builder /root/.local /root/.local
+# Системные зависимости (зеркало Debian заменено на Яндекс)
+RUN sed -i 's|deb.debian.org|mirror.yandex.ru|g' /etc/apt/sources.list.d/debian.sources \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        gcc \
+        libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Виртуальное окружение
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Установить Python-зависимости
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Скопировать код
 COPY . .
 
-ENV PATH=/root/.local/bin:$PATH
-
-# Скопировать скрипт ожидания базы данных
+# Скрипт ожидания БД
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
