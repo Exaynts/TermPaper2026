@@ -129,6 +129,7 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DATE_INPUT_FORMATS': ['%Y-%m-%d', '%d.%m.%Y'],
 }
 
 # JWT Settings

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from '../../styles/pages/RegisterPage.module.css';
@@ -22,6 +22,43 @@ const RegisterPage = () => {
     const { register } = useAuth();
     const navigate = useNavigate();
 
+    // Список полей в порядке их появления в форме — для поиска первого ошибочного поля
+    const FIELD_ORDER = [
+        'nickname', 'password', 'password2', 'email', 'phone_number',
+        'first_name', 'last_name', 'date_of_birth', 'sex', 'math_level'
+    ];
+
+    /**
+     * Прокрутить страницу к указанному полю и поставить в него фокус.
+     * scroll-margin-top в CSS не даст хедеру перекрыть поле.
+     */
+    const scrollToField = (fieldName) => {
+        const el = document.getElementById(fieldName);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // preventScroll: true — чтобы браузер не «дёрнул» страницу повторно
+        setTimeout(() => el.focus({ preventScroll: true }), 350);
+    };
+
+    /**
+     * Найти первое поле с ошибкой (по порядку в форме) и прокрутить к нему.
+     * Если ошибок по полям нет, но есть общая ошибка — прокрутить к началу страницы.
+     */
+    const scrollToFirstError = (errors, generalError) => {
+        const firstErrorField = FIELD_ORDER.find((name) => errors[name]);
+        if (firstErrorField) {
+            scrollToField(firstErrorField);
+        } else if (generalError) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    // При изменении fieldErrors или error — прокрутить к нужному месту
+    useEffect(() => {
+        scrollToFirstError(fieldErrors, error);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [fieldErrors, error]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -35,6 +72,7 @@ const RegisterPage = () => {
         setError('');
         setFieldErrors({});
 
+        // Клиентская валидация
         if (formData.password.length < 8) {
             setFieldErrors({ password: 'Password must be at least 8 characters' });
             return;
@@ -129,7 +167,7 @@ const RegisterPage = () => {
                             {fieldErrors.email && <span className={styles.fieldError}>{fieldErrors.email}</span>}
                         </div>
 
-                        <div className={styles.formGroup}>
+                        <div className={`${styles.formGroup} ${fieldErrors.phone_number ? styles.errorField : ''}`}>
                             <label htmlFor="phone_number">Phone number</label>
                             <input
                                 type="tel"
@@ -140,12 +178,13 @@ const RegisterPage = () => {
                                 value={formData.phone_number}
                                 onChange={handleChange}
                             />
+                            {fieldErrors.phone_number && <span className={styles.fieldError}>{fieldErrors.phone_number}</span>}
                         </div>
                     </fieldset>
 
                     <fieldset className={styles.fieldset}>
                         <legend className={styles.legend}>Tell about yourself</legend>
-                        <div className={styles.formGroup}>
+                        <div className={`${styles.formGroup} ${fieldErrors.first_name ? styles.errorField : ''}`}>
                             <label htmlFor="first_name">Name</label>
                             <input
                                 type="text"
@@ -156,9 +195,10 @@ const RegisterPage = () => {
                                 value={formData.first_name}
                                 onChange={handleChange}
                             />
+                            {fieldErrors.first_name && <span className={styles.fieldError}>{fieldErrors.first_name}</span>}
                         </div>
 
-                        <div className={styles.formGroup}>
+                        <div className={`${styles.formGroup} ${fieldErrors.last_name ? styles.errorField : ''}`}>
                             <label htmlFor="last_name">Surname</label>
                             <input
                                 type="text"
@@ -169,9 +209,10 @@ const RegisterPage = () => {
                                 value={formData.last_name}
                                 onChange={handleChange}
                             />
+                            {fieldErrors.last_name && <span className={styles.fieldError}>{fieldErrors.last_name}</span>}
                         </div>
 
-                        <div className={styles.formGroup}>
+                        <div className={`${styles.formGroup} ${fieldErrors.date_of_birth ? styles.errorField : ''}`}>
                             <label htmlFor="date_of_birth">Date of birth</label>
                             <input
                                 type="date"
@@ -181,9 +222,10 @@ const RegisterPage = () => {
                                 value={formData.date_of_birth}
                                 onChange={handleChange}
                             />
+                            {fieldErrors.date_of_birth && <span className={styles.fieldError}>{fieldErrors.date_of_birth}</span>}
                         </div>
 
-                        <div className={styles.formGroup}>
+                        <div className={`${styles.formGroup} ${fieldErrors.sex ? styles.errorField : ''}`}>
                             <label htmlFor="sex">Sex</label>
                             <select
                                 id="sex"
@@ -197,9 +239,10 @@ const RegisterPage = () => {
                                 <option value="F">Female</option>
                                 <option value="O">Other</option>
                             </select>
+                            {fieldErrors.sex && <span className={styles.fieldError}>{fieldErrors.sex}</span>}
                         </div>
 
-                        <div className={styles.formGroup}>
+                        <div className={`${styles.formGroup} ${fieldErrors.math_level ? styles.errorField : ''}`}>
                             <label htmlFor="math_level">Math level</label>
                             <select
                                 id="math_level"
@@ -213,6 +256,7 @@ const RegisterPage = () => {
                                 <option value="intermediate">Intermediate</option>
                                 <option value="advanced">Advanced</option>
                             </select>
+                            {fieldErrors.math_level && <span className={styles.fieldError}>{fieldErrors.math_level}</span>}
                         </div>
                     </fieldset>
 

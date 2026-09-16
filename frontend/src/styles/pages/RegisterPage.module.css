@@ -37,6 +37,12 @@
   white-space: nowrap;
 }
 
+.formGroup,
+.textInput,
+.fieldset {
+    scroll-margin-top: calc(var(--header-height) + 2.5em);
+}
+
 .formGroup {
   display: flex;
   flex-direction: column;
