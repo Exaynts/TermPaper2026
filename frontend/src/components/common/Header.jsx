@@ -46,11 +46,26 @@ const Header = () => {
                             <li className="dropdown">
                                 <Link to="#">My Courses</Link>
                                 <div className="dropdown-content">
-                                    <Link to="/saved-courses">Saved</Link>
-                                    <Link to="/purchased-courses">Purchased</Link>
-                                    <Link to="/recycle-bin">Recycle Bin</Link>
-                                    <Link to="/created-courses">Created</Link>
-                                    <Link to="/create-course">Create Course</Link>
+                                    <Link to="/saved-courses" className="dropdown-item">
+                                        <span className="dropdown-icon">★</span>
+                                        <span className="dropdown-label">Saved</span>
+                                    </Link>
+                                    <Link to="/purchased-courses" className="dropdown-item">
+                                        <span className="dropdown-icon">📘</span>
+                                        <span className="dropdown-label">Purchased</span>
+                                    </Link>
+                                    <Link to="/recycle-bin" className="dropdown-item">
+                                        <span className="dropdown-icon">🗑</span>
+                                        <span className="dropdown-label">Recycle Bin</span>
+                                    </Link>
+                                    <Link to="/created-courses" className="dropdown-item">
+                                        <span className="dropdown-icon">✎</span>
+                                        <span className="dropdown-label">Created</span>
+                                    </Link>
+                                    <Link to="/create-course" className="dropdown-item dropdown-item-primary">
+                                        <span className="dropdown-icon">+</span>
+                                        <span className="dropdown-label">Create Course</span>
+                                    </Link>
                                 </div>
                             </li>
                             <li>

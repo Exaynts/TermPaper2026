@@ -67,7 +67,7 @@ const PurchasedCoursesPage = () => {
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>My Courses (Purchased)</h1>
+            <h1 className={styles.title}>Purchased Courses</h1>
             {purchasedCourses.length === 0 ? (
                 <p className={styles.empty}>You haven't purchased any courses yet.</p>
             ) : (

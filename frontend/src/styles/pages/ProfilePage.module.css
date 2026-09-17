@@ -388,91 +388,84 @@
   cursor: not-allowed;
 }
 
-/* My Courses section */
+/* My Courses — навигационная секция */
 .myCourses {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
 }
 
-.courseList {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin: 20px 0;
+.coursesNav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px solid #000;
+    border-radius: 25px;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.courseItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  border: 2px solid #000;
-  border-radius: 15px;
-  background-color: white;
-  transition: all 0.3s ease;
+.navCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    min-height: 140px;
+    padding: 20px 12px;
+    border: 2px solid #000;
+    border-radius: 15px;
+    text-decoration: none;
+    color: #000;
+    background-color: #f88;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
-.courseItem:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.navCard:hover {
+    background-color: #f55;
+    color: white;
+    transform: translateY(-4px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
 
-.courseName {
-  font-size: 18px;
-  font-weight: 500;
-  color: #000;
-  flex: 1;
-  text-align: left;
+.navCard:hover .navHint {
+    color: rgba(255, 255, 255, 0.85);
 }
 
-.progressText {
-  margin: 0 20px;
-  color: #666;
+.navIcon {
+    font-size: 36px;
+    line-height: 1;
+    font-weight: 700;
 }
 
-.continueButton {
-  padding: 8px 20px;
-  border: 2px solid #000;
-  border-radius: 20px;
-  background-color: #f55;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.navTitle {
+    font-size: 18px;
+    font-weight: 700;
 }
 
-.continueButton:hover {
-  background-color: #f88;
-  transform: scale(1.05);
+.navHint {
+    font-size: 13px;
+    color: #333;
+    transition: color 0.3s ease;
 }
 
-.buyButtonContainer {
-  margin-top: 20px;
+/* Акцентная карточка «Create Course» */
+.navCardPrimary {
+    background-color: #f55;
+    color: white;
 }
 
-.buyCoursesButton {
-  padding: 12px 30px;
-  border: 2px solid #000;
-  border-radius: 25px;
-  background-color: #f55;
-  color: white;
-  font-weight: bold;
-  font-size: 18px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.navCardPrimary .navHint {
+    color: rgba(255, 255, 255, 0.85);
 }
 
-.buyCoursesButton:hover {
-  background-color: #f88;
-  transform: scale(1.05);
-}
-
-.emptyMessage {
-  color: #666;
-  font-size: 18px;
-  margin: 20px 0;
+.navCardPrimary:hover {
+    background-color: #d43;
+    transform: translateY(-4px) scale(1.02);
 }
 
 /* Сообщения */
@@ -612,6 +605,28 @@
   .progressText {
     margin: 5px 0;
   }
+}
+
+/* Адаптивность */
+@media (max-width: 650px) {
+    .coursesNav {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        padding: 15px;
+    }
+
+    .navCard {
+        min-height: 120px;
+        padding: 15px 10px;
+    }
+
+    .navIcon {
+        font-size: 28px;
+    }
+
+    .navTitle {
+        font-size: 16px;
+    }
 }
 
 /* Если элементы не помещаются рядом, переносим поиск на новую строку */

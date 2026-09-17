@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from '../../styles/pages/ProfilePage.module.css';
+import LiveSearch from '../common/LiveSearch';
 
 const ProfilePage = () => {
     const { user, loading, updateProfile, updateAvatar, deleteAccount, logout } = useAuth();
@@ -16,7 +17,6 @@ const ProfilePage = () => {
         sex: '',
         math_level: ''
     });
-    const [searchQuery, setSearchQuery] = useState('');
     const [editMode, setEditMode] = useState({});
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState({ text: '', type: '' });
@@ -167,13 +167,6 @@ const ProfilePage = () => {
         setEditMode(prev => ({ ...prev, [fieldName]: !prev[fieldName] }));
     };
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (searchQuery.trim()) {
-            navigate(`/courses?search=${encodeURIComponent(searchQuery)}`);
-        }
-    };
-
     if (loading) {
         return <div className={styles.loading}>Loading...</div>;
     }
@@ -203,22 +196,7 @@ const ProfilePage = () => {
 
                 {/* Upper Menu */}
                 <div className={styles.upperMenu}>
-                    <div className={styles.search}>
-                        <form onSubmit={handleSearch}>
-                            <input
-                                type="text"
-                                className={styles.inputField}
-                                placeholder="Search for courses..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                            <button type="submit" className={styles.searchButton}>
-                                <svg className={styles.searchIcon} viewBox="0 0 24 24">
-                                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                                </svg>
-                            </button>
-                        </form>
-                    </div>
+                    <LiveSearch placeholder="Search for courses..." />
                     <div className={styles.userInfo}>
                         <div className={styles.avatar} onClick={handleAvatarClick}>
                             {user.avatar ? (
@@ -471,37 +449,41 @@ const ProfilePage = () => {
                         </div>
                     </div>
 
-                    {/* My Courses. Commented out due to being irrelevant
+                    {/* My Courses — быстрая навигация */}
                     <div className={styles.myCourses}>
                         <h3>My Courses</h3>
-                        {loadingCourses ? (
-                            <p>Loading...</p>
-                        ) : purchasedCourses.length > 0 ? (
-                            <div className={styles.courseList}>
-                                {purchasedCourses.map(course => (
-                                    <div key={course.id} className={styles.courseItem}>
-                                        <span className={styles.courseName}>{course.name}</span>
-                                        <span className={styles.progressText}>Progress: {course.progress}%</span>
-                                        <Link to={`/courses/${course.id}`}>
-                                            <button className={styles.continueButton}>
-                                                Continue
-                                            </button>
-                                        </Link>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className={styles.emptyMessage}>You don't have any purchased courses yet</p>
-                        )}
-                        <div className={styles.buyButtonContainer}>
-                            <Link to="/courses">
-                                <button className={styles.buyCoursesButton}>
-                                    Buy Courses
-                                </button>
+                        <div className={styles.coursesNav}>
+                            <Link to="/saved-courses" className={styles.navCard}>
+                                <div className={styles.navIcon}>★</div>
+                                <div className={styles.navTitle}>Saved</div>
+                                <div className={styles.navHint}>Избранные курсы</div>
+                            </Link>
+
+                            <Link to="/purchased-courses" className={styles.navCard}>
+                                <div className={styles.navIcon}>📘</div>
+                                <div className={styles.navTitle}>Purchased</div>
+                                <div className={styles.navHint}>Купленные курсы</div>
+                            </Link>
+
+                            <Link to="/recycle-bin" className={styles.navCard}>
+                                <div className={styles.navIcon}>🗑</div>
+                                <div className={styles.navTitle}>Recycle Bin</div>
+                                <div className={styles.navHint}>Удалённые курсы</div>
+                            </Link>
+
+                            <Link to="/created-courses" className={styles.navCard}>
+                                <div className={styles.navIcon}>✎</div>
+                                <div className={styles.navTitle}>Created</div>
+                                <div className={styles.navHint}>Созданные курсы</div>
+                            </Link>
+
+                            <Link to="/create-course" className={`${styles.navCard} ${styles.navCardPrimary}`}>
+                                <div className={styles.navIcon}>+</div>
+                                <div className={styles.navTitle}>Create Course</div>
+                                <div className={styles.navHint}>Создать новый курс</div>
                             </Link>
                         </div>
                     </div>
-                    */}
                 </div>
             </div>
             {/* Модальное окно удаления аккаунта */}
