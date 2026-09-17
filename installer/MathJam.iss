@@ -4,8 +4,8 @@
 
 [Setup]
 AppName=MathJam
-AppVersion=1.0.0
-AppVerName=MathJam 1.0.0
+AppVersion=1.0.1
+AppVerName=MathJam 1.0.1
 AppPublisher=Козлов Е.А.
 AppPublisherURL=https://github.com/Exaynts/TermPaper2026
 AppSupportURL=https://github.com/Exaynts/TermPaper2026

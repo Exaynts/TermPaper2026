@@ -70,17 +70,17 @@ if exist EMAIL_SETUP.txt goto email_exists
     echo     Пример: ivan.petrov@gmail.com
     echo.
     echo   EMAIL_HOST_PASSWORD
-    echo     НЕ обычный пароль от почты!
+    echo     НЕ обычный пароль от почты.
     echo     Это 16-значный пароль приложения Gmail.
     echo.
     echo   Как его получить:
-    echo     a) Включите двухэтапную аутентификацию:
+    echo     a^) Включите двухэтапную аутентификацию:
     echo         https://myaccount.google.com/security
     echo.
-    echo     b) Создайте пароль приложения:
+    echo     b^) Создайте пароль приложения:
     echo         https://myaccount.google.com/apppasswords
     echo.
-    echo     c) Google покажет код вида abcd efgh ijkl mnop
+    echo     c^) Google покажет код вида abcd efgh ijkl mnop
     echo         Скопируйте его и вставьте БЕЗ пробелов.
     echo.
     echo ============================================
@@ -156,7 +156,7 @@ if exist ADMIN_CREDENTIALS.txt goto admin_creds_ready
     echo.
     echo Логин - email:  admin@mathjam.local
     echo Никнейм:        admin
-    echo Пароль:         mathjam1^^!
+    echo Пароль:         mathjam1!
     echo.
     echo ============================================
     echo ВАЖНО:
